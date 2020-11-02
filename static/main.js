@@ -1,14 +1,14 @@
-(function () {
-  'use strict';
+var myapp = angular.module("app", ['angular-loading-bar']);
 
-  angular.module('app', [])
+myapp.controller("ngappController", function($scope, $timeout, cfpLoadingBar){
+    $timeout(callAtTimeout, 3000);
+    console.log("Makao");
+    cfpLoadingBar.start();
 
-  .controller('ngappController', ['$scope', '$log',
-    function($scope, $log) {
-      $scope.getResults = function() {
-        $log.log("test");
-      };
+    function callAtTimeout() {
+    console.log("Timeout occurred");
+    cfpLoadingBar.complete();
     }
-  ]);
 
-}());
+});
+
