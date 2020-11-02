@@ -1,14 +1,19 @@
 (function () {
-  'use strict';
+    'use strict';
 
-  angular.module('app', [])
+    angular.module('app', [])
+        .controller('ngappController', ['$scope', '$log', '$timeout',
+            function ($scope, $log, $timeout) {
+                $scope.getResults = function () {
+                    $log.log("test");
+                    setTimeout(function () {
+                        $log.log("abracadabra")
+                    }, 2);
 
-  .controller('ngappController', ['$scope', '$log',
-    function($scope, $log) {
-      $scope.getResults = function() {
-        $log.log("test");
-      };
-    }
-  ]);
+                };
+            }
+        ]);
 
 }());
+
+
