@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, g, render_template, request, redirect, url_for
 from .models.models import Card
 from . import get_db
 app = Blueprint('main', __name__)
@@ -7,6 +7,8 @@ db = get_db()
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
+    if g.user == None:
+        return redirect(url_for('auth.login'))
     if request.method == 'POST':
         task_content = request.form['content']
         new_task = Card(content=task_content)
