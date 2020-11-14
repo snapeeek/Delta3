@@ -11,4 +11,3 @@ myapp.controller("ngappController", function($scope, $timeout, cfpLoadingBar){
     }
 
 });
-
