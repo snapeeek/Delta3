@@ -7,8 +7,14 @@ myapp.controller('IndexController', function ($scope,$http) {
 })
 
 myapp.controller('LoginController', function ($scope) {
-    $scope.message = "hello from Login";
+    $scope.afterClick = function($location) {
+        $location.path('/register')
+    }
+})
 
+myapp.controller('RegisterController', function ($scope) {
+    $scope.message = 'hello';
+    console.log("bepis")
 })
 
 myapp.controller("ngappController", function($scope, $timeout, cfpLoadingBar){

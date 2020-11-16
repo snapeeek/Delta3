@@ -1,17 +1,31 @@
-var myapp = angular.module("app", ['ngRoute','angular-loading-bar']);
+var myapp = angular.module("app", ['ngRoute', 'angular-loading-bar']);
 
 myapp.config(function ($routeProvider, $locationProvider) {
-    $locationProvider.hashPrefix('');
+
 
     $routeProvider
         .when('/', {
-            templateUrl : 'static/partials/index.html',
-            controller : 'IndexController'
+            templateUrl: 'static/partials/index.html',
+            controller: 'IndexController'
         })
         .when('/login', {
-            templateUrl : 'static/partials/login.html',
-            controller : 'LoginController'
+            templateUrl: 'static/partials/login.html',
+            controller: 'LoginController'
         })
+        .when('/register', {
+            templateUrl: 'static/partials/register.html',
+            controller: 'RegisterController'
+        })
+        .otherwise({
+            redirect : '/'
+        })
+
+
+
+    // $locationProvider.html5Mode({
+    //     enabled: true,
+    //     requireBase: false});
+    $locationProvider.hashPrefix('');
 
 
 });
