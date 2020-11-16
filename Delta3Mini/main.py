@@ -1,8 +1,10 @@
-from flask import Blueprint, g, render_template, request, redirect, url_for, jsonify
+from flask import Blueprint, g, render_template, request, redirect, url_for, jsonify, send_from_directory
 from .models.models import Card
 from . import get_db
+
 app = Blueprint('main', __name__)
 db = get_db()
+
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -39,6 +41,15 @@ def delete(id):
         return redirect('/')
     except:
         return 'There was a problem deleting that task'
+
+@app.route('/getlist')
+def get_list():
+    tasks = Card.query.order_by(Card.date_created).all()
+    return jsonify()
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static/img/', 'favicon.ico')
 
 # @app.route('/update/<int:id>', methods=['GET', 'POST'])
 # def update(id):

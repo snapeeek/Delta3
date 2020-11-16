@@ -13,7 +13,7 @@ def create_app():
     from . import delta3authorization as auth_bp
     app.register_blueprint(auth_bp.bp)
     db.init_app(app)
-    migrate = Migrate(app,db)
+    migrate = Migrate(app, db)
     return app
 
 def get_db():

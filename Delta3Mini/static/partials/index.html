@@ -1,8 +1,5 @@
 <div class="content">
     <h1 style="text-align: center">Task Master</h1>
-    {% if tasks|length < 1 %}
-    <h4 style="text-align: center">There are no tasks. Create one below!</h4>
-    {% else %}
     <table class="table">
         <thead>
         <tr>
@@ -13,9 +10,11 @@
         </thead>
         <tbody>
 
+
         <tr ng-repeat="task in tasks">
             <td>{{ task['content'] }}</td>
             <td>{{ task['date_created'][0] }}</td>
+
             <td>
                 <a href="/delete/{{ task['id'] }}">Delete</a>
                 <br>
@@ -25,7 +24,6 @@
 
         </tbody>
     </table>
-    {% endif %}
 
     <div class="form">
         <form action="/" method="POST" ng-submit="getResults()">
