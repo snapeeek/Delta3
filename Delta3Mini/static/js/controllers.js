@@ -1,5 +1,9 @@
-myapp.controller('IndexController', function ($scope) {
+myapp.controller('IndexController', function ($scope,$http) {
     $scope.message = "hello";
+    console.log("test1213");
+    $http.get('/page/list-records').then(function (resp) {
+        console.log(resp.data.tasks);
+    })
 })
 
 myapp.controller('LoginController', function ($scope) {

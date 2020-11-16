@@ -1,4 +1,4 @@
-from flask import Blueprint, g, render_template, request, redirect, url_for
+from flask import Blueprint, g, render_template, request, redirect, url_for, jsonify
 from .models.models import Card
 from . import get_db
 app = Blueprint('main', __name__)
@@ -22,8 +22,12 @@ def index():
 
     else:
         tasks = Card.query.order_by(Card.date_created).all()
-    return render_template('base.html', tasks=tasks)
+    return render_template('base.html', tasks=tasks, bar='maciektomiszcz')
 
+@app.route('/page/list-records')
+def list_records():
+    tasks = Card.query.order_by(Card.date_created).all()
+    return jsonify(json_list=[i.serialize for i in tasks])
 # @app.route('/delete/<int:id>')
 # def delete(id):
 #     task_to_delete = Card.query.get_or_404(id)
