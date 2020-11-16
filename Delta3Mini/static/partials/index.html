@@ -14,7 +14,7 @@
         <tbody>
         {% for task in tasks %}
         <tr>
-            <td>{{ task.content }}</td>
+            <td>{{ $scope.myitems[0].id }}</td>
             <td>{{ task.date_created.date() }}</td>
             <td>
                 <a href="/delete/{{ task.id }}">Delete</a>
