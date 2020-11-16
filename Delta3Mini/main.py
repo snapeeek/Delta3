@@ -24,7 +24,23 @@ def index():
 
     else:
         tasks = Card.query.order_by(Card.date_created).all()
-    return render_template('base.html', tasks=tasks)
+    return render_template('base.html', tasks=tasks, bar='maciektomiszcz')
+
+@app.route('/page/list-records')
+def list_records():
+    tasks = Card.query.order_by(Card.date_created).all()
+    return jsonify(json_list=[i.serialize for i in tasks])
+
+@app.route('/delete/<int:id>')
+def delete(id):
+    task_to_delete = Card.query.get_or_404(id)
+
+    try:
+        db.session.delete(task_to_delete)
+        db.session.commit()
+        return redirect('/')
+    except:
+        return 'There was a problem deleting that task'
 
 @app.route('/getlist')
 def get_list():
@@ -35,18 +51,6 @@ def get_list():
 def favicon():
     return send_from_directory('static/img/', 'favicon.ico')
 
-
-# @app.route('/delete/<int:id>')
-# def delete(id):
-#     task_to_delete = Card.query.get_or_404(id)
-#
-#     try:
-#         db.session.delete(task_to_delete)
-#         db.session.commit()
-#         return redirect('/')
-#     except:
-#         return 'There was a problem deleting that task'
-#
 # @app.route('/update/<int:id>', methods=['GET', 'POST'])
 # def update(id):
 #     task = Card.query.get_or_404(id)
@@ -62,4 +66,3 @@ def favicon():
 #
 #     else:
 #         return render_template('update.html', task=task)
-#

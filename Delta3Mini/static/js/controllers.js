@@ -1,9 +1,9 @@
-myapp.controller('IndexController', function ($scope, $http) {
-    $scope.myitems = [];
-    $http.get('/getlist').then(function(resp) {
-        $scope.myitems = resp.data.tasks
+myapp.controller('IndexController', function ($scope,$http) {
+    $scope.message = "hello";
+    $http.get('/page/list-records').then(function (resp) {
+        $scope.tasks = resp.data.json_list;
     })
-    console.log($scope.myitems)
+
 })
 
 myapp.controller('LoginController', function ($scope) {
