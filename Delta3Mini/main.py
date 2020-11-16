@@ -28,17 +28,18 @@ def index():
 def list_records():
     tasks = Card.query.order_by(Card.date_created).all()
     return jsonify(json_list=[i.serialize for i in tasks])
-# @app.route('/delete/<int:id>')
-# def delete(id):
-#     task_to_delete = Card.query.get_or_404(id)
-#
-#     try:
-#         db.session.delete(task_to_delete)
-#         db.session.commit()
-#         return redirect('/')
-#     except:
-#         return 'There was a problem deleting that task'
-#
+
+@app.route('/delete/<int:id>')
+def delete(id):
+    task_to_delete = Card.query.get_or_404(id)
+
+    try:
+        db.session.delete(task_to_delete)
+        db.session.commit()
+        return redirect('/')
+    except:
+        return 'There was a problem deleting that task'
+
 # @app.route('/update/<int:id>', methods=['GET', 'POST'])
 # def update(id):
 #     task = Card.query.get_or_404(id)
@@ -54,4 +55,3 @@ def list_records():
 #
 #     else:
 #         return render_template('update.html', task=task)
-#

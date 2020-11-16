@@ -12,17 +12,17 @@
         </tr>
         </thead>
         <tbody>
-        {% for task in tasks %}
-        <tr>
-            <td>{{ task.content }}</td>
-            <td>{{ task.date_created.date() }}</td>
+
+        <tr ng-repeat="task in tasks">
+            <td>{{ task['content'] }}</td>
+            <td>{{ task['date_created'][0] }}</td>
             <td>
-                <a href="/delete/{{ task.id }}">Delete</a>
+                <a href="/delete/{{ task['id'] }}">Delete</a>
                 <br>
-                <a href="/update/{{ task.id }}">Update</a>
+                <a href="/update/{{ task['id'] }}">Update</a>
             </td>
         </tr>
-        {% endfor %}
+
         </tbody>
     </table>
     {% endif %}
