@@ -1,14 +1,16 @@
-from flask import Blueprint, g, render_template, request, redirect, url_for
+from flask import Blueprint, g, render_template, request, redirect, url_for, jsonify, send_from_directory
 from .models.models import Card
 from . import get_db
+
 app = Blueprint('main', __name__)
 db = get_db()
 
 
+
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    if g.user == None:
-        return redirect(url_for('auth.login'))
+    # if g.user == None:
+    #     return redirect(url_for('auth.login'))
     if request.method == 'POST':
         task_content = request.form['content']
         new_task = Card(content=task_content)
@@ -22,7 +24,12 @@ def index():
 
     else:
         tasks = Card.query.order_by(Card.date_created).all()
-        return render_template('index.html', tasks=tasks)
+    return render_template('base.html', tasks=tasks, bar='maciektomiszcz')
+
+@app.route('/page/list-records')
+def list_records():
+    tasks = Card.query.order_by(Card.date_created).all()
+    return jsonify(json_list=[i.serialize for i in tasks])
 
 @app.route('/delete/<int:id>')
 def delete(id):
@@ -35,18 +42,27 @@ def delete(id):
     except:
         return 'There was a problem deleting that task'
 
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
-def update(id):
-    task = Card.query.get_or_404(id)
+@app.route('/getlist')
+def get_list():
+    tasks = Card.query.order_by(Card.date_created).all()
+    return jsonify()
 
-    if request.method == 'POST':
-        task.content = request.form['content']
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static/img/', 'favicon.ico')
 
-        try:
-            db.session.commit()
-            return redirect('/')
-        except:
-            return 'There was an issue updating your task'
-
-    else:
-        return render_template('update.html', task=task)
+# @app.route('/update/<int:id>', methods=['GET', 'POST'])
+# def update(id):
+#     task = Card.query.get_or_404(id)
+#
+#     if request.method == 'POST':
+#         task.content = request.form['content']
+#
+#         try:
+#             db.session.commit()
+#             return redirect('/')
+#         except:
+#             return 'There was an issue updating your task'
+#
+#     else:
+#         return render_template('update.html', task=task)
