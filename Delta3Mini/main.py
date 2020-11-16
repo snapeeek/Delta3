@@ -1,5 +1,6 @@
-from flask import Blueprint, g, render_template, request, redirect, url_for, jsonify, send_from_directory, make_response
-from .models.models import Card
+from flask import Blueprint, g, render_template, request, redirect, url_for, jsonify, send_from_directory, make_response, session, flash, Blueprint, flash, g, redirect, render_template, request, session, url_for
+from .models.models import Card, User
+from werkzeug.security import check_password_hash, generate_password_hash
 from . import get_db
 
 app = Blueprint('main', __name__)
@@ -111,8 +112,14 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user.id
+            session['logged_in'] = True
             return redirect('/')
 
         flash(error)
 
+    return redirect('/')
+
+@app.route('/logout')
+def logout():
+    session.clear()
     return redirect('/')

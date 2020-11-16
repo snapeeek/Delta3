@@ -22,7 +22,3 @@ def load_logged_in_user():
         g.user = User.query.filter_by(id=user_id).first()
 
 
-@bp.route('/logout')
-def logout():
-    session.clear()
-    return redirect('/')

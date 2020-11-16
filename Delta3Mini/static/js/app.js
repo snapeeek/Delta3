@@ -16,15 +16,18 @@ myapp.config(function ($routeProvider, $locationProvider) {
             templateUrl: 'static/partials/register.html',
             controller: 'RegisterController'
         })
+        .when('/logout', {
+            controller: 'LogoutController'
+        })
         .otherwise({
             redirect : '/'
         })
 
 
 
-    // $locationProvider.html5Mode({
-    //     enabled: true,
-    //     requireBase: false});
+    $locationProvider.html5Mode({
+        enabled: true,
+        requireBase: false});
     $locationProvider.hashPrefix('');
 
 

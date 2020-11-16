@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,8 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular-route.js"></script>
     <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.css'
           type='text/css' media='all'/>
-    <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.js'></script>
+    <script type='text/javascript'
+            src='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script>
 
     <base href="/">
@@ -28,11 +29,12 @@
     <a href="#about">About</a>
     <div class="logopt">
 
-        Hello {{g.user['username']}}<a ng-href="{{ url_for('auth.logout') }}">Log Out</a>
+        <div ng-if="!session['logged_in']"> Hello {{g.user['username']}}<a ng-href="/logout">Log Out</a></div>
 
-        <a ng-href="/register">Register</a>
-        <a ng-href="/login">Log In</a>
-
+        <div ng-if="!session['logged_in']">
+            <a href="/register">Register</a>
+            <a href="/login">Log In</a>
+        </div>
     </div>
 
 </div>

@@ -14,7 +14,12 @@ myapp.controller('LoginController', function ($scope) {
 
 myapp.controller('RegisterController', function ($scope) {
     $scope.message = 'hello';
-    console.log("bepis")
+})
+
+myapp.controller('LogoutController', function ($scope, $route) {
+    $route.reload()
+    $route.current()
+
 })
 
 myapp.controller("ngappController", function($scope, $timeout, cfpLoadingBar){
