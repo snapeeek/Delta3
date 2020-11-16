@@ -10,7 +10,6 @@
           media="screen">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular-route.js"></script>
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
     <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.css'
           type='text/css' media='all'/>
     <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.js'></script>
@@ -39,6 +38,7 @@
 
 
 <ng-view></ng-view>
-<script src='../static/main.js'></script>
+<script src='../static/js/app.js'></script>
+<script src="../static/js/controllers.js"></script>
 </body>
 </html>
