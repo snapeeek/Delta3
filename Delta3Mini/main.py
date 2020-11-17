@@ -1,4 +1,5 @@
-from flask import Blueprint, g, render_template, request, redirect, url_for, jsonify, send_from_directory, make_response, session, flash, Blueprint, flash, g, redirect, render_template, request, session, url_for
+from flask import Blueprint, g, render_template, request, redirect, url_for, jsonify, send_from_directory, \
+    make_response, session, flash, Blueprint, flash, g, redirect, render_template, request, session, url_for
 from .models.models import Card, User
 from werkzeug.security import check_password_hash, generate_password_hash
 from . import get_db
@@ -7,8 +8,7 @@ app = Blueprint('main', __name__)
 db = get_db()
 
 
-
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/', methods=["POST", "GET"])
 def index():
     # if g.user == None:
     #     return redirect(url_for('auth.login'))
@@ -25,10 +25,12 @@ def index():
 
     return render_template('base.html')
 
-@app.route('/page/list-records')
+
+@app.route('/api/list-records')
 def list_records():
     tasks = Card.query.order_by(Card.date_created).all()
     return jsonify(json_list=[i.serialize for i in tasks])
+
 
 @app.route('/delete/<int:id>')
 def delete(id):
@@ -41,14 +43,17 @@ def delete(id):
     except:
         return 'There was a problem deleting that task'
 
+
 @app.route('/getlist')
 def get_list():
     tasks = Card.query.order_by(Card.date_created).all()
     return jsonify()
 
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory('static/img/', 'favicon.ico')
+
 
 # @app.route('/update/<int:id>', methods=['GET', 'POST'])
 # def update(id):
@@ -66,60 +71,47 @@ def favicon():
 #     else:
 #         return render_template('update.html', task=task)
 
-@app.route('/register/', methods=('GET', 'POST'))
+@app.route('/api/register', methods=["POST"])
 def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
+    json_data = request.json
 
-        print(username, email, password)
-        db = get_db()
-        error = None
+    user = User(username=json_data['username'], email=json_data['email'],
+            password=generate_password_hash(json_data['password']))
 
-        if not username:
-            error = 'Username is required.'
-        elif not password:
-            error = 'Password is required.'
-        elif User.query.filter_by(username=username).first() is not None:
-            error = 'User {} is already registered.'.format(username)
+    try:
+        db.session.add(user)
+        db.session.commit()
+        status = 'success'
+    except:
+        status = 'this user is already registred'
+    db.session.close()
 
-        if error is None:
-            db.session.add(User(username=username, email=email, password=generate_password_hash(password=password)))
-            db.session.commit()
+    return jsonify({'result': status})
 
-            return redirect('/')
 
-        flash(error)
-
-    return render_template("base.html")
-
-@app.route('/login', methods=('GET', 'POST'))
+@app.route('/api/login', methods=["GET", "POST"])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        db = get_db()
+    json_data = request.json
+    print(json_data['username'])
+    user = User.query.filter_by(username=json_data['username']).first()
+    if user and check_password_hash(user.password, json_data['password']):
+        session['logged_in'] = True
+        status = True
+    else:
+        status = False
 
-        error = None
-        user = User.query.filter_by(username=username).first()
+    return jsonify({'result' : status})
 
-        if user is None:
-            error = 'Incorrect username.'
-        elif not check_password_hash(user.password, password):
-            error = 'Incorrect password.'
 
-        if error is None:
-            session.clear()
-            session['user_id'] = user.id
-            session['logged_in'] = True
-            return redirect('/')
-
-        flash(error)
-
-    return redirect('/')
-
-@app.route('/logout')
+@app.route('/api/logout')
 def logout():
-    session.clear()
-    return redirect('/')
+    session.pop('logged_in', None)
+    return jsonify({'result': 'success'})
+
+@app.route('/api/status')
+def status():
+    if session.get('logged_in'):
+        if session['logged_in']:
+            return jsonify({'status': True})
+    else:
+        return jsonify({'status' : False})

@@ -29,9 +29,9 @@
     <a href="#about">About</a>
     <div class="logopt">
 
-        <div ng-if="!session['logged_in']"> Hello {{g.user['username']}}<a ng-href="/logout">Log Out</a></div>
+        <div ng-if="AuthService.isLoggedIn()"> Hello {{g.user['username']}}<a ng-click="logout()">Log Out</a></div>
 
-        <div ng-if="!session['logged_in']">
+        <div ng-if="!AuthService.isLoggedIn()">
             <a href="/register">Register</a>
             <a href="/login">Log In</a>
         </div>
@@ -43,5 +43,6 @@
 <ng-view></ng-view>
 <script src='../static/js/app.js'></script>
 <script src="../static/js/controllers.js"></script>
+<script src="../static/js/services.js"></script>
 </body>
 </html>
