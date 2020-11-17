@@ -4,6 +4,7 @@
 <!--    <input type="password" name="password" id="password" required>-->
 <!--    <input type="submit" value="Log In" ng-click="afterClick()">-->
 <div class="col-md-4">
+    <div style="text-align: center" ng-show="error" class="alert alert-danger">{{errorMessage}}</div>
     <form class="form" ng-submit="login()">
         <div class="form-group">
             <label>Username:</label>

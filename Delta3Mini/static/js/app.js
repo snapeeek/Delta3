@@ -37,6 +37,7 @@ myapp.run(function ($rootScope, $location, $route, AuthService) {
             .then(function () {
                 if (next.access.restricted && !AuthService.isLoggedIn())
                 {
+                    console.log('bepis')
                     $location.path('/login')
                     $route.reload()
                 }

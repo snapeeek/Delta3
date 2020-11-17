@@ -6,24 +6,24 @@ myapp.controller('IndexController', function ($scope, $http) {
 
 })
 
-myapp.controller('LoginController', function ($scope, $location, AuthService) {
+myapp.controller('LoginController', function ($scope, $location, $route, AuthService) {
     $scope.login = function () {
         $scope.error = false
         $scope.disabled = true
 
         AuthService.login($scope.loginForm.username, $scope.loginForm.password)
             .then(function () {
-                $location.path('/')
+                $location.url('/')
+                console.log($location.url())
                 $scope.disabled = false
                 $scope.loginForm = {}
-
-            })
-            .catch(function () {
+            }, function () {
                 $scope.error = true
                 $scope.errorMessage = "Invalid username and/or password"
                 $scope.disabled = false
                 $scope.loginForm = {}
             })
+
     }
 
 })

@@ -27,23 +27,29 @@ angular.module('app').factory('AuthService',
             var deffered = $q.defer();
 
             $http.post('/api/login', {username: username, password: password})
-                .then(function (data, status) {
-                    if (status === 200 && data.result)
+                .then(function (response) {
+                    console.log("bepis1")
+                    console.log(response.data)
+                    if (response.data)
                     {
                         user = true;
+                        console.log("bepis1.1")
                         deffered.resolve();
                     }
                     else
                     {
+                        console.log("bepis1.2")
                         user = false
                         deffered.reject()
                     }
-                })
-                .catch(function (data) {
+                }, function (response) {
+                    console.log("Bepis2")
+                    //console.log(response.data)
                     user = false
                     deffered.reject()
                 })
 
+            //console.log(deffered.promise)
             return deffered.promise
         }
 
