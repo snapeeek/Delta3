@@ -25,6 +25,11 @@ cards_and_labels = db.Table('CardsAndLabels',
                             db.Column('label_id', db.Integer, db.ForeignKey('label.id'), primary_key=True)
                             )
 
+boards_and_labels = db.Table('Boardsandlabels',
+                            db.Column('board_id', db.Integer, db.ForeignKey('board.id'), primary_key=True),
+                            db.Column('label_id', db.Integer, db.ForeignKey('label.id'), primary_key=True)
+                            )
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -38,14 +43,29 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
 
 class Board(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), default="Board")
     background = db.Column(db.String(20))
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
-    labels = db.relationship('Label', backref='Board', lazy=True)
+    labels = db.relationship('Label', secondary=boards_and_labels, lazy='subquery',
+                             backref=db.backref('boards', lazy=True))
     lists = db.relationship('List', backref='board', lazy=True)
+
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+
+class Label(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    color = db.Column(db.String(30))
+    text = db.Column(db.String(50))
+
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+
 
 
 class List(db.Model):
@@ -54,6 +74,9 @@ class List(db.Model):
     name = db.Column(db.String(50))
     cards = db.relationship('Card', backref='card', lazy=True)
 
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -61,9 +84,12 @@ class Card(db.Model):
     content = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     list_id = db.Column(db.Integer, db.ForeignKey('list.id'), nullable=False)
-    lists_of_elements = db.relationship('ListOfElements', backref='Card', lazy=True)
-    labels = db.relationship('Label', secondary=boards_and_users, lazy='subquery',
+    lists_of_elements = db.relationship('Listofelements', backref='card', lazy=True)
+    labels = db.relationship('Label', secondary=cards_and_labels, lazy='subquery',
                              backref=db.backref('cards', lazy=True))
+
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
 
     def __repr__(self):
         return '<Task %r>' % self.id
@@ -78,17 +104,14 @@ class Card(db.Model):
         }
 
 
-class Label(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    color = db.Column(db.String(30))
-    text = db.Column(db.String(50))
-
-
 class Listofelements(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     card_id = db.Column(db.Integer, db.ForeignKey('card.id'), nullable=False)
     name = db.Column(db.String(50))
     done = db.Column(db.Integer, default=0)
+
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
 
 
 class Element(db.Model):
@@ -97,9 +120,15 @@ class Element(db.Model):
     done = db.Column(db.Boolean(False))
     list_of_elemets_id = db.Column(db.Integer, db.ForeignKey('listofelements.id'), nullable=False)
 
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+
 
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     boards = db.relationship('Board', backref='team', lazy=True)
     Name = db.Column(db.String(50))
+
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
 
