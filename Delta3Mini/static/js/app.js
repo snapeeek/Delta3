@@ -32,12 +32,12 @@ myapp.config(function ($routeProvider, $locationProvider) {
 });
 
 myapp.run(function ($rootScope, $location, $route, AuthService) {
-    $rootScope.$on('$routeChangeStart', function (event, next, current) {
+    $rootScope.$on('$routeChangeStart',
+        function (event, next, current) {
         AuthService.getUserStatus()
             .then(function () {
                 if (next.access.restricted && !AuthService.isLoggedIn())
                 {
-                    console.log('bepis')
                     $location.path('/login')
                     $route.reload()
                 }

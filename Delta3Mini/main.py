@@ -1,8 +1,9 @@
-from flask import Blueprint, g, render_template, request, redirect, url_for, jsonify, send_from_directory, \
-    make_response, session, flash, Blueprint, flash, g, redirect, render_template, request, session, url_for
-from .models.models import Card, User
+from flask import jsonify, send_from_directory, \
+    make_response, Blueprint, redirect, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
+
 from . import get_db
+from .models.models import Card, User
 
 app = Blueprint('main', __name__)
 db = get_db()
@@ -23,7 +24,8 @@ def index():
         except:
             return 'There was an issue adding your task'
 
-    return render_template('base.html')
+    # return render_template('base.html')
+    return make_response(open('Delta3Mini/templates/base.html').read())
 
 
 @app.route('/api/list-records')
@@ -76,7 +78,7 @@ def register():
     json_data = request.json
 
     user = User(username=json_data['username'], email=json_data['email'],
-            password=generate_password_hash(json_data['password']))
+                password=generate_password_hash(json_data['password']))
 
     try:
         db.session.add(user)
@@ -92,18 +94,18 @@ def register():
 @app.route('/api/login', methods=["GET", "POST"])
 def login():
     json_data = request.json
-    print(json_data['username'])
-    print(json_data['password'])
+    # print(json_data['username'])
+    # print(json_data['password'])
 
     user = User.query.filter_by(username=json_data['username']).first()
     if user and check_password_hash(user.password, json_data['password']):
         session['logged_in'] = True
+        session['username'] = json_data['username']
         status = True
     else:
         status = False
 
-
-    ret = jsonify({'result' : status})
+    ret = jsonify({'result': status})
     return ret
 
 
@@ -112,10 +114,11 @@ def logout():
     session.pop('logged_in', None)
     return jsonify({'result': 'success'})
 
+
 @app.route('/api/status')
 def status():
     if session.get('logged_in'):
         if session['logged_in']:
             return jsonify({'status': True})
     else:
-        return jsonify({'status' : False})
+        return jsonify({'status': False})

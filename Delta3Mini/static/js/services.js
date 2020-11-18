@@ -28,28 +28,21 @@ angular.module('app').factory('AuthService',
 
             $http.post('/api/login', {username: username, password: password})
                 .then(function (response) {
-                    console.log("bepis1")
-                    console.log(response.data)
                     if (response.data)
                     {
                         user = true;
-                        console.log("bepis1.1")
                         deffered.resolve();
                     }
                     else
                     {
-                        console.log("bepis1.2")
                         user = false
                         deffered.reject()
                     }
                 }, function (response) {
-                    console.log("Bepis2")
-                    //console.log(response.data)
                     user = false
                     deffered.reject()
                 })
 
-            //console.log(deffered.promise)
             return deffered.promise
         }
 
@@ -57,11 +50,10 @@ angular.module('app').factory('AuthService',
             var deffered = $q.defer()
 
             $http.get('/api/logout')
-                .then(function (data) {
+                .then(function (response) {
                     user = false
                     deffered.resolve()
-                })
-                .catch(function(data) {
+                }, function(response) {
                     user = false
                     deffered.reject()
                 })
@@ -72,8 +64,8 @@ angular.module('app').factory('AuthService',
             var deffered = $q.defer()
 
             $http.post('/api/register', {email:email, username:username, password: password})
-                .then(function (data, status) {
-                    if (status === 200 && data.result)
+                .then(function (response) {
+                    if (response.data)
                     {
                         deffered.resolve()
                     }
@@ -82,7 +74,7 @@ angular.module('app').factory('AuthService',
                         deffered.reject()
                     }
                 })
-                .catch(function (data) {
+                .catch(function (response) {
                     deffered.reject()
 
                 })
@@ -91,13 +83,13 @@ angular.module('app').factory('AuthService',
 
         function getUserStatus() {
             return $http.get('/api/status')
-                .then(function (data) {
-                  if (data.status)
+                .then(function (response) {
+                  if (response.data.status) {
                       user = true
+                  }
                   else
                       user = false
-                })
-                .catch(function (data) {
+                }, function (response) {
                     user = false
                 })
         }

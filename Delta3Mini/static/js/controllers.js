@@ -4,6 +4,8 @@ myapp.controller('IndexController', function ($scope, $http) {
         $scope.tasks = resp.data.json_list;
     })
 
+    //AuthService.
+
 })
 
 myapp.controller('LoginController', function ($scope, $location, $route, AuthService) {
@@ -14,7 +16,6 @@ myapp.controller('LoginController', function ($scope, $location, $route, AuthSer
         AuthService.login($scope.loginForm.username, $scope.loginForm.password)
             .then(function () {
                 $location.url('/')
-                console.log($location.url())
                 $scope.disabled = false
                 $scope.loginForm = {}
             }, function () {
@@ -52,6 +53,7 @@ myapp.controller('RegisterController', function ($scope, $location, AuthService)
 
 myapp.controller('LogoutController', function ($scope, $location, AuthService) {
     $scope.logout = function () {
+        console.log('logout')
         AuthService.logout()
             .then(function () {
                 location.path('/login')
@@ -60,14 +62,18 @@ myapp.controller('LogoutController', function ($scope, $location, AuthService) {
 
 })
 
-myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar) {
-    $timeout(callAtTimeout, 3000);
-    console.log("Makao");
+myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, AuthService) {
+    $timeout(callAtTimeout, 50);
+    //console.log("Makao");
     cfpLoadingBar.start();
 
     function callAtTimeout() {
-        console.log("Timeout occurred");
+        //console.log("Timeout occurred");
         cfpLoadingBar.complete();
+        $scope.help = AuthService.isLoggedIn()
     }
+
+
+
 
 });
