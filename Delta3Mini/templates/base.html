@@ -28,10 +28,11 @@
     <a href="#contact">Contact</a>
     <a href="#about">About</a>
     <div class="logopt">
-        <div ng-if="help" ng-controller="LogoutController"> Hello {{g.user['username']}}
+        <div id="loginmenublock" ng-controller="LogoutController" hidden="true">
+            <divek id="hello">Hello {{g.user['username']}}</divek>
             <a ng-click="logout()" class="btn btn-primary">Logout</a>
         </div>
-        <div ng-if="!help">
+        <div id="registermenublock" hidden="true">
             <a href="/register">Register</a>
             <a href="/login">Log In</a>
         </div>

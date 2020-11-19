@@ -3,6 +3,9 @@ myapp.controller('IndexController', function ($scope, $http) {
     $http.get('/api/list-records').then(function (resp) {
         $scope.tasks = resp.data.json_list;
     })
+    document.getElementById("registermenublock").hidden = true
+    document.getElementById("loginmenublock").hidden = false
+    document.getElementById("hello").innerText = "Hello <insert user name>"
 
     //AuthService.
 
@@ -12,7 +15,8 @@ myapp.controller('LoginController', function ($scope, $location, $route, AuthSer
     $scope.login = function () {
         $scope.error = false
         $scope.disabled = true
-
+        document.getElementById("loginmenublock").hidden = true
+        document.getElementById("registermenublock").hidden = true
         AuthService.login($scope.loginForm.username, $scope.loginForm.password)
             .then(function () {
                 $location.url('/')
@@ -33,7 +37,8 @@ myapp.controller('RegisterController', function ($scope, $location, AuthService)
     $scope.register = function () {
         $scope.error = false
         $scope.disabled = true
-
+        document.getElementById("loginmenublock").hidden = true
+        document.getElementById("registermenublock").hidden = true
         AuthService.register($scope.registerForm.email, $scope.registerForm.username, $scope.registerForm.password)
             .then(function () {
                 $location.path('/login')
@@ -53,6 +58,8 @@ myapp.controller('RegisterController', function ($scope, $location, AuthService)
 
 myapp.controller('LogoutController', function ($scope, $location, $route, AuthService) {
     $scope.logout = function () {
+        document.getElementById("loginmenublock").hidden = true
+        document.getElementById("registermenublock").hidden = true
         AuthService.logout()
             .then(function () {
                 $location.path('/login')
