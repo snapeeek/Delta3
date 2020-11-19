@@ -19,7 +19,10 @@
             <td>{{ task['date_created'][0] }} {{task['date_created'][1]}}</td>
 
             <td>
-                <a href="/delete/{{ task['id'] }}">Delete</a>
+                <div ng-controller="DeleteController">
+                    <a class="btn btn-danger" ng-click="delete(task['id'])">Delete</a>
+                </div>
+
                 <br>
                 <a href="/update/{{ task['id'] }}">Update</a>
             </td>

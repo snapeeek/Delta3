@@ -28,7 +28,7 @@
     <a href="#contact">Contact</a>
     <a href="#about">About</a>
     <div class="logopt">
-        <div ng-if="help"> Hello {{g.user['username']}}
+        <div ng-if="help" ng-controller="LogoutController"> Hello {{g.user['username']}}
             <a ng-click="logout()" class="btn btn-primary">Logout</a>
         </div>
         <div ng-if="!help">

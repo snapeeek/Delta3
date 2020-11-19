@@ -95,3 +95,28 @@ angular.module('app').factory('AuthService',
         }
 
     }])
+
+angular.module('app').factory('TasksService',
+    ['$q', '$timeout', '$http',
+        function ($q, $timeout, $http) {
+            return ({
+                deleteTask: deleteTask
+            })
+
+            function deleteTask(id) {
+                var deffered = $q.defer()
+
+                $http.post('/api/delete', {id: id})
+                    .then(function (response) {
+                        if (response.data)
+                            deffered.resolve()
+                        else
+                            deffered.reject()
+
+                    }, function (response) {
+                        deffered.reject()
+                    })
+                return deffered.promise
+
+            }
+        }])

@@ -34,9 +34,11 @@ def list_records():
     return jsonify(json_list=[i.serialize for i in tasks])
 
 
-@app.route('/delete/<int:id>')
-def delete(id):
-    task_to_delete = Card.query.get_or_404(id)
+@app.route('/api/delete', methods=["POST"])
+def delete():
+    # task_to_delete = Card.query.get_or_404(id)
+    json_data = request.json
+    task_to_delete = Card.query.get_or_404(json_data['id'])
 
     try:
         db.session.delete(task_to_delete)

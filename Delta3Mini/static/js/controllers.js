@@ -51,15 +51,29 @@ myapp.controller('RegisterController', function ($scope, $location, AuthService)
 
 })
 
-myapp.controller('LogoutController', function ($scope, $location, AuthService) {
+myapp.controller('LogoutController', function ($scope, $location, $route, AuthService) {
     $scope.logout = function () {
-        console.log('logout')
         AuthService.logout()
             .then(function () {
-                location.path('/login')
+                $location.path('/login')
+                //$route.reload()
             })
     }
 
+})
+
+myapp.controller("DeleteController", function ($scope , $location, $route, TasksService) {
+    $scope.delete = function (id) {
+        TasksService.deleteTask(id)
+            .then(function () {
+                console.log(id)
+                $location.path('/')
+                $route.reload()
+            }, function () {
+                console.log(id)
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
 })
 
 myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, AuthService) {
@@ -72,6 +86,7 @@ myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, A
         cfpLoadingBar.complete();
         $scope.help = AuthService.isLoggedIn()
     }
+
 
 
 

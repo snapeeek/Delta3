@@ -21,6 +21,10 @@ myapp.config(function ($routeProvider, $locationProvider) {
             controller: 'LogoutController',
             access : {restricted : true}
         })
+        .when('/delete/:id', {
+            controller: 'DeleteController',
+            access : {restricted: true}
+        })
         .otherwise({
             redirect : '/'
         })
