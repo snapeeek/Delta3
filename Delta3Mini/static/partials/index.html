@@ -1,6 +1,9 @@
 <div class="content">
     <h1 style="text-align: center">Task Master</h1>
-    <table class="table">
+
+    <h2 style="text-align: center" ng-if="tasks.length == 0">There are no tasks! Please add one!</h2>
+
+    <table class="table" ng-if="tasks.length > 0">
         <thead>
         <tr>
             <th>Task</th>
@@ -13,10 +16,13 @@
 
         <tr ng-repeat="task in tasks">
             <td>{{ task['content'] }}</td>
-            <td>{{ task['date_created'][0] }}</td>
+            <td>{{ task['date_created'][0] }} {{task['date_created'][1]}}</td>
 
             <td>
-                <a href="/delete/{{ task['id'] }}">Delete</a>
+                <div ng-controller="DeleteController">
+                    <a ng-click="delete(task['id'])">Delete</a>
+                </div>
+
                 <br>
                 <a href="/update/{{ task['id'] }}">Update</a>
             </td>
@@ -26,7 +32,7 @@
     </table>
 
     <div class="form">
-        <form action="/" method="POST" ng-submit="getResults()">
+        <form action="/" method="POST">
             <input type="text" name="content" id="content">
             <input type="submit" class="btn btn-success" value="Add Task">
         </form>
