@@ -3,9 +3,14 @@ myapp.controller('IndexController', function ($scope, $http) {
     $http.get('/api/list-records').then(function (resp) {
         $scope.tasks = resp.data.json_list;
     })
+
+    $http.get('/api/status').then(function (response) {
+        document.getElementById("hello").innerText = "Hello " + response.data.username
+    })
+    
     document.getElementById("registermenublock").hidden = true
     document.getElementById("loginmenublock").hidden = false
-    document.getElementById("hello").innerText = "Hello from the otheeeeeeeer side"
+
 
     //AuthService.
 

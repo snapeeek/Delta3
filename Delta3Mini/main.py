@@ -61,7 +61,7 @@ def favicon():
 
 
 @app.route('/generate_board', methods=['GET'])
-def index():
+def generate_board():
     try:
         db.session.add()
         db.session.commit()
@@ -130,6 +130,7 @@ def logout():
 def status():
     if session.get('logged_in'):
         if session['logged_in']:
-            return jsonify({'status': True})
+            return jsonify({'status': True,
+                            'username': session.get('username')})
     else:
         return jsonify({'status': False})
