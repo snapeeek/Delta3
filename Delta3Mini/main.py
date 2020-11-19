@@ -3,11 +3,10 @@ from flask import jsonify, send_from_directory, \
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from . import get_db
-from .models.models import Card, User
+from .models.models import Card, User, Board, boards_and_users
 
 app = Blueprint('main', __name__)
 db = get_db()
-
 
 
 @app.route('/', methods=["POST", "GET"])
@@ -29,10 +28,14 @@ def index():
     return make_response(open('Delta3Mini/templates/base.html').read())
 
 
-@app.route('/api/list-records')
-def list_records():
-    tasks = Card.query.order_by(Card.date_created).all()
-    return jsonify(json_list=[i.serialize for i in tasks])
+@app.route('/api/list-boards')
+def list_boards():
+    # tasks = Card.query.order_by(Card.date_created).all()
+    if (session.get('logged_in')):
+        user = User.query.filter_by(username=session.get('username')).first()
+        # boards_and_userstemp = boards_and_users.query.filter_by(user_id=user.id).first()
+        # boards = Board.query.filter_by(id=boards_and_userstemp.board_id)
+        return jsonify(json_list=[i.serialize for i in user.boards])
 
 
 @app.route('/api/delete', methods=["POST"])

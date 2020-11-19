@@ -1,15 +1,21 @@
 myapp.controller('IndexController', function ($scope, $http) {
-    $scope.message = "hello";
-    $http.get('/api/list-records').then(function (resp) {
-        $scope.tasks = resp.data.json_list;
-    })
-
     $http.get('/api/status').then(function (response) {
         document.getElementById("hello").innerText = "Hello " + response.data.username
     })
-    
+
     document.getElementById("registermenublock").hidden = true
     document.getElementById("loginmenublock").hidden = false
+
+    //wszystko powyzej to wyswietlanie w menu (don't ask, you will be happier)
+
+    $http.get('/api/list-boards').then(function (resp) {
+        $scope.boards = resp.data.json_list;
+        console.log(resp.data);
+    })
+
+
+    
+
 
 
     //AuthService.
