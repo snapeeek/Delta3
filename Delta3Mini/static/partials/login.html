@@ -1,7 +1,22 @@
-<form method="post">
-    <label for="username">Username</label>
-    <input name="username" id="username" required>
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password" required>
-    <input type="submit" value="Log In">
-</form>
+<!--    <label for="username">Username</label>-->
+<!--    <input name="username" id="username" required>-->
+<!--    <label for="password">Password</label>-->
+<!--    <input type="password" name="password" id="password" required>-->
+<!--    <input type="submit" value="Log In" ng-click="afterClick()">-->
+<div class="col-md-4">
+    <div style="text-align: center" ng-show="error" class="alert alert-danger">{{errorMessage}}</div>
+    <form class="form" ng-submit="login()">
+        <div class="form-group">
+            <label>Username:</label>
+            <input type="text" class="form-control" name="username" ng-model="loginForm.username" required>
+        </div>
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" class="form-control" name="password" ng-model="loginForm.password" required>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-success" ng-disabled="disabled">Login</button>
+        </div>
+    </form>
+</div>
+
