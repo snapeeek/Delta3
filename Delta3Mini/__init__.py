@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
+
 
 def create_app():
     app = Flask(__name__)
@@ -13,8 +15,9 @@ def create_app():
     from . import delta3authorization as auth_bp
     app.register_blueprint(auth_bp.bp)
     db.init_app(app)
-    migrate = Migrate(app, db)
+    Migrate(app, db)
     return app
+
 
 def get_db():
     return db

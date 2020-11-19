@@ -9,6 +9,7 @@ app = Blueprint('main', __name__)
 db = get_db()
 
 
+
 @app.route('/', methods=["POST", "GET"])
 def index():
     # if g.user == None:
@@ -57,6 +58,16 @@ def get_list():
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory('static/img/', 'favicon.ico')
+
+
+@app.route('/generate_board', methods=['GET'])
+def index():
+    try:
+        db.session.add()
+        db.session.commit()
+        return redirect('/')
+    except:
+        return 'There was an issue adding your task'
 
 
 # @app.route('/update/<int:id>', methods=['GET', 'POST'])
