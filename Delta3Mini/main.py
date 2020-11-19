@@ -96,8 +96,6 @@ def register():
 @app.route('/api/login', methods=["GET", "POST"])
 def login():
     json_data = request.json
-    # print(json_data['username'])
-    # print(json_data['password'])
 
     user = User.query.filter_by(username=json_data['username']).first()
     if user and check_password_hash(user.password, json_data['password']):

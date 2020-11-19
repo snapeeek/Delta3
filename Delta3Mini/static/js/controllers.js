@@ -5,7 +5,7 @@ myapp.controller('IndexController', function ($scope, $http) {
     })
     document.getElementById("registermenublock").hidden = true
     document.getElementById("loginmenublock").hidden = false
-    document.getElementById("hello").innerText = "Hello <insert user name>"
+    document.getElementById("hello").innerText = "Hello from the otheeeeeeeer side"
 
     //AuthService.
 
@@ -42,7 +42,6 @@ myapp.controller('RegisterController', function ($scope, $location, AuthService)
         AuthService.register($scope.registerForm.email, $scope.registerForm.username, $scope.registerForm.password)
             .then(function () {
                 $location.path('/login')
-                console.log($location.path())
                 $scope.disabled = false
                 $scope.registerForm = {}
             })
@@ -73,11 +72,9 @@ myapp.controller("DeleteController", function ($scope , $location, $route, Tasks
     $scope.delete = function (id) {
         TasksService.deleteTask(id)
             .then(function () {
-                console.log(id)
                 $location.path('/')
                 $route.reload()
             }, function () {
-                console.log(id)
                 $scope.errorMessage = 'Something went wrong'
             })
     }
@@ -85,11 +82,9 @@ myapp.controller("DeleteController", function ($scope , $location, $route, Tasks
 
 myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, AuthService) {
     $timeout(callAtTimeout, 50);
-    //console.log("Makao");
     cfpLoadingBar.start();
 
     function callAtTimeout() {
-        //console.log("Timeout occurred");
         cfpLoadingBar.complete();
         $scope.help = AuthService.isLoggedIn()
     }
