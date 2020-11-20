@@ -85,7 +85,13 @@ class List(db.Model):
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
-
+    @property
+    def serialize(self):
+        """Return object data in easily serializable format"""
+        return {
+            'id': self.id,
+            'name': self.name,
+        }
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -14,7 +14,7 @@
 
 
         <tr ng-repeat="board in boards">
-            <td>{{ board['name'] }}</td>
+            <td><a href="/board" class="btn btn-primary">{{ board['name'] }}</a></td>
 
             <td>
                 <div ng-controller="DeleteController">

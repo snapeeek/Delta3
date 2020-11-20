@@ -99,9 +99,13 @@ myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, A
         cfpLoadingBar.complete();
         $scope.help = AuthService.isLoggedIn()
     }
-
-
-
-
-
 });
+
+myapp.controller("SingleBoardController", function ($scope , $http) {
+    var config  ={ params:{board_id: 1}}
+    //todo repalce board id with some kind of variable
+    $http.get('/api/list-lists', config).then(function (resp) {
+        $scope.lists = resp.data.json_list;
+        console.log(resp.data);
+    })
+})

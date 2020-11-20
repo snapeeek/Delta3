@@ -21,8 +21,6 @@ def index():
             return redirect('/')
         except:
             return 'There was an issue adding your task'
-
-    # return render_template('base.html')
     return make_response(open('Delta3Mini/templates/base.html').read())
 
 
@@ -34,12 +32,17 @@ def reredirect():
 
 @app.route('/api/list-boards')
 def list_boards():
-    # tasks = Card.query.order_by(Card.date_created).all()
-    # param = request.form['p']
     if session.get('logged_in'):
         user = User.query.filter_by(username=session.get('username')).first()
         return jsonify(json_list=[i.serialize for i in user.boards])
 
+
+@app.route('/api/list-lists', methods=["GET"])
+def list_lists():
+    if session.get('logged_in'):
+        json_data = request.args.get('board_id')
+        board_to_gather_lists = Board.query.filter_by(id=json_data).first()
+        return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
 
 @app.route('/api/delete', methods=["POST"])
 def delete():
@@ -51,12 +54,6 @@ def delete():
         db.session.commit()
     except:
         return 'There was a problem deleting that task'
-
-
-@app.route('/getlist')
-def get_list():
-    tasks = Card.query.order_by(Card.date_created).all()
-    return jsonify()
 
 
 @app.route('/favicon.ico')
@@ -72,23 +69,6 @@ def generate_board():
         return redirect('/')
     except:
         return 'There was an issue adding your task'
-
-
-# @app.route('/update/<int:id>', methods=['GET', 'POST'])
-# def update(id):
-#     task = Card.query.get_or_404(id)
-#
-#     if request.method == 'POST':
-#         task.content = request.form['content']
-#
-#         try:
-#             db.session.commit()
-#             return redirect('/')
-#         except:
-#             return 'There was an issue updating your task'
-#
-#     else:
-#         return render_template('update.html', task=task)
 
 @app.route('/api/register', methods=["POST"])
 def register():
