@@ -6,7 +6,7 @@
     <table class="table" ng-if="boards.length > 0">
         <thead>
         <tr>
-            <th>Task</th>
+            <th>Board</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -18,21 +18,21 @@
 
             <td>
                 <div ng-controller="DeleteController">
-                    <a ng-click="delete(task['id'])">Delete</a>
+                    <a ng-click="delete(board['id'])">Delete</a>
                 </div>
 
                 <br>
-                <a href="/update/{{ task['id'] }}">Update</a>
+<!--                <a href="/update/{{ board['id'] }}">Update</a>-->
             </td>
         </tr>
 
         </tbody>
     </table>
 
-    <div class="form">
-        <form action="/" method="POST">
-            <input type="text" name="content" id="content">
-            <input type="submit" class="btn btn-success" value="Add Task">
-        </form>
-    </div>
+<!--    <div class="form">-->
+<!--        <form action="/" method="POST">-->
+<!--            <input type="text" name="content" id="content">-->
+<!--            <input type="submit" class="btn btn-success" value="Add Task">-->
+<!--        </form>-->
+<!--    </div>-->
 </div>

@@ -79,9 +79,9 @@ myapp.controller('LogoutController', function ($scope, $location, $route, AuthSe
 
 })
 
-myapp.controller("DeleteController", function ($scope , $location, $route, TasksService) {
+myapp.controller("DeleteController", function ($scope , $location, $route, BoardsService) {
     $scope.delete = function (id) {
-        TasksService.deleteTask(id)
+        BoardsService.deleteBoard(id)
             .then(function () {
                 $location.path('/')
                 $route.reload()

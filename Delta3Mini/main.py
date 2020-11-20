@@ -11,8 +11,6 @@ db = get_db()
 
 @app.route('/', methods=["POST", "GET"])
 def index():
-    # if g.user == None:
-    #     return redirect(url_for('auth.login'))
     if request.method == 'POST':
         task_content = request.form['content']
         new_task = Card(content=task_content)
@@ -28,26 +26,29 @@ def index():
     return make_response(open('Delta3Mini/templates/base.html').read())
 
 
+@app.route('/register')
+@app.route('/login')
+def reredirect():
+    return make_response(open('Delta3Mini/templates/base.html').read())
+
+
 @app.route('/api/list-boards')
 def list_boards():
     # tasks = Card.query.order_by(Card.date_created).all()
-    if (session.get('logged_in')):
+    # param = request.form['p']
+    if session.get('logged_in'):
         user = User.query.filter_by(username=session.get('username')).first()
-        # boards_and_userstemp = boards_and_users.query.filter_by(user_id=user.id).first()
-        # boards = Board.query.filter_by(id=boards_and_userstemp.board_id)
         return jsonify(json_list=[i.serialize for i in user.boards])
 
 
 @app.route('/api/delete', methods=["POST"])
 def delete():
-    # task_to_delete = Card.query.get_or_404(id)
     json_data = request.json
-    task_to_delete = Card.query.get_or_404(json_data['id'])
+    board_to_delete = Board.query.get_or_404(json_data['id'])
 
     try:
-        db.session.delete(task_to_delete)
+        db.session.delete(board_to_delete)
         db.session.commit()
-        return redirect('/')
     except:
         return 'There was a problem deleting that task'
 

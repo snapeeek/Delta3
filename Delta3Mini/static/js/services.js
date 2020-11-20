@@ -96,14 +96,14 @@ angular.module('app').factory('AuthService',
 
     }])
 
-angular.module('app').factory('TasksService',
+angular.module('app').factory('BoardsService',
     ['$q', '$timeout', '$http',
         function ($q, $timeout, $http) {
             return ({
-                deleteTask: deleteTask
+                deleteBoard: deleteBoard
             })
 
-            function deleteTask(id) {
+            function deleteBoard(id) {
                 var deffered = $q.defer()
 
                 $http.post('/api/delete', {id: id})
