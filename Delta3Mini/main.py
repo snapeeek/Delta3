@@ -1,9 +1,11 @@
+import sys
+
 from flask import jsonify, send_from_directory, \
     make_response, Blueprint, redirect, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from . import get_db
-from .models.models import Card, User, Board, boards_and_users
+from .models.models import Card, User, Board, boards_and_users, List
 
 app = Blueprint('main', __name__)
 db = get_db()
@@ -87,6 +89,30 @@ def register():
 
     return jsonify({'result': status})
 
+
+@app.route('/api/generateBoard', methods=["POST"])
+def generateBoard():
+    json_data = request.json
+
+    user = User.query.filter_by(username=session.get('username')).first()
+
+    board = Board(name=json_data['name'],
+                  background=json_data['background'],
+                  team_id=json_data['team_id'],
+                  )
+    user.boards.append(board)
+    try:
+        db.session.add(board)
+        # user.boards.append(board)
+        # boards_and_users.append_column(board.id)
+        db.session.commit()
+        status = 'success'
+    except:
+        print(sys.exc_info()[0])
+        status = 'this board couldn\'t have been added'
+    db.session.close()
+
+    return jsonify({'result': status})
 
 @app.route('/api/login', methods=["GET", "POST"])
 def login():

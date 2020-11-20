@@ -100,7 +100,8 @@ angular.module('app').factory('BoardsService',
     ['$q', '$timeout', '$http',
         function ($q, $timeout, $http) {
             return ({
-                deleteBoard: deleteBoard
+                deleteBoard: deleteBoard,
+                addBoard: addBoard
             })
 
             function deleteBoard(id) {
@@ -118,5 +119,25 @@ angular.module('app').factory('BoardsService',
                     })
                 return deffered.promise
 
+            }
+            function addBoard(name, background, team) {
+            var deffered = $q.defer()
+
+            $http.post('/api/generateBoard', {name:name, background:background, team_id: team})
+                .then(function (response) {
+                    if (response.data)
+                    {
+                        deffered.resolve()
+                    }
+                    else
+                    {
+                        deffered.reject()
+                    }
+                })
+                .catch(function (response) {
+                    deffered.reject()
+
+                })
+            return deffered.promise
             }
         }])

@@ -14,7 +14,7 @@
 
 
         <tr ng-repeat="board in boards">
-            <td><a href="/board" class="btn btn-primary">{{ board['name'] }}</a></td>
+            <td><a href="/board/{{ board.id }}" class="btn btn-primary">{{ board['name'] }}</a></td>
 
             <td>
                 <div ng-controller="DeleteController">
@@ -28,11 +28,34 @@
 
         </tbody>
     </table>
-
+    <button class="open-button" onclick="openForm()">New Board</button>
 <!--    <div class="form">-->
 <!--        <form action="/" method="POST">-->
 <!--            <input type="text" name="content" id="content">-->
 <!--            <input type="submit" class="btn btn-success" value="Add Task">-->
 <!--        </form>-->
 <!--    </div>-->
+    <div class="form-popup" id="boardForm"  >
+        <form class="form-container" ng-submit="generateBoard()">
+            <h1>New Board</h1>
+
+            <label for="Name"><b>Name</b></label>
+            <div class="form-group">
+                <input type="text" placeholder="Enter board name" name="name" ng-model="boardForm.name" required>
+            </div>
+            <label for="backgr"><b>Background</b></label>
+            <div class="form-group">
+                <input type="text" placeholder="Enter background" name="background" ng-model="boardForm.background"
+                       required>
+            </div>
+            <label for="teamid"><b>Team</b></label>
+            <div class="form-group">
+
+                <input type="text" placeholder="Which team" name="team_id" ng-model="boardForm.team" required>
+            </div>
+            <button type="submit" class="btn">Add</button>
+            <button type="submit" class="btn cancel" onclick="closeForm()">Cancel</button>
+        </form>
+    </div>
+
 </div>

@@ -1,3 +1,11 @@
+function openForm() {
+    document.getElementById("boardForm").style.display = "block";
+}
+
+function closeForm() {
+    document.getElementById("boardForm").style.display = "none";
+}
+
 var myapp = angular.module("app", ['ngRoute', 'angular-loading-bar']);
 
 myapp.config(function ($routeProvider, $locationProvider) {
@@ -5,52 +13,52 @@ myapp.config(function ($routeProvider, $locationProvider) {
         .when('/', {
             templateUrl: 'static/partials/index.html',
             controller: 'IndexController',
-            access : {restricted : true}
+            access: {restricted: true}
         })
         .when('/login', {
             templateUrl: 'static/partials/login.html',
             controller: 'LoginController',
-            access : {restricted : false}
+            access: {restricted: false}
         })
         .when('/register', {
             templateUrl: 'static/partials/register.html',
             controller: 'RegisterController',
-            access : {restricted : false}
+            access: {restricted: false}
         })
         .when('/logout', {
             controller: 'LogoutController',
-            access : {restricted : true}
+            access: {restricted: true}
         })
-        .when('/board', {
+        .when('/board/:id', {
             templateUrl: 'static/partials/board.html',
             controller: 'SingleBoardController',
-            access : {restricted : true}
+            access: {restricted: true}
         })
         .when('/delete/:id', {
             controller: 'DeleteController',
-            access : {restricted: true}
+            access: {restricted: true}
         })
         .otherwise({
-            redirect : '/'
+            redirect: '/'
         })
 
     $locationProvider.html5Mode({
         enabled: true,
-        requireBase: false});
+        requireBase: false
+    });
     $locationProvider.hashPrefix('');
 });
 
 myapp.run(function ($rootScope, $location, $route, AuthService) {
     $rootScope.$on('$routeChangeStart',
         function (event, next, current) {
-        AuthService.getUserStatus()
-            .then(function () {
-                if (next.access.restricted && !AuthService.isLoggedIn())
-                {
-                    $location.path('/login')
-                    $route.reload()
-                }
-            })
-    })
+            AuthService.getUserStatus()
+                .then(function () {
+                    if (next.access.restricted && !AuthService.isLoggedIn()) {
+                        $location.path('/login')
+                        $route.reload()
+                    }
+                })
+        })
 })
 

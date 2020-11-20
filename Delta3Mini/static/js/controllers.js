@@ -1,4 +1,4 @@
-myapp.controller('IndexController', function ($scope, $http) {
+myapp.controller('IndexController', function ($scope, $http,$route,  BoardsService) {
     $http.get('/api/status').then(function (response) {
         document.getElementById("hello").innerText = "Hello " + response.data.username
     })
@@ -10,16 +10,20 @@ myapp.controller('IndexController', function ($scope, $http) {
 
     $http.get('/api/list-boards').then(function (resp) {
         $scope.boards = resp.data.json_list;
-        console.log(resp.data);
     })
 
-
-    
-
-
-
-    //AuthService.
-
+    $scope.generateBoard = function () {
+        BoardsService.addBoard($scope.boardForm.name,$scope.boardForm.background,$scope.boardForm.team)
+            .then(function () {
+                $route.reload()
+            })
+        .catch(function () {
+                    $scope.error = true
+                    $scope.errorMessage = "Something went wrong during creating new board"
+                    $scope.disabled = false
+                    $scope.registerForm = {}
+                })
+    }
 })
 
 myapp.controller('LoginController', function ($scope, $location, $route, AuthService) {
@@ -101,11 +105,9 @@ myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, A
     }
 });
 
-myapp.controller("SingleBoardController", function ($scope , $http) {
-    var config  ={ params:{board_id: 1}}
-    //todo repalce board id with some kind of variable
+myapp.controller("SingleBoardController", function ($scope , $http, $routeParams) {
+    var config  ={ params:{board_id: $routeParams.id}}
     $http.get('/api/list-lists', config).then(function (resp) {
         $scope.lists = resp.data.json_list;
-        console.log(resp.data);
     })
 })
