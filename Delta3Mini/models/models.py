@@ -56,7 +56,7 @@ class Board(db.Model):
     lists = db.relationship('List', backref='board', lazy=True)
 
     def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
+        super(Board, self).__init__(**kwargs)
 
     @property
     def serialize(self):
@@ -73,7 +73,7 @@ class Label(db.Model):
     text = db.Column(db.String(50))
 
     def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
+        super(Label, self).__init__(**kwargs)
 
 
 
@@ -84,7 +84,7 @@ class List(db.Model):
     cards = db.relationship('Card', backref='card', lazy=True)
 
     def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
+        super(List, self).__init__(**kwargs)
     @property
     def serialize(self):
         """Return object data in easily serializable format"""
@@ -104,7 +104,7 @@ class Card(db.Model):
                              backref=db.backref('cards', lazy=True))
 
     def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
+        super(Card, self).__init__(**kwargs)
 
     def __repr__(self):
         return '<Task %r>' % self.id
@@ -126,7 +126,7 @@ class Listofelements(db.Model):
     done = db.Column(db.Integer, default=0)
 
     def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
+        super(Listofelements, self).__init__(**kwargs)
 
 
 class Element(db.Model):
@@ -136,7 +136,7 @@ class Element(db.Model):
     list_of_elemets_id = db.Column(db.Integer, db.ForeignKey('listofelements.id'), nullable=False)
 
     def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
+        super(Element, self).__init__(**kwargs)
 
 
 class Team(db.Model):
@@ -145,5 +145,5 @@ class Team(db.Model):
     Name = db.Column(db.String(50))
 
     def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
+        super(Team, self).__init__(**kwargs)
 
