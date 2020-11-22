@@ -1,9 +1,9 @@
-function openForm() {
-    document.getElementById("boardForm").style.display = "block";
+function openForm(name) {
+    document.getElementById(name).style.display = "block";
 }
 
-function closeForm() {
-    document.getElementById("boardForm").style.display = "none";
+function closeForm(name) {
+    document.getElementById(name).style.display = "none";
 }
 
 var myapp = angular.module("app", ['ngRoute', 'angular-loading-bar']);

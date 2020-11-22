@@ -1,20 +1,23 @@
 <div class="content">
     <h1 style="text-align: center" ng-if="lists.length == 0">There are no lists! Please add one!</h1>
 
-    <table class="table" ng-if="lists.length > 0">
-        <tbody>
+    <div id="listContainer" ng-if="lists.length > 0">
+        <div ng-repeat="list in lists">
+            {{ list['name'] }}
+        </div>
+    </div>
+        <button class="open-button" onclick="openForm('listForm')">New List</button>
 
-        <tr ng-repeat="list in lists">
-            <td>{{ list['name'] }}</td>
-        </tr>
+ <div class="form-popup" id="listForm"  >
+        <form class="form-container" ng-submit="generateList()">
+            <h1>New List</h1>
+            <label for="Name"><b>Name</b></label>
+            <div class="form-group">
+                <input type="text" placeholder="Enter list name" name="name" ng-model="listForm.name" required>
+            </div>
+            <button type="submit" class="btn">Add</button>
+            <button type="submit" class="btn cancel" onclick="closeForm()">Cancel</button>
+        </form>
+    </div>
 
-        </tbody>
-    </table>
-
-<!--    <div class="form">-->
-<!--        <form action="/" method="POST">-->
-<!--            <input type="text" name="content" id="content">-->
-<!--            <input type="submit" class="btn btn-success" value="Add Task">-->
-<!--        </form>-->
-<!--    </div>-->
 </div>

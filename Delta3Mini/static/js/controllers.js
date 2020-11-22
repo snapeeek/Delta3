@@ -105,9 +105,19 @@ myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, A
     }
 });
 
-myapp.controller("SingleBoardController", function ($scope , $http, $routeParams) {
+myapp.controller("SingleBoardController", function ($scope , $http, $routeParams,$route, BoardsService) {
     var config  ={ params:{board_id: $routeParams.id}}
     $http.get('/api/list-lists', config).then(function (resp) {
         $scope.lists = resp.data.json_list;
     })
+
+    $scope.generateList = function () {
+        //        BoardsService.addBoard($scope.boardForm.name,$scope.boardForm.background,$scope.boardForm.team)
+        BoardsService.addList($scope.listForm.name, $routeParams.id)
+            .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
 })

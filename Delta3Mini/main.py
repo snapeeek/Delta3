@@ -28,7 +28,8 @@ def index():
 
 @app.route('/register')
 @app.route('/login')
-def reredirect():
+@app.route('/board/<id>')
+def reredirect(id=0):
     return make_response(open('Delta3Mini/templates/base.html').read())
 
 
@@ -103,8 +104,22 @@ def generateBoard():
     user.boards.append(board)
     try:
         db.session.add(board)
-        # user.boards.append(board)
-        # boards_and_users.append_column(board.id)
+        db.session.commit()
+        status = 'success'
+    except:
+        print(sys.exc_info()[0])
+        status = 'this board couldn\'t have been added'
+    db.session.close()
+    return jsonify({'result': status})
+
+
+@app.route('/api/generateList', methods=["POST"])
+def generateList():
+    json_data = request.json
+    list = List(name=json_data['name'],
+                board_id=json_data['board_id'])
+    try:
+        db.session.add(list)
         db.session.commit()
         status = 'success'
     except:
@@ -113,7 +128,6 @@ def generateBoard():
     db.session.close()
 
     return jsonify({'result': status})
-
 @app.route('/api/login', methods=["GET", "POST"])
 def login():
     json_data = request.json
