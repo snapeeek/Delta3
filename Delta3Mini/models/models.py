@@ -88,9 +88,11 @@ class List(db.Model):
     @property
     def serialize(self):
         """Return object data in easily serializable format"""
+        json_list = [i.serialize for i in self.cards]
         return {
             'id': self.id,
             'name': self.name,
+            'cards': json_list
         }
 
 class Card(db.Model):
@@ -114,6 +116,7 @@ class Card(db.Model):
         """Return object data in easily serializable format"""
         return {
             'id': self.id,
+            'name':self.name,
             'content': self.content,
             'date_created': dump_datetime(self.date_created),
         }

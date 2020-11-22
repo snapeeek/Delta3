@@ -78,7 +78,7 @@ td {
 .topnav .logopt a {
     padding: 14px 14px;
 }
-
+/*                            to jest do formularzu na dole (dodawanie boarda i list)                           */
 /* Button used to open the contact form - fixed at the bottom of the page */
 .open-button {
   background-color: #555;
@@ -161,6 +161,7 @@ td {
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
+/*                          to jest popout od dodawania karty do listy                                                 */
 /* Modal Content/Box */
 .modal-content {
   background-color: #fefefe;

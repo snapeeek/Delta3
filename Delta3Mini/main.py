@@ -5,7 +5,7 @@ from flask import jsonify, send_from_directory, \
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from . import get_db
-from .models.models import Card, User, Board, boards_and_users, List
+from .models.models import Card, User, Board, List
 
 app = Blueprint('main', __name__)
 db = get_db()
