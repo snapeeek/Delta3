@@ -8,7 +8,8 @@
                 dnd-allowed-types="['container']"
                 dnd-external-sources="true"
                 dnd-dragover="dragoverCallback(index, external, type, callback)"
-                dnd-drop="dropCallback(index, item, external, type)">
+                dnd-drop="dropCallback(index, item, external, type)"
+            class="containerList">
                 <li ng-repeat="list in lists"
                     dnd-draggable="container"
                     dnd-type="'container'"
