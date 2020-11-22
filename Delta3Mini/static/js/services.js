@@ -102,7 +102,8 @@ angular.module('app').factory('BoardsService',
             return ({
                 deleteBoard: deleteBoard,
                 addBoard: addBoard,
-                addList: addList
+                addList: addList,
+                addCardToList: addCardToList
             })
 
             function deleteBoard(id) {
@@ -145,6 +146,26 @@ angular.module('app').factory('BoardsService',
             var deffered = $q.defer()
 
             $http.post('/api/generateList', {name:name,  board_id: boardID})
+                .then(function (response) {
+                    if (response.data)
+                    {
+                        deffered.resolve()
+                    }
+                    else
+                    {
+                        deffered.reject()
+                    }
+                })
+                .catch(function (response) {
+                    deffered.reject()
+
+                })
+            return deffered.promise
+            }
+            function addCardToList(name, listID ) {
+            var deffered = $q.defer()
+
+            $http.post('/api/generateCard', {name:name,  list_id: listID})
                 .then(function (response) {
                     if (response.data)
                     {

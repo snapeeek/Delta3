@@ -1,4 +1,4 @@
-myapp.controller('IndexController', function ($scope, $http,$route,  BoardsService) {
+myapp.controller('IndexController', function ($scope, $http, $route, BoardsService) {
     $http.get('/api/status').then(function (response) {
         document.getElementById("hello").innerText = "Hello " + response.data.username
     })
@@ -13,16 +13,16 @@ myapp.controller('IndexController', function ($scope, $http,$route,  BoardsServi
     })
 
     $scope.generateBoard = function () {
-        BoardsService.addBoard($scope.boardForm.name,$scope.boardForm.background,$scope.boardForm.team)
+        BoardsService.addBoard($scope.boardForm.name, $scope.boardForm.background, $scope.boardForm.team)
             .then(function () {
                 $route.reload()
             })
-        .catch(function () {
-                    $scope.error = true
-                    $scope.errorMessage = "Something went wrong during creating new board"
-                    $scope.disabled = false
-                    $scope.registerForm = {}
-                })
+            .catch(function () {
+                $scope.error = true
+                $scope.errorMessage = "Something went wrong during creating new board"
+                $scope.disabled = false
+                $scope.registerForm = {}
+            })
     }
 })
 
@@ -83,7 +83,7 @@ myapp.controller('LogoutController', function ($scope, $location, $route, AuthSe
 
 })
 
-myapp.controller("DeleteController", function ($scope , $location, $route, BoardsService) {
+myapp.controller("DeleteController", function ($scope, $location, $route, BoardsService) {
     $scope.delete = function (id) {
         BoardsService.deleteBoard(id)
             .then(function () {
@@ -105,19 +105,37 @@ myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, A
     }
 });
 
-myapp.controller("SingleBoardController", function ($scope , $http, $routeParams,$route, BoardsService) {
-    var config  ={ params:{board_id: $routeParams.id}}
+myapp.controller("SingleBoardController", function ($scope, $http, $routeParams, $route, BoardsService) {
+    var config = {params: {board_id: $routeParams.id}}
     $http.get('/api/list-lists', config).then(function (resp) {
         $scope.lists = resp.data.json_list;
     })
 
     $scope.generateList = function () {
-        //        BoardsService.addBoard($scope.boardForm.name,$scope.boardForm.background,$scope.boardForm.team)
         BoardsService.addList($scope.listForm.name, $routeParams.id)
             .then(function () {
                 $route.reload()
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
+    }
+
+    $scope.generateCard = function (id) {
+        BoardsService.addCardToList($scope.cardForm.name, id)
+            .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+        document.getElementById("cardForm").style.display = "none"
+    }
+
+    $scope.showModal = function (id) {
+        $scope.list_id = id
+        document.getElementById("cardForm").style.display = "block"
+    }
+
+    $scope.hideModal = function () {
+        document.getElementById("cardForm").style.display = "none"
     }
 })

@@ -124,10 +124,26 @@ def generateList():
         status = 'success'
     except:
         print(sys.exc_info()[0])
-        status = 'this board couldn\'t have been added'
+        status = 'this list couldn\'t have been added'
     db.session.close()
-
     return jsonify({'result': status})
+
+@app.route('/api/generateCard', methods=["POST"])
+def generateCard():
+    json_data = request.json
+    card = Card(name=json_data['name'],
+                content='',
+                list_id=json_data['list_id'])
+    try:
+        db.session.add(card)
+        db.session.commit()
+        status = 'success'
+    except:
+        print(sys.exc_info()[0])
+        status = 'this card couldn\'t have been added'
+    db.session.close()
+    return jsonify({'result': status})
+
 @app.route('/api/login', methods=["GET", "POST"])
 def login():
     json_data = request.json
