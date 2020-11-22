@@ -36,6 +36,9 @@
                                 dnd-dragend="logEvent('Drag operation ended. Drop effect: ' + dropEffect)">
                                 {{card.name}}
                             </li>
+                            <div>
+                                <button class="pluscard"  ng-click="showModal(list.id)">+Card</button>
+                            </div>
                         </ul>
                         <div class="clearfix"></div>
                     </div>

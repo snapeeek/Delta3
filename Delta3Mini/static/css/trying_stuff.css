@@ -235,6 +235,7 @@ position: fixed;
 }
 .dropzone .containerList{
     display: grid;
+    border: #333333;
     grid-auto-flow: column;
 }
 /**
@@ -266,6 +267,24 @@ position: fixed;
     text-align: center;
     width: 95%;
     display: block;
+}
+.dropzone .itemlist > div {
+    border: none;
+    border-radius: .25em;
+    float: left;
+    font-weight: 700;
+    height: 50px;
+    margin: 5px;
+    padding: 3px;
+    text-align: center;
+    width: 247px;
+    display: block;
+    opacity: 50%;
+}
+.pluscard{
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 5px;
 }
 
 .dropzone .container-element {
