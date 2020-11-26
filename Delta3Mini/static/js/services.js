@@ -96,14 +96,18 @@ angular.module('app').factory('AuthService',
 
     }])
 
-angular.module('app').factory('TasksService',
+angular.module('app').factory('BoardsService',
     ['$q', '$timeout', '$http',
         function ($q, $timeout, $http) {
             return ({
-                deleteTask: deleteTask
+                deleteBoard: deleteBoard,
+                addBoard: addBoard,
+                addList: addList,
+                addCardToList: addCardToList,
+                editCardContent:editCardContent
             })
 
-            function deleteTask(id) {
+            function deleteBoard(id) {
                 var deffered = $q.defer()
 
                 $http.post('/api/delete', {id: id})
@@ -118,5 +122,85 @@ angular.module('app').factory('TasksService',
                     })
                 return deffered.promise
 
+            }
+            function addBoard(name, background, team) {
+            var deffered = $q.defer()
+
+            $http.post('/api/generateBoard', {name:name, background:background, team_id: team})
+                .then(function (response) {
+                    if (response.data)
+                    {
+                        deffered.resolve()
+                    }
+                    else
+                    {
+                        deffered.reject()
+                    }
+                })
+                .catch(function (response) {
+                    deffered.reject()
+
+                })
+            return deffered.promise
+            }
+            function addList(name, boardID ) {
+            var deffered = $q.defer()
+
+            $http.post('/api/generateList', {name:name,  board_id: boardID})
+                .then(function (response) {
+                    if (response.data)
+                    {
+                        deffered.resolve()
+                    }
+                    else
+                    {
+                        deffered.reject()
+                    }
+                })
+                .catch(function (response) {
+                    deffered.reject()
+
+                })
+            return deffered.promise
+            }
+            function addCardToList(name, listID ) {
+            var deffered = $q.defer()
+
+            $http.post('/api/generateCard', {name:name,  list_id: listID})
+                .then(function (response) {
+                    if (response.data)
+                    {
+                        deffered.resolve()
+                    }
+                    else
+                    {
+                        deffered.reject()
+                    }
+                })
+                .catch(function (response) {
+                    deffered.reject()
+
+                })
+            return deffered.promise
+            }
+            function editCardContent(content, cardID ) {
+            var deffered = $q.defer()
+
+            $http.post('/api/editCard', {content:content,  card_id: cardID})
+                .then(function (response) {
+                    if (response.data)
+                    {
+                        deffered.resolve()
+                    }
+                    else
+                    {
+                        deffered.reject()
+                    }
+                })
+                .catch(function (response) {
+                    deffered.reject()
+
+                })
+            return deffered.promise
             }
         }])

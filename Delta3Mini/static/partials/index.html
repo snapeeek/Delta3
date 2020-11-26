@@ -1,40 +1,61 @@
 <div class="content">
     <h1 style="text-align: center">Task Master</h1>
 
-    <h2 style="text-align: center" ng-if="tasks.length == 0">There are no tasks! Please add one!</h2>
+    <h2 style="text-align: center" ng-if="boards.length == 0">There are no boards! Please add one!</h2>
 
-    <table class="table" ng-if="tasks.length > 0">
+    <table class="table" ng-if="boards.length > 0">
         <thead>
         <tr>
-            <th>Task</th>
-            <th>Added</th>
+            <th>Board</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
 
 
-        <tr ng-repeat="task in tasks">
-            <td>{{ task['content'] }}</td>
-            <td>{{ task['date_created'][0] }} {{task['date_created'][1]}}</td>
+        <tr ng-repeat="board in boards">
+            <td><a href="/board/{{ board.id }}" class="btn btn-primary">{{ board['name'] }}</a></td>
 
             <td>
                 <div ng-controller="DeleteController">
-                    <a ng-click="delete(task['id'])">Delete</a>
+                    <a ng-click="delete(board['id'])">Delete</a>
                 </div>
 
                 <br>
-                <a href="/update/{{ task['id'] }}">Update</a>
+<!--                <a href="/update/{{ board['id'] }}">Update</a>-->
             </td>
         </tr>
 
         </tbody>
     </table>
+    <button class="open-button" onclick="openForm('boardForm')">New Board</button>
+<!--    <div class="form">-->
+<!--        <form action="/" method="POST">-->
+<!--            <input type="text" name="content" id="content">-->
+<!--            <input type="submit" class="btn btn-success" value="Add Task">-->
+<!--        </form>-->
+<!--    </div>-->
+    <div class="form-popup" id="boardForm"  >
+        <form class="form-container" ng-submit="generateBoard()">
+            <h1>New Board</h1>
 
-    <div class="form">
-        <form action="/" method="POST">
-            <input type="text" name="content" id="content">
-            <input type="submit" class="btn btn-success" value="Add Task">
+            <label for="Name"><b>Name</b></label>
+            <div class="form-group">
+                <input type="text" placeholder="Enter board name" name="name" ng-model="boardForm.name" required>
+            </div>
+            <label for="backgr"><b>Background</b></label>
+            <div class="form-group">
+                <input type="text" placeholder="Enter background" name="background" ng-model="boardForm.background"
+                       required>
+            </div>
+            <label for="teamid"><b>Team</b></label>
+            <div class="form-group">
+
+                <input type="text" placeholder="Which team" name="team_id" ng-model="boardForm.team" required>
+            </div>
+            <button type="submit" class="btn">Add</button>
+            <button type="submit" class="btn cancel" onclick="closeForm()">Cancel</button>
         </form>
     </div>
+
 </div>

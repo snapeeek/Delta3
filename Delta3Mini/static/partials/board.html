@@ -1,0 +1,84 @@
+<div class="content">
+    <h1 style="text-align: center" ng-if="lists.length == 0">There are no lists! Please add one!</h1>
+
+    <h2>Dropzone 1</h2>
+        <div class="dropzone">
+
+            <ul dnd-list="containers"
+                dnd-allowed-types="['container']"
+                dnd-external-sources="true"
+                dnd-dragover="dragoverCallback(index, external, type, callback)"
+                dnd-drop="dropCallback(index, item, external, type)"
+            class="containerList">
+                <li ng-repeat="list in lists"
+                    dnd-draggable="container"
+                    dnd-type="'container'"
+                    dnd-effect-allowed="copyMove"
+                    dnd-moved="containers.splice($index, 1)"
+                    dnd-callback="container.items.length">
+                    <div class="container-element box box-blue">
+                        <h3>{{ list.name }}</h3>
+                        <ul dnd-list="list.cards"
+                            dnd-allowed-types="['item']"
+                            dnd-horizontal-list="true"
+                            dnd-external-sources="true"
+                            dnd-effect-allowed="move"
+                            dnd-dragover="dragoverCallback(index, external, type)"
+                            dnd-drop="dropCallback(index, item, external, type)"
+                            dnd-inserted="logListEvent('inserted at', index, external, type)"
+                            class="itemlist">
+                            <li ng-repeat="card in list.cards"
+                                dnd-draggable="item"
+                                dnd-type="'item'"
+                                dnd-effect-allowed="all"
+                                dnd-dragstart="logEvent('Started to drag an item')"
+                                dnd-moved="container.items.splice($index, 1)"
+                                dnd-dragend="logEvent('Drag operation ended. Drop effect: ' + dropEffect)">
+                                <button class="editContent" ng-click="showCard(card.id, card.name, card.content)">{{card.name}}</button>
+                            </li>
+                            <div>
+                                <button class="pluscard"  ng-click="showModal(list.id)">+Card</button>
+                            </div>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    <div class="modal" id="editCardForm">
+        <form class="modal-content" ng-submit="editCard(card_id)">
+            <h1>{{ card_name }}</h1>
+            <h2>{{ card_content }}</h2>
+
+            <div class="form-group">
+                <input type="text" placeholder="Enter card content" name="name" ng-model="editCardForm.content">
+<!--                todo editable into loss of focus and send update then -->
+            </div>
+            <button type="submit" class="close" id="closeEditCardForm">&times</button>
+        </form>
+    </div>
+
+    <div class="modal" id="cardForm">
+        <form class="modal-content" ng-submit="generateCard(list_id)">
+            <h1>New card</h1>
+            <div class="form-group">
+                <input type="text" placeholder="Enter card name" name="name" ng-model="cardForm.name">
+            </div>
+            <button type="submit" class="close" id="closeCardForm">&times</button>
+        </form>
+    </div>
+
+    <button class="open-button" onclick="openForm('listForm')">New List</button>
+    <div class="form-popup" id="listForm">
+        <form class="form-container" ng-submit="generateList()">
+            <h1>New List</h1>
+            <label for="Name"><b>Name</b></label>
+            <div class="form-group">
+                <input type="text" placeholder="Enter list name" name="name" ng-model="listForm.name" required>
+            </div>
+            <button type="submit" class="btn">Add</button>
+            <button class="btn cancel" onclick="closeForm('listForm')">Cancel</button>
+        </form>
+    </div>
+
+</div>
