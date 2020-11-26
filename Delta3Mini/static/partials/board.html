@@ -34,7 +34,7 @@
                                 dnd-dragstart="logEvent('Started to drag an item')"
                                 dnd-moved="container.items.splice($index, 1)"
                                 dnd-dragend="logEvent('Drag operation ended. Drop effect: ' + dropEffect)">
-                                {{card.name}}
+                                <button class="editContent" ng-click="showCard(card.id, card.name, card.content)">{{card.name}}</button>
                             </li>
                             <div>
                                 <button class="pluscard"  ng-click="showModal(list.id)">+Card</button>
@@ -45,6 +45,18 @@
                 </li>
             </ul>
         </div>
+    <div class="modal" id="editCardForm">
+        <form class="modal-content" ng-submit="editCard(card_id)">
+            <h1>{{ card_name }}</h1>
+            <h2>{{ card_content }}</h2>
+
+            <div class="form-group">
+                <input type="text" placeholder="Enter card content" name="name" ng-model="editCardForm.content">
+<!--                todo editable into loss of focus and send update then -->
+            </div>
+            <button type="submit" class="close" id="closeEditCardForm">&times</button>
+        </form>
+    </div>
 
     <div class="modal" id="cardForm">
         <form class="modal-content" ng-submit="generateCard(list_id)">

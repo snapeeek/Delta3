@@ -55,6 +55,18 @@ def delete():
     try:
         db.session.delete(board_to_delete)
         db.session.commit()
+        return jsonify({'result': 'success'})
+    except:
+        return 'There was a problem deleting that task'
+
+@app.route('/api/editCard', methods=["POST"])
+def editCard():
+    json_data = request.json
+    card_to_edit = Card.query.filter_by(id=json_data['card_id']).first()
+    card_to_edit.content = json_data['content']
+    try:
+        db.session.commit()
+        return jsonify({'result': 'success'})
     except:
         return 'There was a problem deleting that task'
 

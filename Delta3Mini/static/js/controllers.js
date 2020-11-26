@@ -129,10 +129,25 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             })
         document.getElementById("cardForm").style.display = "none"
     }
+    $scope.editCard = function (id) {
+        BoardsService.editCardContent($scope.editCardForm.content, id)
+            .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+        document.getElementById("editCardForm").style.display = "none"
+    }
 
     $scope.showModal = function (id) {
         $scope.list_id = id
         document.getElementById("cardForm").style.display = "block"
+    }
+    $scope.showCard = function (id,name,content) {
+        $scope.card_id = id
+        $scope.card_name = name
+        $scope.card_content = content
+        document.getElementById("editCardForm").style.display = "block"
     }
 
     $scope.hideModal = function () {
@@ -179,6 +194,4 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         $scope.modelAsJson = angular.toJson(model, true);
     }, true);
 
-    console.log($scope.model)
-    console.log(angular.toJson($scope.model,true))
 })

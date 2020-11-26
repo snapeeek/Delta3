@@ -109,7 +109,7 @@ class Card(db.Model):
         super(Card, self).__init__(**kwargs)
 
     def __repr__(self):
-        return '<Task %r>' % self.id
+        return '<Card %r>' % self.id
 
     @property
     def serialize(self):
