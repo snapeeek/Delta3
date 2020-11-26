@@ -11,9 +11,11 @@ def create_app():
     app.config['SECRET_KEY'] = 'skurczybonk'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
     from . import main as main_bp
-    app.register_blueprint(main_bp.app)
-    from . import delta3authorization as auth_bp
-    app.register_blueprint(auth_bp.bp)
+    app.register_blueprint(main_bp.mainbp)
+    from . import authorization as auth_bp
+    app.register_blueprint(auth_bp.authbp)
+    from . import api as api_bp
+    app.register_blueprint(api_bp.apibp)
     db.init_app(app)
     Migrate(app, db)
     return app
