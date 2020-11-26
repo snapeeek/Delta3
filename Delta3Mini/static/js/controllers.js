@@ -105,7 +105,7 @@ myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, A
     }
 });
 
-myapp.controller("SingleBoardController", function ($scope, $http, $routeParams, $route, BoardsService) {
+myapp.controller("SingleBoardController", function ($scope, $http, $routeParams, $route,$window, BoardsService) {
     var config = {params: {board_id: $routeParams.id}}
     $http.get('/api/list-lists', config).then(function (resp) {
         $scope.lists = resp.data.json_list;
@@ -194,4 +194,9 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         $scope.modelAsJson = angular.toJson(model, true);
     }, true);
 
+    $window.onclick = function (event) {
+        if(event.target == document.getElementById("cardForm")){
+            document.getElementById("cardForm").style.display = "none"
+        }
+    }
 })
