@@ -1,13 +1,18 @@
 body, html {
     margin: 0;
     font-family: sans-serif;
+    background: #888888;
 }
 
 .content {
     margin: 0 auto;
     padding-top: 35px;
+    padding-right: 20px;
+    float: left;
+    /*width: max-content;*/
     width: 100%;
     height: 100%;
+    background: #888888;
 }
 
 table, td, th {
@@ -88,14 +93,18 @@ position: fixed;
 .open-button {
   background-color: #555;
   color: white;
-  padding: 16px 20px;
+    margin-top: 40px;
+  display: block;
   border: none;
   cursor: pointer;
   opacity: 0.8;
-  position: fixed;
-  bottom: 23px;
-  right: 28px;
-  width: 280px;
+    width: 200px;
+    height: 50px;
+    border-radius: .35em;
+  /*position: fixed;*/
+  /*bottom: 23px;*/
+  /*right: 28px;*/
+  /*width: 280px;*/
 }
 
 /* The popup form - hidden by default */
@@ -174,6 +183,7 @@ position: fixed;
   padding: 20px;
   border: 1px solid #888;
   width: 80%; /* Could be more or less, depending on screen size */
+  max-width: 300px;
 }
 
 /* The Close Button */
@@ -197,6 +207,10 @@ position: fixed;
  * The dnd-list should always have a min-height,
  * otherwise you can't drop to it once it's empty
  */
+.dropzone {
+    padding-right: 50px;
+}
+
 .dropzone .itemlist {
     min-height: 42px;
     min-width: 275px;
@@ -237,6 +251,8 @@ position: fixed;
     display: grid;
     border: #333333;
     grid-auto-flow: column;
+    width: max-content;
+    padding-right: 20px;
 }
 /**
  * An element with .dndPlaceholder class will be added as child of the dnd-list
@@ -251,45 +267,56 @@ position: fixed;
 /***************************** Element type specific styles *****************************/
 
 .dropzone .itemlist {
-    min-height: 120px !important;
+    min-height: 80px !important;
+    width: 100%;
+    background: #333333;
+    padding: 10px 7px 15px;
+    border-radius: .55em;
 }
 
 .dropzone .itemlist > li {
     background-color: #337ab7;
     border: none;
-    border-radius: .25em;
+    border-radius: .45em;
     color: #fff;
-    float: left;
     font-weight: 700;
     height: 50px;
-    margin: 5px;
+    /*margin: 5px;*/
     padding: 3px;
-    text-align: center;
-    width: 95%;
-    display: block;
+    /*text-align: center;*/
+    width: 100%;
+  align-self: center;
+  justify-self: center;
 }
-.dropzone .itemlist > div {
-    border: none;
-    border-radius: .25em;
-    float: left;
-    font-weight: 700;
-    height: 50px;
-    margin: 5px;
-    padding: 3px;
-    text-align: center;
-    width: 247px;
-    display: block;
-    opacity: 50%;
+.editContent {
+    width: 100%;
+    height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+    vertical-align: middle;
 }
-.pluscard{
+.pluscard {
     width: 100%;
     padding-top: 10px;
     padding-bottom: 5px;
+    border-radius: .45em;
+    align-self: center;
+    justify-self: center;
+    background: darkgray;
 }
 
 .dropzone .container-element {
     margin: 10px;
     display: grid;
+    background: #aaaaaa;
+    max-width: 275px;
+    margin-top: 38px;
+    border-radius: .55em;
+
+      justify-content: center;
+  align-items: center;
+
 }
 
 /*end of lists css */

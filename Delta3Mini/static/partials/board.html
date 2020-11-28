@@ -1,7 +1,5 @@
 <div class="content">
     <h1 style="text-align: center" ng-if="lists.length == 0">There are no lists! Please add one!</h1>
-
-    <h2>Dropzone 1</h2>
         <div class="dropzone">
 
             <ul dnd-list="containers"
@@ -16,8 +14,8 @@
                     dnd-effect-allowed="copyMove"
                     dnd-moved="containers.splice($index, 1)"
                     dnd-callback="container.items.length">
-                    <div class="container-element box box-blue">
-                        <h3>{{ list.name }}</h3>
+                    <div class="container-element">
+                        <h3 style="text-align: center">{{ list.name }}</h3>
                         <ul dnd-list="list.cards"
                             dnd-allowed-types="['item']"
                             dnd-horizontal-list="true"
@@ -34,7 +32,7 @@
                                 dnd-dragstart="logEvent('Started to drag an item')"
                                 dnd-moved="container.items.splice($index, 1)"
                                 dnd-dragend="logEvent('Drag operation ended. Drop effect: ' + dropEffect)">
-                                <button class="editContent" ng-click="showCard(card.id, card.name, card.content)">{{card.name}}</button>
+                                <div class="editContent" ng-click="showCard(card.id, card.name, card.content)">{{card.name}}</div>
                             </li>
                             <div>
                                 <button class="pluscard"  ng-click="showModal(list.id)">+Card</button>
@@ -43,6 +41,7 @@
                         <div class="clearfix"></div>
                     </div>
                 </li>
+                <button class="open-button" onclick="openForm('listForm')">New List</button>
             </ul>
         </div>
     <div class="modal" id="editCardForm">
@@ -67,8 +66,6 @@
             <button type="submit" class="close" id="closeCardForm">&times</button>
         </form>
     </div>
-
-    <button class="open-button" onclick="openForm('listForm')">New List</button>
     <div class="form-popup" id="listForm">
         <form class="form-container" ng-submit="generateList()">
             <h1>New List</h1>
@@ -80,5 +77,6 @@
             <button class="btn cancel" onclick="closeForm('listForm')">Cancel</button>
         </form>
     </div>
+
 
 </div>
