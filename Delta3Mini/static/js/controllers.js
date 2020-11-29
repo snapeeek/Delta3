@@ -1,6 +1,7 @@
-myapp.controller('IndexController', function ($scope, $http, $route, BoardsService) {
+myapp.controller('IndexController', function ($scope, $http, $route, BoardsService, $location) {
     $http.get('/api/status').then(function (response) {
         document.getElementById("hello").innerText = "Hello " + response.data.username
+        $scope.username = response.data.username
     })
 
     document.getElementById("registermenublock").hidden = true
@@ -24,6 +25,26 @@ myapp.controller('IndexController', function ($scope, $http, $route, BoardsServi
                 $scope.registerForm = {}
             })
     }
+
+    $scope.delete = function (id) {
+        BoardsService.deleteBoard(id, $scope.username)
+            .then(function () {
+                $location.path('/')
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
+    $scope.archive = function (id) {
+        BoardsService.archiveBoard(id, $scope.username)
+            .then(function () {
+                $location.path('/')
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
+
 })
 
 myapp.controller('LoginController', function ($scope, $location, $route, AuthService) {
@@ -83,18 +104,6 @@ myapp.controller('LogoutController', function ($scope, $location, $route, AuthSe
 
 })
 
-myapp.controller("DeleteController", function ($scope, $location, $route, BoardsService) {
-    $scope.delete = function (id) {
-        BoardsService.deleteBoard(id)
-            .then(function () {
-                $location.path('/')
-                $route.reload()
-            }, function () {
-                $scope.errorMessage = 'Something went wrong'
-            })
-    }
-})
-
 myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, AuthService) {
     $timeout(callAtTimeout, 50);
     cfpLoadingBar.start();
@@ -105,11 +114,16 @@ myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, A
     }
 });
 
-myapp.controller("SingleBoardController", function ($scope, $http, $routeParams, $route,$window, BoardsService) {
+myapp.controller("SingleBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService) {
     var config = {params: {board_id: $routeParams.id}}
     $http.get('/api/list-lists', config).then(function (resp) {
         $scope.lists = resp.data.json_list;
     })
+
+    $http.post('/api/getBoardInfo', {board_id: $routeParams.id})
+        .then(function (response) {
+            $scope.boardInfo = response.data.board
+        })
 
     $scope.generateList = function () {
         BoardsService.addList($scope.listForm.name, $routeParams.id)
@@ -143,7 +157,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         $scope.list_id = id
         document.getElementById("cardForm").style.display = "block"
     }
-    $scope.showCard = function (id,name,content) {
+    $scope.showCard = function (id, name, content) {
         $scope.card_id = id
         $scope.card_name = name
         $scope.card_content = content
@@ -154,7 +168,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         document.getElementById("cardForm").style.display = "none"
     }
 
-    $scope.dragoverCallback = function(index, external, type, callback) {
+    $scope.dragoverCallback = function (index, external, type, callback) {
         $scope.logListEvent('dragged over', index, external, type);
         // Invoke callback to origin for container types.
         if (type == 'container' && !external) {
@@ -163,17 +177,17 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         return index < 10; // Disallow dropping in the third row.
     };
 
-    $scope.dropCallback = function(index, item, external, type) {
+    $scope.dropCallback = function (index, item, external, type) {
         $scope.logListEvent('dropped at', index, external, type);
         // Return false here to cancel drop. Return true if you insert the item yourself.
         return item;
     };
 
-    $scope.logEvent = function(message) {
+    $scope.logEvent = function (message) {
         console.log(message);
     };
 
-    $scope.logListEvent = function(action, index, external, type) {
+    $scope.logListEvent = function (action, index, external, type) {
         var message = external ? 'External ' : '';
         message += type + ' element was ' + action + ' position ' + index;
         console.log(message);
@@ -182,21 +196,30 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     // Initialize model
     $scope.model = [[], []];
     var id = 10;
-    angular.forEach(['all', 'move', 'copy', 'link', 'copyLink', 'copyMove'], function(effect, i) {
-      var container = {items: [], effectAllowed: effect};
-      for (var k = 0; k < 7; ++k) {
-        container.items.push({label: effect + ' ' + id++, effectAllowed: effect});
-      }
-      $scope.model[i % $scope.model.length].push(container);
+    angular.forEach(['all', 'move', 'copy', 'link', 'copyLink', 'copyMove'], function (effect, i) {
+        var container = {items: [], effectAllowed: effect};
+        for (var k = 0; k < 7; ++k) {
+            container.items.push({label: effect + ' ' + id++, effectAllowed: effect});
+        }
+        $scope.model[i % $scope.model.length].push(container);
     });
 
-    $scope.$watch('model', function(model) {
+    $scope.$watch('model', function (model) {
         $scope.modelAsJson = angular.toJson(model, true);
     }, true);
 
     $window.onclick = function (event) {
-        if(event.target == document.getElementById("cardForm")){
+        if (event.target === document.getElementById("cardForm")) {
             document.getElementById("cardForm").style.display = "none"
         }
+    }
+
+    $scope.unarchive = function (boardID) {
+        BoardsService.unarchiveBoard(boardID)
+         .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
     }
 })

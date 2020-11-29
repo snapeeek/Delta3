@@ -101,16 +101,18 @@ angular.module('app').factory('BoardsService',
         function ($q, $timeout, $http) {
             return ({
                 deleteBoard: deleteBoard,
+                archiveBoard: archiveBoard,
                 addBoard: addBoard,
                 addList: addList,
                 addCardToList: addCardToList,
-                editCardContent:editCardContent
+                editCardContent:editCardContent,
+                unarchiveBoard: unarchiveBoard,
             })
 
-            function deleteBoard(id) {
+            function deleteBoard(id, username) {
                 var deffered = $q.defer()
 
-                $http.post('/api/delete', {id: id})
+                $http.post('/api/delete', {id: id, username: username})
                     .then(function (response) {
                         if (response.data)
                             deffered.resolve()
@@ -123,6 +125,24 @@ angular.module('app').factory('BoardsService',
                 return deffered.promise
 
             }
+
+            function archiveBoard(id, username) {
+                var deffered = $q.defer()
+
+                $http.post('/api/archive', {id: id, username: username})
+                    .then(function (response) {
+                        if (response.data)
+                            deffered.resolve()
+                        else
+                            deffered.reject()
+
+                    }, function (response) {
+                        deffered.reject()
+                    })
+                return deffered.promise
+
+            }
+
             function addBoard(name, background, team) {
             var deffered = $q.defer()
 
@@ -203,4 +223,27 @@ angular.module('app').factory('BoardsService',
                 })
             return deffered.promise
             }
+
+            function unarchiveBoard(boardID) {
+                var deffered = $q.defer()
+                $http.post('/api/unarchiveBoard', { board_id: boardID})
+                .then(function (response) {
+                    if (response.data)
+                    {
+                        deffered.resolve()
+                    }
+                    else
+                    {
+                        deffered.reject()
+                    }
+                })
+                .catch(function (response) {
+                    deffered.reject()
+
+                })
+            return deffered.promise
+
+            }
+
+
         }])

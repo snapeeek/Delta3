@@ -13,29 +13,29 @@
         <tbody>
 
 
-        <tr ng-repeat="board in boards">
+        <tr ng-repeat="board in boards" ng-if="board.archived === false">
             <td><a href="/board/{{ board.id }}" class="btn btn-primary">{{ board['name'] }}</a></td>
 
             <td>
-                <div ng-controller="DeleteController">
-                    <a ng-click="delete(board['id'])">Delete</a>
-                </div>
+
+                <a ng-click="delete(board['id'])">Delete</a>
+
 
                 <br>
-<!--                <a href="/update/{{ board['id'] }}">Update</a>-->
+                <a ng-click="archive(board['id'])">Archive</a>
             </td>
         </tr>
 
         </tbody>
     </table>
     <button class="open-button" onclick="openForm('boardForm')">New Board</button>
-<!--    <div class="form">-->
-<!--        <form action="/" method="POST">-->
-<!--            <input type="text" name="content" id="content">-->
-<!--            <input type="submit" class="btn btn-success" value="Add Task">-->
-<!--        </form>-->
-<!--    </div>-->
-    <div class="form-popup" id="boardForm"  >
+    <!--    <div class="form">-->
+    <!--        <form action="/" method="POST">-->
+    <!--            <input type="text" name="content" id="content">-->
+    <!--            <input type="submit" class="btn btn-success" value="Add Task">-->
+    <!--        </form>-->
+    <!--    </div>-->
+    <div class="form-popup" id="boardForm">
         <form class="form-container" ng-submit="generateBoard()">
             <h1>New Board</h1>
 
