@@ -51,6 +51,7 @@ class Board(db.Model):
     name = db.Column(db.String(50), default="Board")
     background = db.Column(db.String(20))
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
+    archived = db.Column(db.Boolean, default=False)
     labels = db.relationship('Label', secondary=boards_and_labels, lazy='subquery',
                              backref=db.backref('boards', lazy=True))
     lists = db.relationship('List', backref='board', lazy=True)
@@ -65,6 +66,7 @@ class Board(db.Model):
             'id': self.id,
             'name': self.name,
             'team_id': self.team_id,
+            'archived': self.archived,
         }
 
 class Label(db.Model):

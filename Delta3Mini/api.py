@@ -29,11 +29,17 @@ def delete():
     json_data = request.json
     board_to_delete = Board.query.get_or_404(json_data['id'])
 
-    try:
-        db.session.delete(board_to_delete)
-        db.session.commit()
-        return jsonify({'result': 'success'})
-    except:
+    user = User.query.filter_by(username=json_data['username']).first()
+
+    if board_to_delete in user.boards:
+
+        try:
+            db.session.delete(board_to_delete)
+            db.session.commit()
+            return jsonify({'result': 'success'})
+        except:
+            return 'There was a problem deleting that task'
+    else:
         return 'There was a problem deleting that task'
 
 
@@ -85,6 +91,24 @@ def generateList():
         status = 'this list couldn\'t have been added'
     db.session.close()
     return jsonify({'result': status})
+
+
+@apibp.route('/api/archive', methods=["POST"])
+def archive():
+    json_data = request.json
+    board_to_archive = Board.query.get_or_404(json_data['id'])
+
+    user = User.query.filter_by(username=json_data['username']).first()
+
+    if board_to_archive in user.boards:
+        board_to_archive.archived = True
+        try:
+            db.session.commit()
+            return jsonify({'result': 'success'})
+        except:
+            return 'There was a problem deleting that task'
+    else:
+        return 'There was a problem deleting that task'
 
 
 @apibp.route('/api/generateCard', methods=["POST"])
