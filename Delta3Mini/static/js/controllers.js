@@ -125,6 +125,37 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             $scope.boardInfo = response.data.board
         })
 
+    $scope.updateBoard = function (boardName) {
+        if (boardName === "")
+            boardName = $scope.boardInfo.name
+        BoardsService.editBoard($scope.boardInfo.id, boardName)
+            .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
+
+    $scope.unarchiveBoard = function (boardID) {
+        BoardsService.unarchiveBoard(boardID)
+         .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
+
+    $scope.editList = function (id, boardName) {
+        console.log("wchodze w edycje list")
+        BoardsService.editList(id, boardName)
+            .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
+
+
     $scope.generateList = function () {
         BoardsService.addList(this.listForm.name, $routeParams.id)
             .then(function () {
@@ -219,12 +250,5 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         }
     }
 
-    $scope.unarchive = function (boardID) {
-        BoardsService.unarchiveBoard(boardID)
-         .then(function () {
-                $route.reload()
-            }, function () {
-                $scope.errorMessage = 'Something went wrong'
-            })
-    }
+
 })
