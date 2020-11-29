@@ -6,7 +6,7 @@ function closeForm(name) {
     document.getElementById(name).style.display = "none";
 }
 
-var myapp = angular.module("app", ['ngRoute', 'angular-loading-bar', 'dndLists']);
+var myapp = angular.module("app", ['ngRoute', 'angular-loading-bar', 'dndLists', 'xeditable']);
 
 myapp.config(function ($routeProvider, $locationProvider) {
     $routeProvider
@@ -49,7 +49,7 @@ myapp.config(function ($routeProvider, $locationProvider) {
     $locationProvider.hashPrefix('');
 });
 
-myapp.run(function ($rootScope, $location, $route, AuthService) {
+myapp.run(function ($rootScope, $location, $route, AuthService, editableOptions) {
     $rootScope.$on('$routeChangeStart',
         function (event, next, current) {
             AuthService.getUserStatus()
@@ -60,5 +60,6 @@ myapp.run(function ($rootScope, $location, $route, AuthService) {
                     }
                 })
         })
+    editableOptions.theme = 'bs3'
 })
 

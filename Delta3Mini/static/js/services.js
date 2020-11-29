@@ -103,6 +103,7 @@ angular.module('app').factory('BoardsService',
                 deleteBoard: deleteBoard,
                 archiveBoard: archiveBoard,
                 addBoard: addBoard,
+                editBoard: editBoard,
                 addList: addList,
                 addCardToList: addCardToList,
                 editCardContent:editCardContent,
@@ -163,6 +164,28 @@ angular.module('app').factory('BoardsService',
                 })
             return deffered.promise
             }
+
+            function editBoard(boardID, boardName) {
+                var deffered = $q.defer()
+
+            $http.post('/api/editBoard', {board_id: boardID, name:boardName })
+                .then(function (response) {
+                    if (response.data)
+                    {
+                        deffered.resolve()
+                    }
+                    else
+                    {
+                        deffered.reject()
+                    }
+                })
+                .catch(function (response) {
+                    deffered.reject()
+
+                })
+            return deffered.promise
+            }
+
             function addList(name, boardID ) {
             var deffered = $q.defer()
 

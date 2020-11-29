@@ -125,6 +125,18 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             $scope.boardInfo = response.data.board
         })
 
+    $scope.updateBoard = function (boardName) {
+        if (boardName === "")
+            boardName = $scope.boardInfo.name
+        BoardsService.editBoard($scope.boardInfo.id, boardName)
+            .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
+
+
     $scope.generateList = function () {
         BoardsService.addList($scope.listForm.name, $routeParams.id)
             .then(function () {

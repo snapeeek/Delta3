@@ -147,3 +147,17 @@ def unarchiveBoard():
         return jsonify({'result': 'success'})
     except:
         return 'There was a problem deleting that task'
+
+@apibp.route('/api/editBoard', methods=["POST"])
+def editBoard():
+    json_data = request.json
+    board = Board.query.filter_by(id=json_data['board_id']).first()
+    board.name = json_data['name']
+
+    try:
+        db.session.commit()
+        db.session.close()
+        return jsonify({'result': 'success'})
+    except:
+        return 'There was a problem deleting that task'
+
