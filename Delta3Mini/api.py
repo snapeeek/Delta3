@@ -161,3 +161,15 @@ def editBoard():
     except:
         return 'There was a problem deleting that task'
 
+@apibp.route('/api/editList', methods=["POST"])
+def editList():
+    json_data = request.json
+    list = List.query.filter_by(id=json_data['list_id']).first()
+    list.name = json_data['list_name']
+
+    try:
+        db.session.commit()
+        db.session.close()
+        return jsonify({'result': 'success'})
+    except:
+        return 'There was a problem deleting that task'

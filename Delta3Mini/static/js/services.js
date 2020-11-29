@@ -108,6 +108,7 @@ angular.module('app').factory('BoardsService',
                 addCardToList: addCardToList,
                 editCardContent:editCardContent,
                 unarchiveBoard: unarchiveBoard,
+                editList: editList,
             })
 
             function deleteBoard(id, username) {
@@ -265,7 +266,26 @@ angular.module('app').factory('BoardsService',
 
                 })
             return deffered.promise
+            }
 
+            function editList(listID, listName) {
+                var deffered = $q.defer()
+                $http.post('/api/editList', { list_id: listID, list_name: listName})
+                .then(function (response) {
+                    if (response.data)
+                    {
+                        deffered.resolve()
+                    }
+                    else
+                    {
+                        deffered.reject()
+                    }
+                })
+                .catch(function (response) {
+                    deffered.reject()
+
+                })
+            return deffered.promise
             }
 
 

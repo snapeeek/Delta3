@@ -136,6 +136,25 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             })
     }
 
+    $scope.unarchiveBoard = function (boardID) {
+        BoardsService.unarchiveBoard(boardID)
+         .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
+
+    $scope.editList = function (id, boardName) {
+        console.log("wchodze w edycje list")
+        BoardsService.editList(id, boardName)
+            .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
+
 
     $scope.generateList = function () {
         BoardsService.addList($scope.listForm.name, $routeParams.id)
@@ -226,12 +245,5 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         }
     }
 
-    $scope.unarchive = function (boardID) {
-        BoardsService.unarchiveBoard(boardID)
-         .then(function () {
-                $route.reload()
-            }, function () {
-                $scope.errorMessage = 'Something went wrong'
-            })
-    }
+
 })
