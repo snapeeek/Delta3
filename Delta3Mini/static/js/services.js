@@ -106,7 +106,7 @@ angular.module('app').factory('BoardsService',
                 editBoard: editBoard,
                 addList: addList,
                 addCardToList: addCardToList,
-                editCardContent:editCardContent,
+                editCard:editCardContent,
                 unarchiveBoard: unarchiveBoard,
                 editList: editList,
             })

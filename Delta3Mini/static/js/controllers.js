@@ -98,7 +98,6 @@ myapp.controller('LogoutController', function ($scope, $location, $route, AuthSe
         AuthService.logout()
             .then(function () {
                 $location.path('/login')
-                //$route.reload()
             })
     }
 
@@ -116,18 +115,16 @@ myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, A
 
 myapp.controller("SingleBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService) {
     var config = {params: {board_id: $routeParams.id}}
-    $scope.card_id = ''
-    $scope.card_name = ''
-    $scope.card_content = ''
     $http.get('/api/list-lists', config).then(function (resp) {
         $scope.lists = resp.data.json_list;
     })
 
-    $http.post('/api/getBoardInfo', {board_id: $routeParams.id})
+    $http.get('/api/getBoardInfo', {params: {board_id: $routeParams.id}})
         .then(function (response) {
             $scope.boardInfo = response.data.board
         })
 
+    //-------------------functions to change board states
     $scope.updateBoard = function (boardName) {
         if (boardName === "")
             boardName = $scope.boardInfo.name
@@ -141,34 +138,32 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     $scope.unarchiveBoard = function (boardID) {
         BoardsService.unarchiveBoard(boardID)
-         .then(function () {
+            .then(function () {
                 $route.reload()
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
     }
 
+    //-------------------editing lists and cards done through submitting of forms in board.html
+    $scope.generateList = function () {
+        BoardsService.addList(this.addingListForm.name, $routeParams.id)
+            .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
     $scope.editList = function (id, newListName) {
         BoardsService.editList(id, newListName)
             .then(function () {
-                // $route.reload()
-            }, function () {
-                $scope.errorMessage = 'Something went wrong'
-            })
-    }
-
-
-    $scope.generateList = function () {
-        BoardsService.addList(this.listForm.name, $routeParams.id)
-            .then(function () {
-                $route.reload()
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
     }
 
     $scope.generateCard = function (id) {
-        BoardsService.addCardToList(this.cardForm.name, id)
+        BoardsService.addCardToList(this.addingCardForm.name, id)
             .then(function () {
                 $route.reload()
             }, function () {
@@ -176,34 +171,40 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             })
         document.getElementById("cardForm").style.display = "none"
     }
-    $scope.editCard = function (id, newCardContent) {
-        BoardsService.editCardContent(newCardContent, id)
-            .then(function () {
 
+    $scope.editCard = function (id, newCardContent) {
+        BoardsService.editCard(newCardContent, id)
+            .then(function () {
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
     }
 
-    $scope.showModal = function (id) {
+    //-------------------Showing and hiding modal windows in html
+    $scope.showAddingCardForm = function (id) {
         $scope.list_id = id
-        document.getElementById("cardForm").style.display = "block"
+        document.getElementById("addingCardForm").style.display = "block"
     }
-    $scope.showCard = function (id, name, content) {
+    // initializing some variables in scope so that it works properly
+    $scope.card_id = ''
+    $scope.card_name = ''
+    $scope.card_content = ''
+    $scope.showEditCardForm = function (id, name, content) {
         $scope.card_id = id
         $scope.card_name = name
         $scope.card_content = content
         document.getElementById("editCardForm").style.display = "block"
     }
 
-    $scope.hideModal = function () {
-        document.getElementById("cardForm").style.display = "none"
+    $scope.hideAddingCardForm = function () {
+        document.getElementById("addingCardForm").style.display = "none"
     }
     $scope.hideEditCardForm = function () {
         document.getElementById("editCardForm").style.display = "none"
         $route.reload()
     }
 
+    //-------------------funtions to be used when draging will be implemented for now they just log messages
     $scope.dragoverCallback = function (index, external, type, callback) {
         $scope.logListEvent('dragged over', index, external, type);
         // Invoke callback to origin for container types.
@@ -229,29 +230,11 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         console.log(message);
     };
 
-    // Initialize model
-    $scope.model = [[], []];
-    var id = 10;
-    angular.forEach(['all', 'move', 'copy', 'link', 'copyLink', 'copyMove'], function (effect, i) {
-        var container = {items: [], effectAllowed: effect};
-        for (var k = 0; k < 7; ++k) {
-            container.items.push({label: effect + ' ' + id++, effectAllowed: effect});
+    $window.onclick = function (event) {
+        if (event.target === document.getElementById("addingCardForm")) {
+            document.getElementById("addingCardForm").style.display = "none"
         }
-        $scope.model[i % $scope.model.length].push(container);
-    });
 
-    $scope.$watch('model', function (model) {
-        $scope.modelAsJson = angular.toJson(model, true);
-    }, true);
-
-    // $window.onclick = function (event) {
-    //     if (event.target === document.getElementById("cardForm")) {
-    //         document.getElementById("cardForm").style.display = "none"
-    //     }
-    //     if (event.target === document.getElementById("editCardForm")) {
-    //         document.getElementById("editCardForm").style.display = "none"
-    //     }
-    // }
-
+    }
 
 })
