@@ -120,6 +120,11 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         $scope.lists = resp.data.json_list;
     })
 
+    $http.post('/api/getBoardInfo', {board_id: $routeParams.id})
+        .then(function (response) {
+            $scope.boardInfo = response.data.board
+        })
+
     $scope.generateList = function () {
         BoardsService.addList($scope.listForm.name, $routeParams.id)
             .then(function () {
@@ -204,8 +209,17 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     }, true);
 
     $window.onclick = function (event) {
-        if (event.target == document.getElementById("cardForm")) {
+        if (event.target === document.getElementById("cardForm")) {
             document.getElementById("cardForm").style.display = "none"
         }
+    }
+
+    $scope.unarchive = function (boardID) {
+        BoardsService.unarchiveBoard(boardID)
+         .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
     }
 })

@@ -1,4 +1,4 @@
-<div class="content">
+<div class="content" ng-if="!boardInfo.archived">
     <h1 style="text-align: center" ng-if="lists.length == 0">There are no lists! Please add one!</h1>
         <div class="dropzone">
 
@@ -77,6 +77,12 @@
             <button class="btn cancel" onclick="closeForm('listForm')">Cancel</button>
         </form>
     </div>
+
+
+</div>
+
+<div class="content" ng-if="boardInfo.archived">
+    <h2>This board is archived. If you want to undo this <a ng-click="unarchive(boardInfo.id)">click here</a> </h2>
 
 
 </div>

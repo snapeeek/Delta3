@@ -104,9 +104,11 @@ def archive():
         board_to_archive.archived = True
         try:
             db.session.commit()
+            db.session.close()
             return jsonify({'result': 'success'})
         except:
             return 'There was a problem deleting that task'
+
     else:
         return 'There was a problem deleting that task'
 
@@ -126,3 +128,22 @@ def generateCard():
         status = 'this card couldn\'t have been added'
     db.session.close()
     return jsonify({'result': status})
+
+@apibp.route('/api/getBoardInfo', methods=["POST"])
+def getBoardInfo():
+    json_data = request.json
+    board = Board.query.filter_by(id=json_data['board_id']).first()
+    return jsonify(board=board.serialize)
+
+@apibp.route('/api/unarchiveBoard', methods=["POST"])
+def unarchiveBoard():
+    json_data = request.json
+    board = Board.query.filter_by(id=json_data['board_id']).first()
+    board.archived = False
+
+    try:
+        db.session.commit()
+        db.session.close()
+        return jsonify({'result': 'success'})
+    except:
+        return 'There was a problem deleting that task'

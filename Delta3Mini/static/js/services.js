@@ -106,7 +106,7 @@ angular.module('app').factory('BoardsService',
                 addList: addList,
                 addCardToList: addCardToList,
                 editCardContent:editCardContent,
-
+                unarchiveBoard: unarchiveBoard,
             })
 
             function deleteBoard(id, username) {
@@ -223,4 +223,27 @@ angular.module('app').factory('BoardsService',
                 })
             return deffered.promise
             }
+
+            function unarchiveBoard(boardID) {
+                var deffered = $q.defer()
+                $http.post('/api/unarchiveBoard', { board_id: boardID})
+                .then(function (response) {
+                    if (response.data)
+                    {
+                        deffered.resolve()
+                    }
+                    else
+                    {
+                        deffered.reject()
+                    }
+                })
+                .catch(function (response) {
+                    deffered.reject()
+
+                })
+            return deffered.promise
+
+            }
+
+
         }])
