@@ -51,7 +51,6 @@
 
             <div class="form-group">
                 <input type="text" placeholder="Enter card content" name="name" ng-model="editCardForm.content">
-<!--                todo editable into loss of focus and send update then -->
             </div>
             <button type="submit" class="close" id="closeEditCardForm">&times</button>
         </form>
@@ -61,7 +60,7 @@
         <form class="modal-content" ng-submit="generateCard(list_id)">
             <h1>New card</h1>
             <div class="form-group">
-                <input type="text" placeholder="Enter card name" name="name" ng-model="cardForm.name">
+                <input type="text" placeholder="Enter card name" name="name" ng-model="cardForm.name" required>
             </div>
             <button type="submit" class="close" id="closeCardForm">&times</button>
         </form>

@@ -126,7 +126,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         })
 
     $scope.generateList = function () {
-        BoardsService.addList($scope.listForm.name, $routeParams.id)
+        BoardsService.addList(this.listForm.name, $routeParams.id)
             .then(function () {
                 $route.reload()
             }, function () {
@@ -135,7 +135,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     }
 
     $scope.generateCard = function (id) {
-        BoardsService.addCardToList($scope.cardForm.name, id)
+        BoardsService.addCardToList(this.cardForm.name, id)
             .then(function () {
                 $route.reload()
             }, function () {
@@ -144,7 +144,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         document.getElementById("cardForm").style.display = "none"
     }
     $scope.editCard = function (id) {
-        BoardsService.editCardContent($scope.editCardForm.content, id)
+        BoardsService.editCardContent(this.editCardForm.content, id)
             .then(function () {
                 $route.reload()
             }, function () {
@@ -210,7 +210,12 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     $window.onclick = function (event) {
         if (event.target === document.getElementById("cardForm")) {
+            console.log(this)
             document.getElementById("cardForm").style.display = "none"
+        }
+        if (event.target === document.getElementById("editCardForm")) {
+            console.log(this)
+            document.getElementById("editCardForm").style.display = "none"
         }
     }
 
