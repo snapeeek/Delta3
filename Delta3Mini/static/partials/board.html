@@ -39,7 +39,7 @@
                             dnd-dragend="logEvent('Drag operation ended. Drop effect: ' + dropEffect)">
                             <div class="editContent" ng-click="showCard(card.id, card.name, card.content)">
                                 {{card.name}}
-                            </div>
+                            </div>-
                         </li>
                         <div>
                             <button class="pluscard" ng-click="showModal(list.id)">+Card</button>
@@ -52,15 +52,12 @@
         </ul>
     </div>
     <div class="modal" id="editCardForm">
-        <form class="modal-content" ng-submit="editCard(card_id)">
+        <div class="modal-content">
             <h1>{{ card_name }}</h1>
-            <h2>{{ card_content }}</h2>
+            <h2 style="border: none; color: black" editable-text="card_content" onbeforesave="editCard(card_id, $data)">{{ card_content }}</h2>
+            <button ng-click="hideEditCardForm()">&times</button>
 
-            <div class="form-group">
-                <input type="text" placeholder="Enter card content" name="name" ng-model="editCardForm.content">
-            </div>
-            <button type="submit" class="close" id="closeEditCardForm">&times</button>
-        </form>
+        </div>
     </div>
 
     <div class="modal" id="cardForm">

@@ -116,6 +116,9 @@ myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, A
 
 myapp.controller("SingleBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService) {
     var config = {params: {board_id: $routeParams.id}}
+    $scope.card_id = ''
+    $scope.card_name = ''
+    $scope.card_content = ''
     $http.get('/api/list-lists', config).then(function (resp) {
         $scope.lists = resp.data.json_list;
     })
@@ -145,11 +148,10 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             })
     }
 
-    $scope.editList = function (id, boardName) {
-        console.log("wchodze w edycje list")
-        BoardsService.editList(id, boardName)
+    $scope.editList = function (id, newListName) {
+        BoardsService.editList(id, newListName)
             .then(function () {
-                $route.reload()
+                // $route.reload()
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
@@ -174,14 +176,13 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             })
         document.getElementById("cardForm").style.display = "none"
     }
-    $scope.editCard = function (id) {
-        BoardsService.editCardContent(this.editCardForm.content, id)
+    $scope.editCard = function (id, newCardContent) {
+        BoardsService.editCardContent(newCardContent, id)
             .then(function () {
-                $route.reload()
+
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
-        document.getElementById("editCardForm").style.display = "none"
     }
 
     $scope.showModal = function (id) {
@@ -197,6 +198,10 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     $scope.hideModal = function () {
         document.getElementById("cardForm").style.display = "none"
+    }
+    $scope.hideEditCardForm = function () {
+        document.getElementById("editCardForm").style.display = "none"
+        $route.reload()
     }
 
     $scope.dragoverCallback = function (index, external, type, callback) {
@@ -239,16 +244,14 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         $scope.modelAsJson = angular.toJson(model, true);
     }, true);
 
-    $window.onclick = function (event) {
-        if (event.target === document.getElementById("cardForm")) {
-            console.log(this)
-            document.getElementById("cardForm").style.display = "none"
-        }
-        if (event.target === document.getElementById("editCardForm")) {
-            console.log(this)
-            document.getElementById("editCardForm").style.display = "none"
-        }
-    }
+    // $window.onclick = function (event) {
+    //     if (event.target === document.getElementById("cardForm")) {
+    //         document.getElementById("cardForm").style.display = "none"
+    //     }
+    //     if (event.target === document.getElementById("editCardForm")) {
+    //         document.getElementById("editCardForm").style.display = "none"
+    //     }
+    // }
 
 
 })
