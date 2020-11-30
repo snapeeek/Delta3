@@ -44,7 +44,12 @@ myapp.controller('IndexController', function ($scope, $http, $route, BoardsServi
                 $scope.errorMessage = 'Something went wrong'
             })
     }
-
+    $scope.openBoardForm = function () {
+        document.getElementById("boardForm").style.display = "block"
+    }
+    $scope.hideBoardForm = function () {
+        document.getElementById("boardForm").style.display = "none"
+    }
 })
 
 myapp.controller('LoginController', function ($scope, $location, $route, AuthService) {
@@ -189,19 +194,27 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     $scope.card_id = ''
     $scope.card_name = ''
     $scope.card_content = ''
+
     $scope.showEditCardForm = function (id, name, content) {
         $scope.card_id = id
         $scope.card_name = name
         $scope.card_content = content
         document.getElementById("editCardForm").style.display = "block"
     }
+    $scope.showListForm = function () {
+        document.getElementById("addingListForm").style.display = "block"
+    }
 
+    //simple hiding methods
     $scope.hideAddingCardForm = function () {
         document.getElementById("addingCardForm").style.display = "none"
     }
     $scope.hideEditCardForm = function () {
         document.getElementById("editCardForm").style.display = "none"
         $route.reload()
+    }
+    $scope.hideListForm = function () {
+        document.getElementById("addingListForm").style.display = "none"
     }
 
     //-------------------funtions to be used when draging will be implemented for now they just log messages

@@ -1,11 +1,3 @@
-function openForm(name) {
-    document.getElementById(name).style.display = "block";
-}
-
-function closeForm(name) {
-    document.getElementById(name).style.display = "none";
-}
-
 var myapp = angular.module("app", ['ngRoute', 'angular-loading-bar', 'dndLists', 'xeditable']);
 
 myapp.config(function ($routeProvider, $locationProvider) {

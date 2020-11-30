@@ -101,10 +101,7 @@ position: fixed;
     width: 200px;
     height: 50px;
     border-radius: .35em;
-  /*position: fixed;*/
-  /*bottom: 23px;*/
-  /*right: 28px;*/
-  /*width: 280px;*/
+
 }
 
 /* The popup form - hidden by default */
@@ -115,6 +112,8 @@ position: fixed;
   right: 15px;
   border: 3px solid #f1f1f1;
   z-index: 9;
+    background-color: white;
+    padding-bottom: 10px;
 }
 
 /* Add styles to the form container */
@@ -139,20 +138,21 @@ position: fixed;
   outline: none;
 }
 
-/* Set a style for the submit/login button */
-.form-container .btn {
+.form-popup .btn{
   background-color: #4CAF50;
   color: white;
   padding: 16px 20px;
   border: none;
   cursor: pointer;
   width: 100%;
-  margin-bottom:10px;
   opacity: 0.8;
 }
 
 /* Add a red background color to the cancel button */
-.form-container .cancel {
+.form-popup .cancel {
+    max-width: 300px;
+    width: 91%;
+    margin-left: 10px;
   background-color: red;
 }
 
@@ -190,8 +190,11 @@ position: fixed;
 .close {
   color: #aaa;
   float: right;
-  font-size: 28px;
+  font-size: 40px;
   font-weight: bold;
+    position: absolute;
+    top: 15px;
+    right: 15px;
 }
 
 .close:hover,

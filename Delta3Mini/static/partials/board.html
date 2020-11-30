@@ -48,15 +48,15 @@
                     <div class="clearfix"></div>
                 </div>
             </li>
-            <button class="open-button" onclick="openForm('addingListForm')">New List</button>
+            <button class="open-button" ng-click="showListForm()">New List</button>
         </ul>
     </div>
     <!--           EDITING INSIDES OF CARD                                                                                        -->
     <div class="modal" id="editCardForm">
         <div class="modal-content">
-            <h1>{{ card_name }}</h1>
-            <h2 style="border: none; color: black" editable-text="card_content" onbeforesave="editCard(card_id, $data)">{{ card_content || "No content provided!" }}</h2>
-            <button ng-click="hideEditCardForm()">&times</button>
+            <h1><i class="glyphicon glyphicon-tasks" style="font-size: 20px;padding-right: 8px"></i>{{ card_name }}</h1>
+            <h2 style="border: none; color: black" editable-text="card_content" onbeforesave="editCard(card_id, $data)"><i class="glyphicon glyphicon-list-alt" style="padding-right: 8px; font-size: 20px"></i>{{ card_content || "No content provided!" }}</h2>
+            <button class="close" ng-click="hideEditCardForm()">&times</button>
 
         </div>
     </div>
@@ -74,20 +74,22 @@
 
     <!--           ADDING LIST                                                                                        -->
     <div class="form-popup" id="addingListForm">
-        <form class="form-container" ng-submit="generateList()">
+        <form class="form-container" ng-submit="generateList()" >
             <h1>New List</h1>
             <label for="Name"><b>Name</b></label>
             <div class="form-group">
                 <input type="text" placeholder="Enter list name" name="name" ng-model="addingListForm.name" required>
             </div>
-            <button type="submit" class="btn">Add</button>
-            <button class="btn cancel" onclick="closeForm('listForm')">Cancel</button>
+            <button type="submit" class="btn" >Add</button>
         </form>
+                    <button class="btn cancel" ng-click="hideListForm()">Cancel</button>
+
     </div>
 
 
 </div>
 
+<!--           If the board is archived this will be displayed                                                                                        -->
 <div class="content" ng-if="boardInfo.archived">
     <h2>This board is archived. If you want to undo this <a ng-click="unarchiveBoard(boardInfo.id)">click here</a></h2>
 
