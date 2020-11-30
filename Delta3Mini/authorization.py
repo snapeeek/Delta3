@@ -52,16 +52,6 @@ def logout():
         return make_response(jsonify(responseObject)), 403
 
 
-@authbp.route('/api/status')
-def status():
-    if session.get('logged_in'):
-        if session['logged_in']:
-            return jsonify({'status': True,
-                            'username': session.get('username')})
-    else:
-        return jsonify({'status': False})
-
-
 @authbp.route('/api/register', methods=["POST"])
 def register():
     json_data = request.json

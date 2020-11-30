@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import jwt
 from Delta3Mini import db
 
-SUPER_SECRET_KEY = "adam_jest_miszczem"
+SUPER_SECRET_KEY = "skurczybonk"
 def dump_datetime(value):
     """Deserialize datetime object into string form for JSON processing."""
     if value is None:
@@ -47,14 +47,15 @@ class User(db.Model):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
 
-    def encode_auth_token(self, user_id):
+    @staticmethod
+    def encode_auth_token(user_id):
         """
         Generates the Auth Token
         :return: string
         """
         try:
             payload = {
-                'exp': datetime.now() + timedelta(days=0, minutes=5),
+                'exp': datetime.now() + timedelta(days=0, minutes=0,seconds=15),
                 'iat': datetime.now(),
                 'sub': user_id
             }
@@ -66,6 +67,7 @@ class User(db.Model):
         except Exception as e:
             return e
 
+    @staticmethod
     def decode_auth_token(auth_token):
         """
         Validates the auth token
@@ -118,6 +120,10 @@ class BlacklistToken(db.Model):
         else:
             return False
 
+    @staticmethod
+    def delete_from_db():
+        BlacklistToken.query.filter(BlacklistToken.blacklisted_on <= datetime.now() - timedelta(days=1)).delete()
+        db.session.commit()
 class Board(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), default="Board")
