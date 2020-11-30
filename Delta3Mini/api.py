@@ -24,6 +24,13 @@ def list_lists():
         return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
 
 
+@apibp.route('/api/getBoardInfo', methods=["GET"])
+def getBoardInfo():
+    json_data = request.args.get('board_id')
+    board = Board.query.filter_by(id=json_data).first()
+    return jsonify(board=board.serialize)
+
+
 @apibp.route('/api/delete', methods=["POST"])
 def delete():
     json_data = request.json
@@ -129,17 +136,40 @@ def generateCard():
     db.session.close()
     return jsonify({'result': status})
 
-@apibp.route('/api/getBoardInfo', methods=["POST"])
-def getBoardInfo():
-    json_data = request.json
-    board = Board.query.filter_by(id=json_data['board_id']).first()
-    return jsonify(board=board.serialize)
 
 @apibp.route('/api/unarchiveBoard', methods=["POST"])
 def unarchiveBoard():
     json_data = request.json
     board = Board.query.filter_by(id=json_data['board_id']).first()
     board.archived = False
+
+    try:
+        db.session.commit()
+        db.session.close()
+        return jsonify({'result': 'success'})
+    except:
+        return 'There was a problem deleting that task'
+
+
+@apibp.route('/api/editBoard', methods=["POST"])
+def editBoard():
+    json_data = request.json
+    board = Board.query.filter_by(id=json_data['board_id']).first()
+    board.name = json_data['name']
+
+    try:
+        db.session.commit()
+        db.session.close()
+        return jsonify({'result': 'success'})
+    except:
+        return 'There was a problem deleting that task'
+
+
+@apibp.route('/api/editList', methods=["POST"])
+def editList():
+    json_data = request.json
+    list = List.query.filter_by(id=json_data['list_id']).first()
+    list.name = json_data['list_name']
 
     try:
         db.session.commit()
