@@ -28,9 +28,10 @@ angular.module('app').factory('AuthService',
 
             $http.post('/api/login', {username: username, password: password})
                 .then(function (response) {
-                    if (response.data)
+                    if (response.data.result)
                     {
                         user = true;
+                        $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.auth_token;
                         deffered.resolve();
                     }
                     else

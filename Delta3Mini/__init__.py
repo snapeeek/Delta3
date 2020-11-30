@@ -5,7 +5,6 @@ from flask_migrate import Migrate
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 
-
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'skurczybonk'
