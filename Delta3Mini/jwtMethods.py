@@ -1,16 +1,17 @@
 """
 Authentication Functions
 """
-from datetime import timedelta
+from datetime import timedelta, datetime
 from functools import wraps
 
 from flask import abort, request
 from flask_jwt_extended import (
     create_access_token, get_jwt_identity,
-    verify_jwt_in_request, verify_fresh_jwt_in_request
+    verify_jwt_in_request, verify_fresh_jwt_in_request, decode_token
 )
 
 from Delta3Mini.models.models import User, BlacklistToken
+from Delta3Mini.tasks import clean_blacklisted_database
 
 
 class AuthenticationError(Exception):
@@ -43,25 +44,27 @@ class TokenBlackListedFound(AuthenticationError):
     """Token was blacklisted"""
 
 
-def get_authenticated_user():
+def get_authenticated_user(token):
     """
     Get authentication token user identity and verify account is active
     """
-    identity = get_jwt_identity()
-    user = User.query.filter_by(id=identity).scalar()
+    identity = decode_token(token)
+    user = User.query.filter_by(id=identity['sub']).scalar()
     if user is not None:
         return user
     else:
         raise UserNotFound(identity)
 
 
-def refresh_authentication():
+def refresh_authentication(old_token):
     """
     Refresh authentication, issue new access token
     """
-    BlacklistToken.add_to_db(request.headers.get('Authorization').split(" ")[1])
-    user = get_authenticated_user()
-    return create_access_token(identity=user.id, fresh=True, expires_delta=timedelta(days=0, minutes=10))
+    if decode_token(old_token).get('exp') > (datetime.now() + timedelta(minutes=1)).timestamp():
+        return old_token
+    user = get_authenticated_user(old_token)
+    BlacklistToken.add_to_db(old_token)
+    return create_access_token(identity=user.id, fresh=True, expires_delta=timedelta(days=0, minutes=5))
 
 
 def auth_required(func):

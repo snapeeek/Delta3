@@ -103,10 +103,12 @@ class BlacklistToken(db.Model):
     @staticmethod
     def add_to_db(auth_token):
         # mark the token as blacklisted
+        BlacklistToken.delete_from_db()
         blacklist_token = BlacklistToken(token=auth_token)
-        # insert the token
-        db.session.add(blacklist_token)
-        db.session.commit()
+        if BlacklistToken.query.filter_by(token = blacklist_token.token).scalar() is None:
+            # insert the token
+            db.session.add(blacklist_token)
+            db.session.commit()
 
 
 class Board(db.Model):
