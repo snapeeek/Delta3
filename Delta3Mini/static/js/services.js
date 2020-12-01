@@ -28,8 +28,9 @@ angular.module('app').factory('AuthService',
 
             $http.post('/api/login', {username: username, password: password})
                 .then(function (response) {
-                    if (response.data)
+                    if (response.data.result)
                     {
+                        console.log(response.data['result'])
                         user = true;
                         deffered.resolve();
                     }
@@ -142,7 +143,6 @@ angular.module('app').factory('BoardsService',
                         deffered.reject()
                     })
                 return deffered.promise
-
             }
 
             function addBoard(name, background, team) {

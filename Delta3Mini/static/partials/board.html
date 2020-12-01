@@ -39,10 +39,17 @@
                             dnd-dragstart="logEvent('Started to drag an item')"
                             dnd-moved="container.items.splice($index, 1)"
                             dnd-dragend="logEvent('Drag operation ended. Drop effect: ' + dropEffect)">
+                            <div class="labels">
+                                <div class="label" style="width: min-content; height: min-content; border-radius: 5px; background-color: red; color: white; float:left;">
+                                    label
+                                </div>
+                                <div class="label" style="width: min-content; height: min-content; border-radius: 5px; background-color: darkgreen; color: white; float:left;">
+                                    label1
+                                </div>
+                            </div>
                             <div class="editContent" ng-click="showEditCardForm(card.id, card.name, card.content)">
                                 {{ card.name }}
                             </div>
-                            -
                         </li>
                         <div>
                             <button class="pluscard" ng-click="showAddingCardForm(list.id)">+Card</button>
