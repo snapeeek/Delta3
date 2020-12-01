@@ -122,6 +122,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     var config = {params: {board_id: $routeParams.id}}
     $http.get('/api/list-lists', config).then(function (resp) {
         $scope.lists = resp.data.json_list;
+        console.log($scope.lists)
     })
 
     $http.get('/api/getBoardInfo', {params: {board_id: $routeParams.id}})

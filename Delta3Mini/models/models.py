@@ -77,6 +77,14 @@ class Label(db.Model):
     def __init__(self, **kwargs):
         super(Label, self).__init__(**kwargs)
 
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'color': self.color,
+            'text': self.text,
+        }
+
 
 
 class List(db.Model):
@@ -121,6 +129,7 @@ class Card(db.Model):
             'name':self.name,
             'content': self.content,
             'date_created': dump_datetime(self.date_created),
+            'labels': [i.serialize for i in self.labels],
         }
 
 

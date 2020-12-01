@@ -339,6 +339,10 @@ a.editable-click {
 
 .labels .label {
     margin: 1px 1px 1px 1px;
+    width: min-content;
+    height: min-content;
+    border-radius: 5px;
+    float:left;
 }
 
 /*end of lists css */
