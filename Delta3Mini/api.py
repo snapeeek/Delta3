@@ -3,7 +3,7 @@ import sys
 from flask import jsonify, Blueprint, request, session
 
 from . import get_db
-from .jwtMethods import auth_required
+from .jwtMethods import auth_fresh_required, refresh_authentication
 from .models.models import Card, User, Board, List
 
 apibp = Blueprint('api', __name__)
@@ -19,8 +19,9 @@ def status():
     else:
         return jsonify({'status': False})
 
+
 @apibp.route('/api/list-boards')
-@auth_required
+@auth_fresh_required
 def list_boards():
     if session.get('logged_in'):
         user = User.query.filter_by(username=session.get('username')).first()
@@ -28,7 +29,7 @@ def list_boards():
 
 
 @apibp.route('/api/list-lists', methods=["GET"])
-@auth_required
+@auth_fresh_required
 def list_lists():
     if session.get('logged_in'):
         json_data = request.args.get('board_id')
@@ -37,7 +38,7 @@ def list_lists():
 
 
 @apibp.route('/api/getBoardInfo', methods=["GET"])
-@auth_required
+@auth_fresh_required
 def getBoardInfo():
     json_data = request.args.get('board_id')
     board = Board.query.filter_by(id=json_data).first()
@@ -45,7 +46,7 @@ def getBoardInfo():
 
 
 @apibp.route('/api/delete', methods=["POST"])
-@auth_required
+@auth_fresh_required
 def delete():
     json_data = request.json
     board_to_delete = Board.query.get_or_404(json_data['id'])
@@ -57,7 +58,8 @@ def delete():
         try:
             db.session.delete(board_to_delete)
             db.session.commit()
-            return jsonify({'result': 'success'})
+            new_token = refresh_authentication()
+            return jsonify({'result': 'success', 'auth_token': new_token})
         except:
             return 'There was a problem deleting that task'
     else:
@@ -65,20 +67,21 @@ def delete():
 
 
 @apibp.route('/api/editCard', methods=["POST"])
-@auth_required
+@auth_fresh_required
 def editCard():
     json_data = request.json
     card_to_edit = Card.query.filter_by(id=json_data['card_id']).first()
     card_to_edit.content = json_data['content']
     try:
         db.session.commit()
-        return jsonify({'result': 'success'})
+        new_token = refresh_authentication()
+        return jsonify({'result': 'True', 'auth_token': new_token})
     except:
         return 'There was a problem deleting that task'
 
 
 @apibp.route('/api/generateBoard', methods=["POST"])
-@auth_required
+@auth_fresh_required
 def generateBoard():
     json_data = request.json
 
@@ -97,11 +100,12 @@ def generateBoard():
         print(sys.exc_info()[0])
         status = 'this board couldn\'t have been added'
     db.session.close()
-    return jsonify({'result': status})
+    new_token = refresh_authentication()
+    return jsonify({'result': status, 'auth_token': new_token})
 
 
 @apibp.route('/api/generateList', methods=["POST"])
-@auth_required
+@auth_fresh_required
 def generateList():
     json_data = request.json
     list = List(name=json_data['name'],
@@ -114,11 +118,12 @@ def generateList():
         print(sys.exc_info()[0])
         status = 'this list couldn\'t have been added'
     db.session.close()
-    return jsonify({'result': status})
+    new_token = refresh_authentication()
+    return jsonify({'result': status, 'auth_token': new_token})
 
 
 @apibp.route('/api/archive', methods=["POST"])
-@auth_required
+@auth_fresh_required
 def archive():
     json_data = request.json
     board_to_archive = Board.query.get_or_404(json_data['id'])
@@ -130,7 +135,8 @@ def archive():
         try:
             db.session.commit()
             db.session.close()
-            return jsonify({'result': 'success'})
+            new_token = refresh_authentication()
+            return jsonify({'result': 'success', 'auth_token': new_token})
         except:
             return 'There was a problem deleting that task'
 
@@ -139,7 +145,7 @@ def archive():
 
 
 @apibp.route('/api/generateCard', methods=["POST"])
-@auth_required
+@auth_fresh_required
 def generateCard():
     json_data = request.json
     card = Card(name=json_data['name'],
@@ -153,11 +159,12 @@ def generateCard():
         print(sys.exc_info()[0])
         status = 'this card couldn\'t have been added'
     db.session.close()
-    return jsonify({'result': status})
+    new_token = refresh_authentication()
+    return jsonify({'result': status, 'auth_token': new_token})
 
 
 @apibp.route('/api/unarchiveBoard', methods=["POST"])
-@auth_required
+@auth_fresh_required
 def unarchiveBoard():
     json_data = request.json
     board = Board.query.filter_by(id=json_data['board_id']).first()
@@ -166,13 +173,14 @@ def unarchiveBoard():
     try:
         db.session.commit()
         db.session.close()
-        return jsonify({'result': 'success'})
+        new_token = refresh_authentication()
+        return jsonify({'result': 'success', 'auth_token': new_token})
     except:
         return 'There was a problem deleting that task'
 
 
 @apibp.route('/api/editBoard', methods=["POST"])
-@auth_required
+@auth_fresh_required
 def editBoard():
     json_data = request.json
     board = Board.query.filter_by(id=json_data['board_id']).first()
@@ -181,13 +189,14 @@ def editBoard():
     try:
         db.session.commit()
         db.session.close()
-        return jsonify({'result': 'success'})
+        new_token = refresh_authentication()
+        return jsonify({'result': 'success', 'auth_token': new_token})
     except:
         return 'There was a problem deleting that task'
 
 
 @apibp.route('/api/editList', methods=["POST"])
-@auth_required
+@auth_fresh_required
 def editList():
     json_data = request.json
     list = List.query.filter_by(id=json_data['list_id']).first()
@@ -196,6 +205,7 @@ def editList():
     try:
         db.session.commit()
         db.session.close()
-        return jsonify({'result': 'success'})
+        new_token = refresh_authentication()
+        return jsonify({'result': 'success', 'auth_token': new_token})
     except:
         return 'There was a problem deleting that task'

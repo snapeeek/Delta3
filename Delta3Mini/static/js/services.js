@@ -117,8 +117,10 @@ angular.module('app').factory('BoardsService',
 
                 $http.post('/api/delete', {id: id, username: username})
                     .then(function (response) {
-                        if (response.data)
-                            deffered.resolve()
+                        if (response.data) {
+                            $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.auth_token;
+                            deffered.resolve();
+                        }
                         else
                             deffered.reject()
 
@@ -134,8 +136,10 @@ angular.module('app').factory('BoardsService',
 
                 $http.post('/api/archive', {id: id, username: username})
                     .then(function (response) {
-                        if (response.data)
+                        if (response.data) {
+                            $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.auth_token;
                             deffered.resolve()
+                        }
                         else
                             deffered.reject()
 
@@ -153,6 +157,7 @@ angular.module('app').factory('BoardsService',
                 .then(function (response) {
                     if (response.data)
                     {
+                        $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.auth_token;
                         deffered.resolve()
                     }
                     else
@@ -174,6 +179,7 @@ angular.module('app').factory('BoardsService',
                 .then(function (response) {
                     if (response.data)
                     {
+                        $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.auth_token;
                         deffered.resolve()
                     }
                     else
@@ -195,6 +201,7 @@ angular.module('app').factory('BoardsService',
                 .then(function (response) {
                     if (response.data)
                     {
+                        $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.auth_token;
                         deffered.resolve()
                     }
                     else
@@ -215,6 +222,7 @@ angular.module('app').factory('BoardsService',
                 .then(function (response) {
                     if (response.data)
                     {
+                        $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.auth_token;
                         deffered.resolve()
                     }
                     else
@@ -235,6 +243,7 @@ angular.module('app').factory('BoardsService',
                 .then(function (response) {
                     if (response.data)
                     {
+                        $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.auth_token;
                         deffered.resolve()
                     }
                     else
@@ -255,6 +264,7 @@ angular.module('app').factory('BoardsService',
                 .then(function (response) {
                     if (response.data)
                     {
+                        $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.auth_token;
                         deffered.resolve()
                     }
                     else
@@ -275,6 +285,7 @@ angular.module('app').factory('BoardsService',
                 .then(function (response) {
                     if (response.data)
                     {
+                        $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.auth_token;
                         deffered.resolve()
                     }
                     else

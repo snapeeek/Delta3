@@ -4,6 +4,8 @@ import jwt
 from Delta3Mini import db
 
 SUPER_SECRET_KEY = "skurczybonk"
+
+
 def dump_datetime(value):
     """Deserialize datetime object into string form for JSON processing."""
     if value is None:
@@ -27,9 +29,9 @@ cards_and_labels = db.Table('CardsAndLabels',
                             )
 
 boards_and_labels = db.Table('Boardsandlabels',
-                            db.Column('board_id', db.Integer, db.ForeignKey('board.id'), primary_key=True),
-                            db.Column('label_id', db.Integer, db.ForeignKey('label.id'), primary_key=True)
-                            )
+                             db.Column('board_id', db.Integer, db.ForeignKey('board.id'), primary_key=True),
+                             db.Column('label_id', db.Integer, db.ForeignKey('label.id'), primary_key=True)
+                             )
 
 
 class User(db.Model):
@@ -48,26 +50,6 @@ class User(db.Model):
         super(User, self).__init__(**kwargs)
 
     @staticmethod
-    def encode_auth_token(user_id):
-        """
-        Generates the Auth Token
-        :return: string
-        """
-        try:
-            payload = {
-                'exp': datetime.now() + timedelta(days=0, minutes=0,seconds=15),
-                'iat': datetime.now(),
-                'sub': user_id
-            }
-            return jwt.encode(
-                payload,
-                SUPER_SECRET_KEY,
-                algorithm='HS256'
-            ).decode('utf-8')
-        except Exception as e:
-            return e
-
-    @staticmethod
     def decode_auth_token(auth_token):
         """
         Validates the auth token
@@ -75,7 +57,7 @@ class User(db.Model):
         :return: integer|string
         """
         try:
-            payload = jwt.decode(auth_token, SUPER_SECRET_KEY,algorithms=['HS256'])
+            payload = jwt.decode(auth_token, SUPER_SECRET_KEY, algorithms=['HS256'])
             is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
             if is_blacklisted_token:
                 return 'Token blacklisted. Please log in again.'
@@ -86,13 +68,6 @@ class User(db.Model):
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
 
-    def check_blacklist(auth_token):
-        # check whether auth token has been blacklisted
-        res = BlacklistToken.query.filter_by(token=str(auth_token)).first()
-        if res:
-            return True
-        else:
-            return False
 
 class BlacklistToken(db.Model):
     """
@@ -122,8 +97,18 @@ class BlacklistToken(db.Model):
 
     @staticmethod
     def delete_from_db():
-        BlacklistToken.query.filter(BlacklistToken.blacklisted_on <= datetime.now() - timedelta(days=1)).delete()
+        BlacklistToken.query.filter(BlacklistToken.blacklisted_on <= datetime.now() - timedelta(minutes=30)).delete()
         db.session.commit()
+
+    @staticmethod
+    def add_to_db(auth_token):
+        # mark the token as blacklisted
+        blacklist_token = BlacklistToken(token=auth_token)
+        # insert the token
+        db.session.add(blacklist_token)
+        db.session.commit()
+
+
 class Board(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), default="Board")
@@ -147,6 +132,7 @@ class Board(db.Model):
             'archived': self.archived,
         }
 
+
 class Label(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     color = db.Column(db.String(30))
@@ -154,7 +140,6 @@ class Label(db.Model):
 
     def __init__(self, **kwargs):
         super(Label, self).__init__(**kwargs)
-
 
 
 class List(db.Model):
@@ -165,6 +150,7 @@ class List(db.Model):
 
     def __init__(self, **kwargs):
         super(List, self).__init__(**kwargs)
+
     @property
     def serialize(self):
         """Return object data in easily serializable format"""
@@ -174,6 +160,7 @@ class List(db.Model):
             'name': self.name,
             'cards': json_list
         }
+
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -196,7 +183,7 @@ class Card(db.Model):
         """Return object data in easily serializable format"""
         return {
             'id': self.id,
-            'name':self.name,
+            'name': self.name,
             'content': self.content,
             'date_created': dump_datetime(self.date_created),
         }
@@ -229,4 +216,3 @@ class Team(db.Model):
 
     def __init__(self, **kwargs):
         super(Team, self).__init__(**kwargs)
-

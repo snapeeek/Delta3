@@ -1,6 +1,9 @@
+from datetime import timedelta
+
 from flask import (
     Blueprint, request, session, jsonify, make_response
 )
+from flask_jwt_extended import create_access_token
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from . import get_db
@@ -21,12 +24,8 @@ def logout():
     if auth_token:
         resp = User.decode_auth_token(auth_token)
         if not isinstance(resp, str):
-            # mark the token as blacklisted
-            blacklist_token = BlacklistToken(token=auth_token)
             try:
-                # insert the token
-                db.session.add(blacklist_token)
-                db.session.commit()
+                BlacklistToken.add_to_db(auth_token=auth_token)
                 responseObject = {
                     'status': 'success',
                     'message': 'Successfully logged out.'
@@ -82,9 +81,7 @@ def login():
             session['logged_in'] = True
             session['username'] = json_data['username']
             status = True
-            auth_token = user.encode_auth_token(user.id)
-            auth_token = str(auth_token)
-            print(auth_token)
+            auth_token = create_access_token(identity=user.id, fresh=True, expires_delta=timedelta(days=0, minutes=10))
             ret = jsonify({'result': status, 'message': 'i aint no snitch', 'auth_token': auth_token})
         return ret
     except Exception as e:
