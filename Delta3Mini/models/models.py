@@ -1,6 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
+import jwt
 from Delta3Mini import db
+
+SUPER_SECRET_KEY = "skurczybonk"
 
 
 def dump_datetime(value):
@@ -26,9 +29,9 @@ cards_and_labels = db.Table('CardsAndLabels',
                             )
 
 boards_and_labels = db.Table('Boardsandlabels',
-                            db.Column('board_id', db.Integer, db.ForeignKey('board.id'), primary_key=True),
-                            db.Column('label_id', db.Integer, db.ForeignKey('label.id'), primary_key=True)
-                            )
+                             db.Column('board_id', db.Integer, db.ForeignKey('board.id'), primary_key=True),
+                             db.Column('label_id', db.Integer, db.ForeignKey('label.id'), primary_key=True)
+                             )
 
 
 class User(db.Model):
@@ -45,6 +48,68 @@ class User(db.Model):
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
+
+    @staticmethod
+    def decode_auth_token(auth_token):
+        """
+        Validates the auth token
+        :param auth_token:
+        :return: integer|string
+        """
+        try:
+            payload = jwt.decode(auth_token, SUPER_SECRET_KEY, algorithms=['HS256'])
+            is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
+            if is_blacklisted_token:
+                return 'Token blacklisted. Please log in again.'
+            else:
+                return payload['sub']
+        except jwt.ExpiredSignatureError:
+            return 'Signature expired. Please log in again.'
+        except jwt.InvalidTokenError:
+            return 'Invalid token. Please log in again.'
+
+
+class BlacklistToken(db.Model):
+    """
+    Token Model for storing JWT tokens
+    """
+    __tablename__ = 'blacklist_tokens'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    token = db.Column(db.String(500), unique=True, nullable=False)
+    blacklisted_on = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, token):
+        self.token = token
+        self.blacklisted_on = datetime.now()
+
+    def __repr__(self):
+        return '<id: token: {}'.format(self.token)
+
+    @staticmethod
+    def check_blacklist(auth_token):
+        # check whether auth token has been blacklisted
+        res = BlacklistToken.query.filter_by(token=str(auth_token)).first()
+        if res:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def delete_from_db():
+        BlacklistToken.query.filter(BlacklistToken.blacklisted_on <= datetime.now() - timedelta(minutes=30)).delete()
+        db.session.commit()
+
+    @staticmethod
+    def add_to_db(auth_token):
+        # mark the token as blacklisted
+        BlacklistToken.delete_from_db()
+        blacklist_token = BlacklistToken(token=auth_token)
+        if BlacklistToken.query.filter_by(token = blacklist_token.token).scalar() is None:
+            # insert the token
+            db.session.add(blacklist_token)
+            db.session.commit()
+
 
 class Board(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -69,6 +134,7 @@ class Board(db.Model):
             'archived': self.archived,
         }
 
+
 class Label(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     color = db.Column(db.String(30))
@@ -86,7 +152,6 @@ class Label(db.Model):
         }
 
 
-
 class List(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
@@ -95,6 +160,7 @@ class List(db.Model):
 
     def __init__(self, **kwargs):
         super(List, self).__init__(**kwargs)
+
     @property
     def serialize(self):
         """Return object data in easily serializable format"""
@@ -104,6 +170,7 @@ class List(db.Model):
             'name': self.name,
             'cards': json_list
         }
+
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -126,7 +193,7 @@ class Card(db.Model):
         """Return object data in easily serializable format"""
         return {
             'id': self.id,
-            'name':self.name,
+            'name': self.name,
             'content': self.content,
             'date_created': dump_datetime(self.date_created),
             'labels': [i.serialize for i in self.labels],
@@ -160,4 +227,3 @@ class Team(db.Model):
 
     def __init__(self, **kwargs):
         super(Team, self).__init__(**kwargs)
-

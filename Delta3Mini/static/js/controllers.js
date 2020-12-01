@@ -1,9 +1,4 @@
 myapp.controller('IndexController', function ($scope, $http, $route, BoardsService, $location) {
-    $http.get('/api/status').then(function (response) {
-        document.getElementById("hello").innerText = "Hello " + response.data.username
-        $scope.username = response.data.username
-    })
-
     document.getElementById("registermenublock").hidden = true
     document.getElementById("loginmenublock").hidden = false
 
