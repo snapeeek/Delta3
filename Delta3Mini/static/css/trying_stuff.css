@@ -286,10 +286,10 @@ td {
     border-radius: .45em;
     color: #fff;
     font-weight: 700;
-    height: 50px;
+    height: min-content;
     /*margin: 5px;*/
     padding: 3px;
-    /*text-align: center;*/
+    text-align: center;
     width: 100%;
     align-self: center;
     justify-self: center;
@@ -298,7 +298,8 @@ td {
 .editContent {
     width: 100%;
     height: 100%;
-    display: flex;
+    display: inline-block;
+    word-wrap: break-word;
     justify-content: center;
     align-items: center;
     vertical-align: middle;
@@ -327,9 +328,21 @@ td {
 
 }
 
+li.ng-scope {
+    height: min-content;
+}
+
 a.editable-click {
     color: black;
     border-bottom: none;
+}
+
+.labels .label {
+    margin: 1px 1px 1px 1px;
+    width: min-content;
+    height: min-content;
+    border-radius: 5px;
+    float:left;
 }
 
 /*end of lists css */

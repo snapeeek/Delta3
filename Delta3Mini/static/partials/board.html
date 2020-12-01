@@ -39,10 +39,14 @@
                             dnd-dragstart="logEvent('Started to drag an item')"
                             dnd-moved="container.items.splice($index, 1)"
                             dnd-dragend="logEvent('Drag operation ended. Drop effect: ' + dropEffect)">
+                            <div class="labels">
+                                <div class="label" ng-repeat="label in card.labels" style="background-color: {{label.color}}";>
+                                    <b>{{label.text}}</b>
+                                </div>
+                            </div>
                             <div class="editContent" ng-click="showEditCardForm(card.id, card.name, card.content)">
                                 {{ card.name }}
                             </div>
-
                         </li>
                         <div>
                             <button class="pluscard" ng-click="showAddingCardForm(list.id)">+Card</button>
@@ -81,7 +85,7 @@
     <div class="form-popup" id="addingListForm">
         <form class="form-container" ng-submit="generateList()">
             <h1>New List</h1>
-            <label for="Name"><b>Name</b></label>
+            <label><b>Name</b></label>
             <div class="form-group">
                 <input type="text" placeholder="Enter list name" name="name" ng-model="addingListForm.name" required>
             </div>

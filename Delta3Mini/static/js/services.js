@@ -30,6 +30,7 @@ angular.module('app').factory('AuthService',
                 .then(function (response) {
                     if (response.data.result)
                     {
+                        console.log(response.data['result'])
                         user = true;
                         $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.auth_token;
                         deffered.resolve();
@@ -148,7 +149,6 @@ angular.module('app').factory('BoardsService',
                         deffered.reject()
                     })
                 return deffered.promise
-
             }
 
             function addBoard(name, background, team) {
