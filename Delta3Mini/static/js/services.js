@@ -28,9 +28,10 @@ angular.module('app').factory('AuthService',
 
             $http.post('/api/login', {username: username, password: password})
                 .then(function (response) {
-                    if (response.data)
+                    if (response.data.result)
                     {
                         user = true;
+                        $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.auth_token;
                         deffered.resolve();
                     }
                     else
@@ -85,6 +86,9 @@ angular.module('app').factory('AuthService',
             return $http.get('/api/status')
                 .then(function (response) {
                   if (response.data.status) {
+                      $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.auth_token;
+                      document.getElementById("hello").innerText = "Hello " + response.data.username
+                      $scope.username = response.data.username
                       user = true
                   }
                   else
@@ -116,8 +120,9 @@ angular.module('app').factory('BoardsService',
 
                 $http.post('/api/delete', {id: id, username: username})
                     .then(function (response) {
-                        if (response.data)
-                            deffered.resolve()
+                        if (response.data) {
+                            deffered.resolve();
+                        }
                         else
                             deffered.reject()
 
@@ -133,8 +138,9 @@ angular.module('app').factory('BoardsService',
 
                 $http.post('/api/archive', {id: id, username: username})
                     .then(function (response) {
-                        if (response.data)
+                        if (response.data) {
                             deffered.resolve()
+                        }
                         else
                             deffered.reject()
 
