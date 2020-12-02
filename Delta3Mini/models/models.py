@@ -109,6 +109,8 @@ class BlacklistToken(db.Model):
             # insert the token
             db.session.add(blacklist_token)
             db.session.commit()
+        else:
+            pass
 
 
 class Board(db.Model):

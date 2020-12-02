@@ -113,17 +113,37 @@ myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, A
     }
 });
 
-myapp.controller("SingleBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService) {
+myapp.controller("SingleBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService, AuthService, $timeout) {
     var config = {params: {board_id: $routeParams.id}}
-    $http.get('/api/list-lists', config).then(function (resp) {
-        $scope.lists = resp.data.json_list;
-        console.log($scope.lists)
-    })
-
-    $http.get('/api/getBoardInfo', {params: {board_id: $routeParams.id}})
-        .then(function (response) {
-            $scope.boardInfo = response.data.board
+    function retrive_board_info () {
+        $http.get('/api/getBoardInfo', {params: {board_id: $routeParams.id}})
+            .then(function (response) {
+                $scope.boardInfo = response.data.board
+            }).catch(function (response) {
+            if (response.status === 401 && response.data['msg'] === "Token has expired") {
+                AuthService.refreshToken()
+            }
         })
+    }
+    function retrive_lists() {
+        $http.get('/api/list-lists', config).then(async function (resp) {
+            $scope.lists = resp.data.json_list;
+            await retrive_board_info()
+        }).catch(async  function (response) {
+            if (response.status === 401 && response.data['msg'] === "Token has expired") {
+               await  AuthService.refreshToken()
+                retrive_lists()
+            }
+
+        })
+    }
+    retrive_lists()
+
+    //
+    // async function retrive_board_info() {
+    //
+    // }
+
 
     //-------------------functions to change board states
     $scope.updateBoard = function (boardName) {
