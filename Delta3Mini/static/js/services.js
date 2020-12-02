@@ -120,6 +120,7 @@ angular.module('app').factory('BoardsService',
                 editBoard: editBoard,
                 addList: addList,
                 addCardToList: addCardToList,
+                addLabelToCard: addLabelToCard,
                 editCard: editCardContent,
                 unarchiveBoard: unarchiveBoard,
                 editList: editList,
@@ -231,6 +232,29 @@ angular.module('app').factory('BoardsService',
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
                             AuthService.refreshToken().then(function (){
                               addList(name,boardID)
+                            })
+                        }
+                        deffered.reject()
+
+                    })
+                return deffered.promise
+            }
+
+            function addLabelToCard(labelID, cardID) {
+                var deffered = $q.defer()
+
+                $http.post('/api/addLabel', {cardID: cardID, labelID: labelID})
+                    .then(function (response) {
+                        if (response.data) {
+                            deffered.resolve()
+                        } else {
+                            deffered.reject()
+                        }
+                    })
+                    .catch(function (response) {
+                        if (response.status === 401 && response.data['msg'] === "Token has expired") {
+                            AuthService.refreshToken().then(function (){
+                              addLabelToCard(labelID, cardID)
                             })
                         }
                         deffered.reject()

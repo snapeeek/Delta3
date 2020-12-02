@@ -119,6 +119,7 @@ class Board(db.Model):
     background = db.Column(db.String(20))
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
     archived = db.Column(db.Boolean, default=False)
+    # public = db.Column(db.Boolean, default=False)
     labels = db.relationship('Label', secondary=boards_and_labels, lazy='subquery',
                              backref=db.backref('boards', lazy=True))
     lists = db.relationship('List', backref='board', lazy=True)
@@ -129,11 +130,13 @@ class Board(db.Model):
     @property
     def serialize(self):
         """Return object data in easily serializable format"""
+        json_list = [i.serialize for i in self.labels]
         return {
             'id': self.id,
             'name': self.name,
             'team_id': self.team_id,
             'archived': self.archived,
+            'labels': json_list
         }
 
 

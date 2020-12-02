@@ -193,6 +193,16 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         document.getElementById("cardForm").style.display = "none"
     }
 
+    $scope.addLabel = function (cardId) {
+        BoardsService.addLabelToCard(this.addLabel.id, cardId)
+            .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+
+    }
+
     $scope.editCard = function (id, newCardContent) {
         BoardsService.editCard(newCardContent, id)
             .then(function () {
