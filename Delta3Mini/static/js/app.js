@@ -1,4 +1,4 @@
-var myapp = angular.module("app", ['ngRoute', 'angular-loading-bar', 'dndLists', 'xeditable']);
+var myapp = angular.module("app", ['ngRoute', 'angular-loading-bar', 'dndLists', 'xeditable','ngCookies']);
 
 myapp.config(function ($routeProvider, $locationProvider) {
     $routeProvider

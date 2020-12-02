@@ -3,7 +3,7 @@ from datetime import timedelta
 from flask import (
     Blueprint, request, session, jsonify, make_response
 )
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, create_refresh_token
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from . import get_db
@@ -64,7 +64,7 @@ def register():
         status = 'success'
     except:
         status = 'this user is already registred'
-    db.session.close()
+    db.session.close()  # nie wiem czy tu nie bedzie pozniej problemu bo zamykanie przedwczesne sesji w bazie moze byc bledem
     return jsonify({'result': status})
 
 
@@ -81,9 +81,13 @@ def login():
             session['logged_in'] = True
             session['username'] = json_data['username']
             status = True
-            auth_token = create_access_token(identity=user.id, fresh=True, expires_delta=timedelta(days=0, minutes=10))
-            ret = jsonify({'result': status, 'message': 'i aint no snitch', 'auth_token': auth_token})
-        return ret
+            access_token = create_access_token(identity=user.id, fresh=True, expires_delta=timedelta(days=0, minutes=5))
+            refresh_token = create_refresh_token(identity=user.id, expires_delta=timedelta(minutes=45))
+            ret = jsonify({'result': status,
+                           'message': 'User has just logged in',
+                           'access_token': access_token,
+                           'refresh_token': refresh_token})
+            return ret
     except Exception as e:
         print(e)
         ret = {
