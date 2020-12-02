@@ -4,7 +4,7 @@ from flask import jsonify, Blueprint, request, session
 
 from . import get_db
 from .jwtMethods import auth_required, auth_fresh_required, refresh_authentication
-from .models.models import Card, User, Board, List
+from .models.models import Card, User, Board, List, Label
 
 apibp = Blueprint('api', __name__)
 db = get_db()
@@ -87,6 +87,9 @@ def editCard():
         return 'There was a problem deleting that task'
 
 
+
+
+
 @apibp.route('/api/generateBoard', methods=["POST"])
 @auth_required
 def generateBoard():
@@ -100,6 +103,10 @@ def generateBoard():
                   )
     user.boards.append(board)
     try:
+        board.labels.append(Label(color="Brown", text=""))
+        board.labels.append(Label(color="Coral", text=""))
+        board.labels.append(Label(color="DarkSlateGrey", text=""))
+        board.labels.append(Label(color="Indigo", text=""))
         db.session.add(board)
         db.session.commit()
         status = 'success'
@@ -157,6 +164,25 @@ def generateCard():
                 list_id=json_data['list_id'])
     try:
         db.session.add(card)
+        db.session.commit()
+        status = 'success'
+    except:
+        print(sys.exc_info()[0])
+        status = 'this card couldn\'t have been added'
+    db.session.close()
+    return jsonify({'result': status})
+
+@apibp.route('/api/addLabel', methods=["POST"])
+@auth_required
+def addLabel():
+    json_data = request.json
+    cardID = json_data['cardID']
+    labelID = int(json_data['labelID'])
+
+    try:
+        card = Card.query.filter_by(id=cardID).scalar()
+        label = Label.query.filter_by(id=labelID).scalar()
+        card.labels.append(label)
         db.session.commit()
         status = 'success'
     except:

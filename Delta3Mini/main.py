@@ -1,7 +1,7 @@
 from flask import send_from_directory, \
     make_response, Blueprint, redirect, request
 
-from . import get_db
+from .__init__ import get_db
 from .models.models import Card
 
 mainbp = Blueprint('main', __name__)

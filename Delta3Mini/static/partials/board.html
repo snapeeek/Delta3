@@ -65,6 +65,15 @@
             <h2 style="border: none; color: black" editable-text="card_content" onbeforesave="editCard(card_id, $data)">
                 <i class="glyphicon glyphicon-list-alt"
                    style="padding-right: 8px; font-size: 20px"></i>{{ card_content || "No content provided!" }}</h2>
+            <div class="form-labels">
+                <div class="labels">
+                    <div class="label" ng-repeat="label in boardInfo.labels" style="background-color: {{label.color}}";>
+                        <b>{{label.id}}</b>
+                    </div>
+                </div>
+                <input type="text" placeholder="Enter label id" name="id" ng-model="addLabel.id">
+                <button class="btn" type="submit" ng-click="addLabel(card_id)">Wprowadz label</button>
+            </div>
             <button class="close" ng-click="hideEditCardForm()">&times</button>
 
         </div>
@@ -78,7 +87,7 @@
                 <input type="text" placeholder="Enter card name" name="name" ng-model="addingCardForm.name">
             </div>
             <button type="submit" class="close" id="closeCardForm">&times</button>
-        </form>
+        </form>+
     </div>
 
     <!--           ADDING LIST                                                                                        -->
