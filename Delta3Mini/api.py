@@ -103,7 +103,6 @@ def generateBoard():
                   )
     user.boards.append(board)
     try:
-        #TODO:aaaaaaa
         board.labels.append(Label(color="Brown", text=""))
         board.labels.append(Label(color="Coral", text=""))
         board.labels.append(Label(color="DarkSlateGrey", text=""))
