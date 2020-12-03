@@ -52,6 +52,7 @@ myapp.run(function ($rootScope, $location, $route, AuthService, editableOptions)
                     }
                 })
         })
+    AuthService.reloadHeader()
     editableOptions.theme = 'bs3'
 })
 

@@ -1,4 +1,4 @@
-myapp.controller('IndexController', function ($scope, $http, $route, BoardsService, $location) {
+myapp.controller('IndexController', function ($scope, $http, $route, BoardsService, $location, AuthService) {
     document.getElementById("registermenublock").hidden = true
     document.getElementById("loginmenublock").hidden = false
 
@@ -6,6 +6,10 @@ myapp.controller('IndexController', function ($scope, $http, $route, BoardsServi
 
     $http.get('/api/list-boards').then(function (resp) {
         $scope.boards = resp.data.json_list;
+    }).catch( async function (response) {
+        if (response.status === 401 && response.data['msg'] === "Token has expired") {
+           await AuthService.refreshToken()
+        }
     })
 
     $scope.generateBoard = function () {
@@ -190,7 +194,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
-        document.getElementById("cardForm").style.display = "none"
+        document.getElementById("addingCardForm").style.display = "none"
     }
 
     $scope.addLabel = function (cardId) {

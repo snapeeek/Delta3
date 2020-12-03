@@ -1,5 +1,5 @@
 angular.module('app').factory('AuthService',
-    ['$q', '$timeout', '$http', '$cookies', '$window','$route',
+    ['$q', '$timeout', '$http', '$cookies', '$window', '$route',
         function ($q, $timeout, $http, $cookies, $window, $route) {
 
             var user = null;
@@ -10,7 +10,8 @@ angular.module('app').factory('AuthService',
                 logout: logout,
                 register: register,
                 getUserStatus: getUserStatus,
-                refreshToken: refreshToken
+                refreshToken: refreshToken,
+                reloadHeader: reloadHeader
             });
 
             function isLoggedIn() {
@@ -48,6 +49,11 @@ angular.module('app').factory('AuthService',
                 return deffered.promise
             }
 
+            function reloadHeader() {
+                let access_token = $cookies.get('access_token');
+                $http.defaults.headers.common.Authorization = 'Bearer ' + access_token;
+            }
+
 
             function logout() {
                 var deffered = $q.defer()
@@ -58,7 +64,7 @@ angular.module('app').factory('AuthService',
                         deffered.resolve()
                     }, function (response) {
                         user = false
-                        deffered.reject()
+                        deffered.resolve()
                     })
                 return deffered.promise
             }
@@ -101,17 +107,16 @@ angular.module('app').factory('AuthService',
                 await $http.post('/api/refresh_token', {access_token: old_access_token})
                     .then(function (responseFromPost) {
                         access_token = responseFromPost.data['access_token']
-                        console.log(access_token)
                         $http.defaults.headers.common.Authorization = 'Bearer ' + access_token;
                         $cookies.put('access_token', access_token)
-                        // $route.reload()
+                        $route.reload()
                     })
             }
 
         }])
 
 angular.module('app').factory('BoardsService',
-    ['$q', '$timeout', '$http','AuthService',
+    ['$q', '$timeout', '$http', 'AuthService',
         function ($q, $timeout, $http, AuthService) {
             return ({
                 deleteBoard: deleteBoard,
@@ -138,8 +143,8 @@ angular.module('app').factory('BoardsService',
 
                     }, function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
-                            AuthService.refreshToken().then(function (){
-                                deleteBoard(id,username)
+                            AuthService.refreshToken().then(function () {
+                                deleteBoard(id, username)
                             })
                         }
                         deffered.reject()
@@ -161,8 +166,8 @@ angular.module('app').factory('BoardsService',
 
                     }, function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
-                            AuthService.refreshToken().then(function (){
-                                archiveBoard(id,username)
+                            AuthService.refreshToken().then(function () {
+                                archiveBoard(id, username)
                             })
 
                         }
@@ -184,8 +189,8 @@ angular.module('app').factory('BoardsService',
                     })
                     .catch(function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
-                            AuthService.refreshToken().then(function (){
-                              addBoard(name,background,team)
+                            AuthService.refreshToken().then(function () {
+                                addBoard(name, background, team)
                             })
                         }
                         deffered.reject()
@@ -207,8 +212,8 @@ angular.module('app').factory('BoardsService',
                     })
                     .catch(function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
-                            AuthService.refreshToken().then(function (){
-                              editBoard(boardID,boardName)
+                            AuthService.refreshToken().then(function () {
+                                editBoard(boardID, boardName)
                             })
                         }
                         deffered.reject()
@@ -230,8 +235,8 @@ angular.module('app').factory('BoardsService',
                     })
                     .catch(function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
-                            AuthService.refreshToken().then(function (){
-                              addList(name,boardID)
+                            AuthService.refreshToken().then(function () {
+                                addList(name, boardID)
                             })
                         }
                         deffered.reject()
@@ -253,8 +258,8 @@ angular.module('app').factory('BoardsService',
                     })
                     .catch(function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
-                            AuthService.refreshToken().then(function (){
-                              addLabelToCard(labelID, cardID)
+                            AuthService.refreshToken().then(function () {
+                                addLabelToCard(labelID, cardID)
                             })
                         }
                         deffered.reject()
@@ -276,8 +281,8 @@ angular.module('app').factory('BoardsService',
                     })
                     .catch(function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
-                            AuthService.refreshToken().then(function (){
-                              addCardToList(name,listID)
+                            AuthService.refreshToken().then(function () {
+                                addCardToList(name, listID)
                             })
                         }
                         deffered.reject()
@@ -299,8 +304,8 @@ angular.module('app').factory('BoardsService',
                     })
                     .catch(function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
-                            AuthService.refreshToken().then(function (){
-                              editCardContent(content,cardID)
+                            AuthService.refreshToken().then(function () {
+                                editCardContent(content, cardID)
                             })
                         }
                         deffered.reject()
@@ -321,8 +326,8 @@ angular.module('app').factory('BoardsService',
                     })
                     .catch(function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
-                            AuthService.refreshToken().then(function (){
-                              unarchiveBoard(boardID)
+                            AuthService.refreshToken().then(function () {
+                                unarchiveBoard(boardID)
                             })
                         }
                         deffered.reject()
@@ -343,8 +348,8 @@ angular.module('app').factory('BoardsService',
                     })
                     .catch(function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
-                            AuthService.refreshToken().then(function (){
-                              editList(listID,listName)
+                            AuthService.refreshToken().then(function () {
+                                editList(listID, listName)
                             })
                         }
                         deffered.reject()
