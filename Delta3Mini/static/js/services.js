@@ -36,6 +36,7 @@ angular.module('app').factory('AuthService',
                             $http.defaults.headers.common.Authorization = 'Bearer ' + access_token;
 
                             $cookies.put('access_token', access_token)
+                            $cookies.put('username', username)
                             deffered.resolve();
                         } else {
                             user = false
@@ -93,6 +94,7 @@ angular.module('app').factory('AuthService',
                         if (response.data.status) {
                             document.getElementById("hello").innerText = "Hello " + response.data.username
                             user = true
+                            $cookie.put('username', response.data.username)
                         } else
                             user = false
                     }, function (response) {

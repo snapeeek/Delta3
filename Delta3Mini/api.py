@@ -23,18 +23,16 @@ def status():
 @apibp.route('/api/list-boards')
 @auth_required
 def list_boards():
-    if session.get('logged_in'):
-        user = User.query.filter_by(username=session.get('username')).first()
-        return jsonify(json_list=[i.serialize for i in user.boards])
+    user = User.query.filter_by(username=session.get('username')).first()
+    return jsonify(json_list=[i.serialize for i in user.boards])
 
 
 @apibp.route('/api/list-lists', methods=["GET"])
 @auth_required
 def list_lists():
-    if session.get('logged_in'):
-        json_data = request.args.get('board_id')
-        board_to_gather_lists = Board.query.filter_by(id=json_data).first()
-        return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
+    json_data = request.args.get('board_id')
+    board_to_gather_lists = Board.query.filter_by(id=json_data).first()
+    return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
 
 
 @apibp.route('/api/getBoardInfo', methods=["GET"])
