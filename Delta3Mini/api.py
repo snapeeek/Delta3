@@ -23,9 +23,8 @@ def status():
 @apibp.route('/api/list-boards')
 @auth_required
 def list_boards():
-    if session.get('logged_in'):
-        user = User.query.filter_by(username=session.get('username')).first()
-        return jsonify(json_list=[i.serialize for i in user.boards])
+    user = User.query.filter_by(username=session.get('username')).first()
+    return jsonify(json_list=[i.serialize for i in user.boards])
 
 
 @apibp.route('/api/list-lists', methods=["GET"])

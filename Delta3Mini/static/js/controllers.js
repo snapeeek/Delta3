@@ -1,4 +1,4 @@
-myapp.controller('IndexController', function ($scope, $http, $route, BoardsService, $location, AuthService) {
+myapp.controller('IndexController', function ($scope, $http, $route, $cookies, BoardsService, $location, AuthService) {
     document.getElementById("registermenublock").hidden = true
     document.getElementById("loginmenublock").hidden = false
 
@@ -26,7 +26,7 @@ myapp.controller('IndexController', function ($scope, $http, $route, BoardsServi
     }
 
     $scope.delete = function (id) {
-        BoardsService.deleteBoard(id, $scope.username)
+        BoardsService.deleteBoard(id, $cookies.get('username'))
             .then(function () {
                 $location.path('/')
                 $route.reload()
@@ -35,7 +35,7 @@ myapp.controller('IndexController', function ($scope, $http, $route, BoardsServi
             })
     }
     $scope.archive = function (id) {
-        BoardsService.archiveBoard(id, $scope.username)
+        BoardsService.archiveBoard(id, $cookies.get('username'))
             .then(function () {
                 $location.path('/')
                 $route.reload()
