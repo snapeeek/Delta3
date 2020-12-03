@@ -26,6 +26,11 @@ myapp.config(function ($routeProvider, $locationProvider) {
             controller: 'SingleBoardController',
             access: {restricted: true}
         })
+        .when('/publicBoard/:id', {
+            templateUrl: 'static/partials/publicBoard.html',
+            controller: 'SinglePublicBoardController',
+            access: {restricted: false}
+        })
         .when('/delete/:id', {
             controller: 'DeleteController',
             access: {restricted: true}

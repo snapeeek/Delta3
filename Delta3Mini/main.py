@@ -26,6 +26,7 @@ def index():
 @mainbp.route('/register')
 @mainbp.route('/login')
 @mainbp.route('/board/<id>')
+@mainbp.route('/publicBoard/<id>')
 def reredirect(id=0):
     return make_response(open('Delta3Mini/templates/base.html').read())
 

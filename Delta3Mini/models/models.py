@@ -119,7 +119,7 @@ class Board(db.Model):
     background = db.Column(db.String(20))
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
     archived = db.Column(db.Boolean, default=False)
-    # public = db.Column(db.Boolean, default=False)
+    public = db.Column(db.Boolean, default=False)
     labels = db.relationship('Label', secondary=boards_and_labels, lazy='subquery',
                              backref=db.backref('boards', lazy=True))
     lists = db.relationship('List', backref='board', lazy=True)
