@@ -221,8 +221,8 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     }
 
-    $scope.editCard = function (id, newCardContent) {
-        BoardsService.editCard(newCardContent, id)
+    $scope.editCard = function (id, newCardContent, whatToChange) {
+        BoardsService.editCard(newCardContent, id, whatToChange)
             .then(function () {
             }, function () {
                 $scope.errorMessage = 'Something went wrong'

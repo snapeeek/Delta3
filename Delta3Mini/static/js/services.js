@@ -127,7 +127,7 @@ angular.module('app').factory('BoardsService',
                 addList: addList,
                 addCardToList: addCardToList,
                 addLabelToCard: addLabelToCard,
-                editCard: editCardContent,
+                editCard: editCard,
                 unarchiveBoard: unarchiveBoard,
                 editList: editList,
             })
@@ -292,10 +292,10 @@ angular.module('app').factory('BoardsService',
                 return deffered.promise
             }
 
-            function editCardContent(content, cardID) {
+            function editCard(content, cardID, whatToChange) {
                 var deffered = $q.defer()
 
-                $http.post('/api/editCard', {content: content, card_id: cardID})
+                $http.post('/api/editCard', {content: content, card_id: cardID, what: whatToChange})
                     .then(function (response) {
                         if (response.data) {
                             deffered.resolve()
