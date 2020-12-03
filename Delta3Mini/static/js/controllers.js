@@ -6,9 +6,9 @@ myapp.controller('IndexController', function ($scope, $http, $route, $cookies, B
 
     $http.get('/api/list-boards').then(function (resp) {
         $scope.boards = resp.data.json_list;
-    }).catch( async function (response) {
+    }).catch(async function (response) {
         if (response.status === 401 && response.data['msg'] === "Token has expired") {
-           await AuthService.refreshToken()
+            await AuthService.refreshToken()
         }
     })
 
@@ -118,8 +118,8 @@ myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, A
 });
 
 myapp.controller("SingleBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService, AuthService, $timeout) {
-    var config = {params: {board_id: $routeParams.id}}
-    function retrive_board_info () {
+
+    function retrive_board_info() {
         $http.get('/api/getBoardInfo', {params: {board_id: $routeParams.id}})
             .then(function (response) {
                 $scope.boardInfo = response.data.board
@@ -129,18 +129,22 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             }
         })
     }
+
+    var config = {params: {board_id: $routeParams.id}}
+
     function retrive_lists() {
         $http.get('/api/list-lists', config).then(async function (resp) {
             $scope.lists = resp.data.json_list;
             await retrive_board_info()
-        }).catch(async  function (response) {
+        }).catch(async function (response) {
             if (response.status === 401 && response.data['msg'] === "Token has expired") {
-               await  AuthService.refreshToken()
+                await AuthService.refreshToken()
                 retrive_lists()
             }
 
         })
     }
+
     retrive_lists()
 
     //
@@ -280,4 +284,73 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     }
 
+})
+
+myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService, AuthService, $timeout) {
+    var config = {params: {board_id: $routeParams.id}}
+
+    function retrive_board_info() {
+        $http.get('/api/getPublicBoardInfo', {params: {board_id: $routeParams.id}})
+            .then(function (response) {
+                $scope.boardInfo = response.data.board
+            }).catch(function (response) {
+            if (response.status === 401 && response.data['msg'] === "Token has expired") {
+                AuthService.refreshToken()
+            }
+        })
+    }
+
+    function retrive_lists() {
+        $http.get('/api/list-public-lists', config).then(async function (resp) {
+            $scope.lists = resp.data.json_list;
+            await retrive_board_info()
+        }).catch(async function (response) {
+            if (response.status === 401 && response.data['msg'] === "Token has expired") {
+                await AuthService.refreshToken()
+                retrive_lists()
+            }
+
+        })
+    }
+
+    retrive_lists()
+
+    $window.onclick = function (event) {
+        if (event.target === document.getElementById("addingCardForm")) {
+            document.getElementById("addingCardForm").style.display = "none"
+        }
+
+    }
+
+    //-------------------Showing and hiding modal windows in html
+    $scope.showAddingCardForm = function (id) {
+        $scope.list_id = id
+        document.getElementById("addingCardForm").style.display = "block"
+    }
+    // initializing some variables in scope so that it works properly
+    $scope.card_id = ''
+    $scope.card_name = ''
+    $scope.card_content = ''
+
+    $scope.showEditCardForm = function (id, name, content) {
+        $scope.card_id = id
+        $scope.card_name = name
+        $scope.card_content = content
+        document.getElementById("editCardForm").style.display = "block"
+    }
+    $scope.showListForm = function () {
+        document.getElementById("addingListForm").style.display = "block"
+    }
+
+    //simple hiding methods
+    $scope.hideAddingCardForm = function () {
+        document.getElementById("addingCardForm").style.display = "none"
+    }
+    $scope.hideEditCardForm = function () {
+        document.getElementById("editCardForm").style.display = "none"
+        $route.reload()
+    }
+    $scope.hideListForm = function () {
+        document.getElementById("addingListForm").style.display = "none"
+    }
 })

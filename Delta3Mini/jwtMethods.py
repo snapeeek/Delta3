@@ -1,18 +1,15 @@
 """
 Authentication Functions
 """
-from datetime import timedelta, datetime
+from datetime import timedelta
 from functools import wraps
 
 from flask import abort, request
 from flask_jwt_extended import (
-    create_access_token, get_jwt_identity,
-    verify_jwt_in_request, verify_fresh_jwt_in_request, decode_token, verify_jwt_refresh_token_in_request
+    create_access_token, verify_fresh_jwt_in_request, decode_token, verify_jwt_refresh_token_in_request
 )
-from flask_jwt_extended.exceptions import FreshTokenRequired
 
 from Delta3Mini.models.models import User, BlacklistToken
-from Delta3Mini.tasks import clean_blacklisted_database
 
 
 class AuthenticationError(Exception):

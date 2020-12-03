@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 app = Flask(__name__)
 
+
 def create_app():
     app.config['SECRET_KEY'] = 'skurczybonk'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -14,8 +15,8 @@ def create_app():
     app.config['JWT_HEADER_NAME'] = 'Authorization'
     app.config['JWT_HEADER_TYPE'] = 'Bearer'
     app.config['JWT_IDENTITY_CLAIM'] = 'sub'
-    app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379'
-    app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379'
+    # app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379'
+    # app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379'
     from . import main as main_bp
     app.register_blueprint(main_bp.mainbp)
     from . import authorization as auth_bp
@@ -24,7 +25,7 @@ def create_app():
     app.register_blueprint(api_bp.apibp)
     JWTManager(app)
     db.init_app(app)
-    Migrate(app, db)
+    migrate = Migrate(app=app, db=db)
     return app
 
 

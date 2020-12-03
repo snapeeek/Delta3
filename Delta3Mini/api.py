@@ -1,6 +1,6 @@
 import sys
 
-from flask import jsonify, Blueprint, request, session
+from flask import jsonify, Blueprint, request, session, abort
 
 from . import get_db
 from .jwtMethods import auth_required, auth_fresh_required, refresh_authentication
@@ -30,6 +30,14 @@ def list_boards():
 @apibp.route('/api/list-lists', methods=["GET"])
 @auth_required
 def list_lists():
+    if session.get('logged_in'):
+        json_data = request.args.get('board_id')
+        board_to_gather_lists = Board.query.filter_by(id=json_data).first()
+        return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])\
+
+
+@apibp.route('/api/list-public-lists', methods=["GET"])
+def list_public_lists():
     json_data = request.args.get('board_id')
     board_to_gather_lists = Board.query.filter_by(id=json_data).first()
     return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
@@ -41,6 +49,17 @@ def getBoardInfo():
     json_data = request.args.get('board_id')
     board = Board.query.filter_by(id=json_data).first()
     return jsonify(board=board.serialize)
+
+
+
+@apibp.route('/api/getPublicBoardInfo', methods=["GET"])
+def getPublicBoardInfo():
+    json_data = request.args.get('board_id')
+    board = Board.query.filter_by(id=json_data).first()
+    if board.public:
+        return jsonify(board=board.serialize)
+    else:
+        return abort(403)
 
 
 @apibp.route('/api/refresh_token', methods=['POST'])
