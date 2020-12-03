@@ -6,6 +6,16 @@ myapp.controller('IndexController', function ($scope, $http, $route, $cookies, B
 
     $http.get('/api/list-boards').then(function (resp) {
         $scope.boards = resp.data.json_list;
+
+        $scope.boards.sort(function(a,b) {
+            if (a.archived === true && b.archived === false)
+                return 1
+            if (b.archived === true && a.archived === false)
+                return -1
+
+            return 0
+        })
+
     }).catch(async function (response) {
         if (response.status === 401 && response.data['msg'] === "Token has expired") {
             await AuthService.refreshToken()

@@ -33,7 +33,7 @@ def list_lists():
     if session.get('logged_in'):
         json_data = request.args.get('board_id')
         board_to_gather_lists = Board.query.filter_by(id=json_data).first()
-        return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])\
+        return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
 
 
 @apibp.route('/api/list-public-lists', methods=["GET"])
@@ -49,7 +49,6 @@ def getBoardInfo():
     json_data = request.args.get('board_id')
     board = Board.query.filter_by(id=json_data).first()
     return jsonify(board=board.serialize)
-
 
 
 @apibp.route('/api/getPublicBoardInfo', methods=["GET"])
@@ -80,7 +79,6 @@ def delete():
     user = User.query.filter_by(username=json_data['username']).first()
 
     if board_to_delete in user.boards:
-
         try:
             db.session.delete(board_to_delete)
             db.session.commit()
@@ -102,9 +100,6 @@ def editCard():
         return jsonify({'result': 'True'})
     except:
         return 'There was a problem deleting that task'
-
-
-
 
 
 @apibp.route('/api/generateBoard', methods=["POST"])
@@ -188,6 +183,7 @@ def generateCard():
         status = 'this card couldn\'t have been added'
     db.session.close()
     return jsonify({'result': status})
+
 
 @apibp.route('/api/addLabel', methods=["POST"])
 @auth_required

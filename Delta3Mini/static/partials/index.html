@@ -8,21 +8,22 @@
         <thead>
         <tr>
             <th>Board</th>
+            <th>Archived</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
 
-        <tr ng-repeat="board in boards" ng-if="board.archived === false">
+        <tr ng-repeat="board in boards">
             <td><a href="/board/{{ board.id }}" class="btn btn-primary">{{ board['name'] }}</a></td>
+            <td ng-if="board.archived">Yes</td>
+            <td ng-if="!board.archived">No</td>
 
             <td>
-
                 <a ng-click="delete(board['id'])">Delete</a>
 
-
                 <br>
-                <a ng-click="archive(board['id'])">Archive</a>
+                <a ng-if="board.archived" ng-click="archive(board['id'])">Archive</a>
             </td>
         </tr>
 

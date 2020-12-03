@@ -94,7 +94,6 @@ angular.module('app').factory('AuthService',
                         if (response.data.status) {
                             document.getElementById("hello").innerText = "Hello " + response.data.username
                             user = true
-                            $cookie.put('username', response.data.username)
                         } else
                             user = false
                     }, function (response) {

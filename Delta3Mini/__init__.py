@@ -17,6 +17,9 @@ def create_app():
     app.config['JWT_IDENTITY_CLAIM'] = 'sub'
     # app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379'
     # app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379'
+
+    db.init_app(app)
+
     from . import main as main_bp
     app.register_blueprint(main_bp.mainbp)
     from . import authorization as auth_bp
@@ -24,10 +27,12 @@ def create_app():
     from . import api as api_bp
     app.register_blueprint(api_bp.apibp)
     JWTManager(app)
-    db.init_app(app)
+
     migrate = Migrate(app=app, db=db)
     return app
 
 
 def get_db():
     return db
+
+# gdyby baza sie wywrocila na pysk to https://flask-sqlalchemy.palletsprojects.com/en/2.x/contexts/
