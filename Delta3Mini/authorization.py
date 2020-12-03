@@ -24,8 +24,7 @@ def logout():
         auth_token = ''
     if auth_token:
         BlacklistToken.add_to_db(auth_token=auth_token)
-    return jsonify({'msg':'User has logged out'})
-
+    return jsonify({'msg': 'User has logged out'})
 
 
 @authbp.route('/api/register', methods=["POST"])
@@ -58,7 +57,8 @@ def login():
             session['logged_in'] = True
             session['username'] = json_data['username']
             status = True
-            access_token = create_access_token(identity=user.id, fresh=True, expires_delta=timedelta(days=0, minutes=0,seconds=5))
+            access_token = create_access_token(identity=user.id, fresh=True,
+                                               expires_delta=timedelta(days=0, minutes=5, seconds=0))
             refresh_token = create_refresh_token(identity=user.id, expires_delta=timedelta(minutes=45))
             ret = jsonify({'result': status,
                            'message': 'User has just logged in',
