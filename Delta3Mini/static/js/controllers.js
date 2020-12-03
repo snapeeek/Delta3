@@ -290,7 +290,7 @@ myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeP
     var config = {params: {board_id: $routeParams.id}}
 
     function retrive_board_info() {
-        $http.get('/api/getBoardInfo', {params: {board_id: $routeParams.id}})
+        $http.get('/api/getPublicBoardInfo', {params: {board_id: $routeParams.id}})
             .then(function (response) {
                 $scope.boardInfo = response.data.board
             }).catch(function (response) {
