@@ -61,8 +61,8 @@
     <!--           EDITING INSIDES OF CARD                                                                                        -->
     <div class="modal" id="editCardForm">
         <div class="modal-content">
-            <h1><i class="glyphicon glyphicon-tasks" style="font-size: 20px;padding-right: 8px"></i>{{ card_name }}</h1>
-            <h2 style="border: none; color: black" editable-text="card_content" onbeforesave="editCard(card_id, $data)">
+            <h1 style="border: none; color: black" editable-text="card_name" onbeforesave="editCard(card_id, $data, 'name')"><i class="glyphicon glyphicon-tasks" style="font-size: 20px;padding-right: 8px"></i>{{ card_name }}</h1>
+            <h2 style="border: none; color: black" editable-text="card_content" onbeforesave="editCard(card_id, $data, 'content')">
                 <i class="glyphicon glyphicon-list-alt"
                    style="padding-right: 8px; font-size: 20px"></i>{{ card_content || "No content provided!" }}</h2>
             <div class="form-labels">

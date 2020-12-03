@@ -94,7 +94,10 @@ def delete():
 def editCard():
     json_data = request.json
     card_to_edit = Card.query.filter_by(id=json_data['card_id']).first()
-    card_to_edit.content = json_data['content']
+    if json_data['what'] == 'content':
+        card_to_edit.content = json_data['content']
+    if json_data['what'] == 'name':
+        card_to_edit.name = json_data['content']
     try:
         db.session.commit()
         return jsonify({'result': 'True'})
