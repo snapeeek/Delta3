@@ -24,6 +24,7 @@ def logout():
         auth_token = ''
     if auth_token:
         BlacklistToken.add_to_db(auth_token=auth_token)
+        session['logged_in'] = False
     return jsonify({'msg': 'User has logged out'})
 
 
