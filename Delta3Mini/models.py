@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 
 import jwt
-from Delta3Mini import db
+# from Delta3Mini import db
+from . import db
 
 SUPER_SECRET_KEY = "skurczybonk"
 
@@ -105,7 +106,7 @@ class BlacklistToken(db.Model):
         # mark the token as blacklisted
         BlacklistToken.delete_from_db()
         blacklist_token = BlacklistToken(token=auth_token)
-        if BlacklistToken.query.filter_by(token = blacklist_token.token).scalar() is None:
+        if BlacklistToken.query.filter_by(token=blacklist_token.token).scalar() is None:
             # insert the token
             db.session.add(blacklist_token)
             db.session.commit()
@@ -121,8 +122,10 @@ class Board(db.Model):
     archived = db.Column(db.Boolean, default=False)
     public = db.Column(db.Boolean, default=False)
     labels = db.relationship('Label', secondary=boards_and_labels, lazy='subquery',
-                             backref=db.backref('boards', lazy=True))
-    lists = db.relationship('List', backref='board', lazy=True)
+                             backref=db.backref('boards', lazy=True),
+                             cascade="all,delete")
+    lists = db.relationship('List', backref='board', lazy=True,
+                            cascade="all,delete")
 
     def __init__(self, **kwargs):
         super(Board, self).__init__(**kwargs)
@@ -161,7 +164,7 @@ class List(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
     name = db.Column(db.String(50))
-    cards = db.relationship('Card', backref='card', lazy=True)
+    cards = db.relationship('Card', backref='card', lazy=True,cascade="all,delete")
 
     def __init__(self, **kwargs):
         super(List, self).__init__(**kwargs)

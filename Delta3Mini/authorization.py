@@ -12,7 +12,7 @@ from .jwtMethods import auth_required
 db = get_db()
 
 authbp = Blueprint('auth', __name__)
-from .models.models import User, BlacklistToken
+from .models import User, BlacklistToken
 
 
 @authbp.route('/api/logout')

@@ -9,7 +9,7 @@ from flask_jwt_extended import (
     create_access_token, verify_fresh_jwt_in_request, decode_token, verify_jwt_refresh_token_in_request
 )
 
-from Delta3Mini.models.models import User, BlacklistToken
+from Delta3Mini.models import User, BlacklistToken
 
 
 class AuthenticationError(Exception):
