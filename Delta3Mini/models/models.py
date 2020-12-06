@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import jwt
 # from Delta3Mini import db
-from . import db
+from Delta3Mini import db
 
 SUPER_SECRET_KEY = "skurczybonk"
 

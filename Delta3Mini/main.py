@@ -2,7 +2,7 @@ from flask import send_from_directory, \
     make_response, Blueprint, redirect, request
 
 from .__init__ import get_db
-from .models import Card
+from Delta3Mini.models.models import Card
 
 mainbp = Blueprint('main', __name__)
 db = get_db()

@@ -1,18 +1,17 @@
 from datetime import timedelta
 
 from flask import (
-    Blueprint, request, session, jsonify, make_response
+    Blueprint, request, session, jsonify
 )
 from flask_jwt_extended import create_access_token, create_refresh_token
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from . import get_db
-from .jwtMethods import auth_required
 
 db = get_db()
 
 authbp = Blueprint('auth', __name__)
-from .models import User, BlacklistToken
+from Delta3Mini.models.models import User, BlacklistToken
 
 
 @authbp.route('/api/logout')
