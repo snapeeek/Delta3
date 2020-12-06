@@ -4,7 +4,7 @@ from flask import jsonify, Blueprint, request, session, abort
 
 from . import get_db
 from .jwtMethods import auth_required, auth_fresh_required, refresh_authentication
-from .models.models import Card, User, Board, List, Label
+from Delta3Mini.models.models import Card, User, Board, List, Label
 
 apibp = Blueprint('api', __name__)
 db = get_db()

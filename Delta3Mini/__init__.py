@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 app = Flask(__name__)
+migrate = Migrate()
 
 
 def create_app():
@@ -28,7 +29,7 @@ def create_app():
     app.register_blueprint(api_bp.apibp)
     JWTManager(app)
 
-    migrate = Migrate(app=app, db=db)
+    migrate.init_app(app,db)
     return app
 
 
