@@ -188,23 +188,32 @@ def generateCard():
     return jsonify({'result': status})
 
 
-@apibp.route('/api/addLabel', methods=["POST"])
+@apibp.route('/api/addOrDeleteLabel', methods=["POST"])
 @auth_required
 def addLabel():
     json_data = request.json
-    cardID = json_data['cardID']
-    labelID = int(json_data['labelID'])
+    card = Card.query.filter_by(id=json_data['cardID']).scalar()
+    label = Label.query.filter_by(id=int(json_data['labelID'])).scalar()
 
-    try:
-        card = Card.query.filter_by(id=cardID).scalar()
-        label = Label.query.filter_by(id=labelID).scalar()
-        card.labels.append(label)
-        db.session.commit()
-        status = 'success'
-    except:
-        print(sys.exc_info()[0])
-        status = 'this card couldn\'t have been added'
+    if json_data['info'] == 'add':
+        try:
+            card.labels.append(label)
+            db.session.commit()
+            status = 'success'
+        except:
+            print(sys.exc_info()[0])
+            status = 'this card couldn\'t have been added'
+    elif json_data['info'] == 'delete':
+        try:
+            card.labels.remove(label)
+            db.session.commit()
+            status = 'success'
+        except:
+            print(sys.exc_info()[0])
+            status = 'this card couldn\'t have been deleted'
+
     db.session.close()
+
     return jsonify({'result': status})
 
 
@@ -244,6 +253,21 @@ def editList():
     json_data = request.json
     list = List.query.filter_by(id=json_data['list_id']).first()
     list.name = json_data['list_name']
+
+    try:
+        db.session.commit()
+        db.session.close()
+        return jsonify({'result': 'success'})
+    except:
+        return 'There was a problem deleting that task'
+
+
+@apibp.route('/api/editLabelText', methods=["POST"])
+@auth_required
+def editLabelText():
+    json_data = request.json
+    label = Label.query.filter_by(id=json_data['label_id']).first()
+    label.text = json_data['text']
 
     try:
         db.session.commit()
