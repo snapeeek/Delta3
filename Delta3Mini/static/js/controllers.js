@@ -237,6 +237,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             BoardsService.addOrDeleteLabel('add', label_id, card_id)
             .then(function () {
                 //$route.reload()
+                this.labelCheckBox = true
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
@@ -246,7 +247,8 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             console.log("hello from changeLabel false")
             BoardsService.addOrDeleteLabel('delete', label_id, card_id)
             .then(function () {
-                $route.reload()
+                //$route.reload() teoretycznie nie musi go tu byc bo i tak sie odswiezy po zamknieciu okienka
+                this.labelCheckBox = false
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
@@ -266,13 +268,15 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     $scope.checkCheck = function (labels, labelID)
     {
+        console.log("chechCheck")
         for(var label of labels)
         {
             if (label.id === labelID) {
-                //document.getElementById("testCheck").checked = true
+                this.labelCheckBox = true
                 return true
             }
         }
+        this.labelCheckBox = false
         return false
     }
 
