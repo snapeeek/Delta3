@@ -251,3 +251,16 @@ def editList():
         return jsonify({'result': 'success'})
     except:
         return 'There was a problem deleting that task'
+
+
+@apibp.route('/api/changePublicBoard', methods=["POST"])
+@auth_required
+def changePublicBoard():
+    json_data = request.json
+    board = Board.query.filter_by(id=json_data['id']).first()
+    try:
+        board.public = not board.public
+        db.session.commit()
+        return jsonify({'result': 'success'})
+    except:
+        return 'There was a problem deleting that task'

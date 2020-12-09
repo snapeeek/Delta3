@@ -175,6 +175,15 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             })
     }
 
+    $scope.changePublicBoard = function (boardID) {
+        BoardsService.changePublicBoard(boardID)
+            .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
+
     $scope.unarchiveBoard = function (boardID) {
         BoardsService.unarchiveBoard(boardID)
             .then(function () {
