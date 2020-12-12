@@ -126,10 +126,11 @@ angular.module('app').factory('BoardsService',
                 editBoard: editBoard,
                 addList: addList,
                 addCardToList: addCardToList,
-                addLabelToCard: addLabelToCard,
+                addOrDeleteLabel: addOrDeleteLabel,
                 editCard: editCard,
                 unarchiveBoard: unarchiveBoard,
                 editList: editList,
+                editLabelText: editLabelText,
             })
 
             function deleteBoard(id, username) {
@@ -246,10 +247,10 @@ angular.module('app').factory('BoardsService',
                 return deffered.promise
             }
 
-            function addLabelToCard(labelID, cardID) {
+            function addOrDeleteLabel(info, labelID, cardID) {
                 var deffered = $q.defer()
 
-                $http.post('/api/addLabel', {cardID: cardID, labelID: labelID})
+                $http.post('/api/addOrDeleteLabel', {info: info, cardID: cardID, labelID: labelID})
                     .then(function (response) {
                         if (response.data) {
                             deffered.resolve()
@@ -351,6 +352,28 @@ angular.module('app').factory('BoardsService',
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
                             AuthService.refreshToken().then(function () {
                                 editList(listID, listName)
+                            })
+                        }
+                        deffered.reject()
+
+                    })
+                return deffered.promise
+            }
+
+            function editLabelText(labelID, text) {
+                var deffered = $q.defer()
+                $http.post('/api/editLabelText', {label_id: labelID, text: text})
+                    .then(function (response) {
+                        if (response.data) {
+                            deffered.resolve()
+                        } else {
+                            deffered.reject()
+                        }
+                    })
+                    .catch(function (response) {
+                        if (response.status === 401 && response.data['msg'] === "Token has expired") {
+                            AuthService.refreshToken().then(function () {
+                                editLabelText(labelID, text)
                             })
                         }
                         deffered.reject()

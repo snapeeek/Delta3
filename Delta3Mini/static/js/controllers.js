@@ -229,6 +229,57 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             })
     }
 
+    $scope.changeLabelCheck = function (card_id, label_id) {
+        console.log("hello from changeLabel")
+        console.log(this.labelCheckBox)
+        if (this.labelCheckBox) {
+            console.log("hello from changeLabel true")
+            BoardsService.addOrDeleteLabel('add', label_id, card_id)
+            .then(function () {
+                //$route.reload()
+                this.labelCheckBox = true
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+        }
+        else
+        {
+            console.log("hello from changeLabel false")
+            BoardsService.addOrDeleteLabel('delete', label_id, card_id)
+            .then(function () {
+                //$route.reload() teoretycznie nie musi go tu byc bo i tak sie odswiezy po zamknieciu okienka
+                this.labelCheckBox = false
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+        }
+    }
+
+    $scope.editLabelText = function (labelID, text)
+    {
+        //console.log("hello from editLabel")
+        BoardsService.editLabelText(labelID, text)
+            .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
+
+    $scope.checkCheck = function (labels, labelID)
+    {
+        console.log("chechCheck")
+        for(var label of labels)
+        {
+            if (label.id === labelID) {
+                this.labelCheckBox = true
+                return true
+            }
+        }
+        this.labelCheckBox = false
+        return false
+    }
+
     //-------------------Showing and hiding modal windows in html
     $scope.showAddingCardForm = function (id) {
         $scope.list_id = id
@@ -238,11 +289,13 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     $scope.card_id = ''
     $scope.card_name = ''
     $scope.card_content = ''
+    $scope.card_labels = []
 
-    $scope.showEditCardForm = function (id, name, content) {
+    $scope.showEditCardForm = function (id, name, content, labels) {
         $scope.card_id = id
         $scope.card_name = name
         $scope.card_content = content
+        $scope.card_labels = labels
         document.getElementById("editCardForm").style.display = "block"
     }
     $scope.showListForm = function () {
