@@ -184,10 +184,13 @@ class Card(db.Model):
     name = db.Column(db.String(50))
     content = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    term = db.Column(db.DateTime, nullable=True)
+    done = db.Column(db.Boolean, default=False)
     list_id = db.Column(db.Integer, db.ForeignKey('list.id'), nullable=False)
     lists_of_elements = db.relationship('Listofelements', backref='card', lazy=True)
     labels = db.relationship('Label', secondary=cards_and_labels, lazy='subquery',
                              backref=db.backref('cards', lazy=True))
+
 
     def __init__(self, **kwargs):
         super(Card, self).__init__(**kwargs)
