@@ -221,6 +221,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     }
 
+    //whatToChange to string, aktualnie mozna dać "content" i "name". Tak zrobiłem, don't judge me
     $scope.editCard = function (id, newCardContent, whatToChange) {
         BoardsService.editCard(newCardContent, id, whatToChange)
             .then(function () {
@@ -280,6 +281,18 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         return false
     }
 
+    //        DATE PICKER
+    $scope.opened = {};
+
+	$scope.open = function($event, elementOpened) {
+		$event.preventDefault();
+		$event.stopPropagation();
+
+		$scope.opened[elementOpened] = !$scope.opened[elementOpened];
+	};
+
+	//DATE PICKER ENDS HERE
+
     //-------------------Showing and hiding modal windows in html
     $scope.showAddingCardForm = function (id) {
         $scope.list_id = id
@@ -289,13 +302,17 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     $scope.card_id = ''
     $scope.card_name = ''
     $scope.card_content = ''
+    $scope.card_term = null
+    $scope.card_done = false
     $scope.card_labels = []
 
-    $scope.showEditCardForm = function (id, name, content, labels) {
+    $scope.showEditCardForm = function (id, name, content, labels, term, done) {
         $scope.card_id = id
         $scope.card_name = name
         $scope.card_content = content
         $scope.card_labels = labels
+        $scope.card_done = done
+        $scope.card_term = term
         document.getElementById("editCardForm").style.display = "block"
     }
     $scope.showListForm = function () {

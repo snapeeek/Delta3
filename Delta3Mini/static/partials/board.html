@@ -45,7 +45,7 @@
                                     <b>{{label.text}}</b>
                                 </div>
                             </div>
-                            <div class="editContent" ng-click="showEditCardForm(card.id, card.name, card.content, card.labels)">
+                            <div class="editContent" ng-click="showEditCardForm(card.id, card.name, card.content, card.labels, card.term, card.done)">
                                 {{ card.name }}
                             </div>
                         </li>
@@ -70,6 +70,18 @@
                 onbeforesave="editCard(card_id, $data, 'content')">
                 <i class="glyphicon glyphicon-list-alt"
                    style="padding-right: 8px; font-size: 20px"></i>{{ card_content || "No content provided!" }}</h2>
+
+            <a href="#"
+               editable-bsdate="user.dob"
+               e-is-open="opened.$data"
+               e-ng-click="open($event,'$data')"
+               e-datepicker-popup="dd-MMMM-yyyy"
+               e-ng-change="editCard(card_id, $data, 'date')">
+
+                {{(card_term | date:"dd/MM/yyyy") || 'Please insert date'}}
+            </a>
+                <br>
+
             <div class="form-labels">
                 <div class="labels" style="display: block">
                     <div ng-repeat="label in boardInfo.labels">
@@ -81,8 +93,6 @@
 
                     </div>
                 </div>
-                <input type="text" placeholder="Enter label id" name="id" ng-model="addLabel.id">
-                <button class="btn" type="submit" ng-click="addLabel(card_id)">Wprowadz label</button>
             </div>
             <button class="close" ng-click="hideEditCardForm()">&times</button>
 

@@ -1,5 +1,5 @@
 import sys
-
+from datetime import datetime
 from flask import jsonify, Blueprint, request, session, abort
 
 from . import get_db
@@ -96,8 +96,14 @@ def editCard():
     card_to_edit = Card.query.filter_by(id=json_data['card_id']).first()
     if json_data['what'] == 'content':
         card_to_edit.content = json_data['content']
-    if json_data['what'] == 'name':
+    elif json_data['what'] == 'name':
         card_to_edit.name = json_data['content']
+    elif json_data['what'] == 'date':
+        date = json_data['content']
+        date_object = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
+        print(date_object)
+        card_to_edit.term = date_object
+
     try:
         db.session.commit()
         return jsonify({'result': 'True'})
