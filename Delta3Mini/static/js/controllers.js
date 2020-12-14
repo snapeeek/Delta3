@@ -221,7 +221,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     }
 
-    //whatToChange to string, aktualnie mozna dać "content" i "name". Tak zrobiłem, don't judge me
+    //whatToChange to string, aktualnie mozna dać "content", "name", "date" i "done". Tak zrobiłem, don't judge me
     $scope.editCard = function (id, newCardContent, whatToChange) {
         BoardsService.editCard(newCardContent, id, whatToChange)
             .then(function () {
@@ -231,30 +231,36 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     }
 
     $scope.changeLabelCheck = function (card_id, label_id) {
-        console.log("hello from changeLabel")
-        console.log(this.labelCheckBox)
-        if (this.labelCheckBox) {
-            console.log("hello from changeLabel true")
+        BoardsService.addOrDeleteLabel(label_id, card_id)
+            .then(function () {
+                //$route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
+
+
+        /*if (this.labelCheckBox) {
             BoardsService.addOrDeleteLabel('add', label_id, card_id)
             .then(function () {
                 //$route.reload()
-                this.labelCheckBox = true
+                //this.labelCheckBox = true
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
         }
         else
         {
-            console.log("hello from changeLabel false")
+            // console.log("hello from changeLabel false")
             BoardsService.addOrDeleteLabel('delete', label_id, card_id)
             .then(function () {
                 //$route.reload() teoretycznie nie musi go tu byc bo i tak sie odswiezy po zamknieciu okienka
-                this.labelCheckBox = false
+                //this.labelCheckBox = false
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
         }
-    }
+    }*/
 
     $scope.editLabelText = function (labelID, text)
     {
@@ -269,15 +275,13 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     $scope.checkCheck = function (labels, labelID)
     {
-        console.log("chechCheck")
         for(var label of labels)
         {
+            console.log(labelID + " " + label.id)
             if (label.id === labelID) {
-                this.labelCheckBox = true
                 return true
             }
         }
-        this.labelCheckBox = false
         return false
     }
 
@@ -311,6 +315,8 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         $scope.card_name = name
         $scope.card_content = content
         $scope.card_labels = labels
+        console.log("przypisanie labeli bedzie tu")
+        console.log(labels)
         $scope.card_done = done
         $scope.card_term = term
         document.getElementById("editCardForm").style.display = "block"

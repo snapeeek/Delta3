@@ -70,22 +70,20 @@
                 onbeforesave="editCard(card_id, $data, 'content')">
                 <i class="glyphicon glyphicon-list-alt"
                    style="padding-right: 8px; font-size: 20px"></i>{{ card_content || "No content provided!" }}</h2>
-
+            Due to date:
             <a href="#"
-               editable-bsdate="user.dob"
-               e-is-open="opened.$data"
-               e-ng-click="open($event,'$data')"
-               e-datepicker-popup="dd-MMMM-yyyy"
-               e-ng-change="editCard(card_id, $data, 'date')">
+               editable-combodate="card_term"
 
-                {{(card_term | date:"dd/MM/yyyy") || 'Please insert date'}}
+               style="border: none; color: black">
+                {{(card_term | date:"medium") || 'Please insert date'}}
             </a>
-                <br>
+
+            <input type="checkbox" ng-checked="card_done" ng-click="editCard(card_id, !card_done, 'done')">
 
             <div class="form-labels">
                 <div class="labels" style="display: block">
                     <div ng-repeat="label in boardInfo.labels">
-                        <input type="checkbox" ng-checked="checkCheck(card_labels, label.id)" ng-model="labelCheckBox" ng-change="changeLabelCheck(card_id, label.id); checkCheck(card_labels, label.id)"/>
+                        <input type="checkbox" ng-checked="checkCheck(card_labels, label.id)" ng-click="changeLabelCheck(card_id, label.id)"/>
                         <div class="label"
                              style="background-color: {{label.color}}; width: 100px; height: 30px; float: none; display: inline-block; text-align: center; padding: 7px 0">
                             <b editable-text="label.name" e-style="height: 20px; width: 80px; margin: 0px 5px 5px 5px; buttonClass: btn-sm" onbeforesave="editLabelText(label.id, $data)" style="border: none; color: white">{{label.text || 'None'}}</b>

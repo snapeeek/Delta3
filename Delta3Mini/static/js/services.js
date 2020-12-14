@@ -247,10 +247,10 @@ angular.module('app').factory('BoardsService',
                 return deffered.promise
             }
 
-            function addOrDeleteLabel(info, labelID, cardID) {
+            function addOrDeleteLabel(labelID, cardID) {
                 var deffered = $q.defer()
 
-                $http.post('/api/addOrDeleteLabel', {info: info, cardID: cardID, labelID: labelID})
+                $http.post('/api/addOrDeleteLabel', {cardID: cardID, labelID: labelID})
                     .then(function (response) {
                         if (response.data) {
                             deffered.resolve()
@@ -261,7 +261,7 @@ angular.module('app').factory('BoardsService',
                     .catch(function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
                             AuthService.refreshToken().then(function () {
-                                addLabelToCard(labelID, cardID)
+                                addOrDeleteLabel( labelID, cardID)
                             })
                         }
                         deffered.reject()
@@ -307,7 +307,7 @@ angular.module('app').factory('BoardsService',
                     .catch(function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
                             AuthService.refreshToken().then(function () {
-                                editCardContent(content, cardID)
+                                editCard(content, cardID, whatToChange)
                             })
                         }
                         deffered.reject()
