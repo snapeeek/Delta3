@@ -1,6 +1,9 @@
 import sys
 from datetime import datetime
 from flask import jsonify, Blueprint, request, session, abort
+import tzlocal
+from tzlocal import get_localzone
+
 
 from . import get_db
 from .jwtMethods import auth_required, auth_fresh_required, refresh_authentication
@@ -100,7 +103,10 @@ def editCard():
         card_to_edit.name = json_data['content']
     elif json_data['what'] == 'date':
         date = json_data['content']
+        print(date)
         date_object = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
+        help = get_localzone().localize(date_object)
+
         print(date_object)
         card_to_edit.term = date_object
     elif json_data['what'] == 'done':

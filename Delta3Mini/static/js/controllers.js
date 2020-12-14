@@ -223,6 +223,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     //whatToChange to string, aktualnie mozna dać "content", "name", "date" i "done". Tak zrobiłem, don't judge me
     $scope.editCard = function (id, newCardContent, whatToChange) {
+        console.log(newCardContent)
         BoardsService.editCard(newCardContent, id, whatToChange)
             .then(function () {
             }, function () {
@@ -277,7 +278,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     {
         for(var label of labels)
         {
-            console.log(labelID + " " + label.id)
+            //console.log(labelID + " " + label.id)
             if (label.id === labelID) {
                 return true
             }
@@ -315,12 +316,11 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         $scope.card_name = name
         $scope.card_content = content
         $scope.card_labels = labels
-        console.log("przypisanie labeli bedzie tu")
-        console.log(labels)
         $scope.card_done = done
         $scope.card_term = term
         document.getElementById("editCardForm").style.display = "block"
     }
+
     $scope.showListForm = function () {
         document.getElementById("addingListForm").style.display = "block"
     }
@@ -370,6 +370,10 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     }
 
+     $scope.showHiddenDateTime = function () {
+        document.getElementById("hiddenDateTime").hidden = false
+    }
+
 })
 
 myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService, AuthService, $timeout) {
@@ -395,7 +399,6 @@ myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeP
                 await AuthService.refreshToken()
                 retrive_lists()
             }
-
         })
     }
 
@@ -427,6 +430,8 @@ myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeP
     $scope.showListForm = function () {
         document.getElementById("addingListForm").style.display = "block"
     }
+
+
 
     //simple hiding methods
     $scope.hideAddingCardForm = function () {

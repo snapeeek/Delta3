@@ -70,14 +70,19 @@
                 onbeforesave="editCard(card_id, $data, 'content')">
                 <i class="glyphicon glyphicon-list-alt"
                    style="padding-right: 8px; font-size: 20px"></i>{{ card_content || "No content provided!" }}</h2>
-            Due to date:
-            <a href="#"
-               editable-combodate="card_term"
 
-               style="border: none; color: black">
-                {{(card_term | date:"medium") || 'Please insert date'}}
-            </a>
 
+
+            Due to date: <button style="border: none; color:black" ng-click="showHiddenDateTime()">{{(card_term | date: "dd-MM-YYYY HH:mm") || 'Please insert date'}}</button>
+
+
+            <input id="hiddenDateTime" hidden="true" type="datetime-local" ng-model="dateChanger" ng-change="editCard(card_id, dateChanger, 'date')">
+
+
+
+
+
+            Done:
             <input type="checkbox" ng-checked="card_done" ng-click="editCard(card_id, !card_done, 'done')">
 
             <div class="form-labels">
