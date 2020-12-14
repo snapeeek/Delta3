@@ -1,5 +1,7 @@
 import sys
+from datetime import datetime
 
+from dateutil.tz import tz
 from flask import jsonify, Blueprint, request, session, abort
 
 from . import get_db
@@ -96,8 +98,19 @@ def editCard():
     card_to_edit = Card.query.filter_by(id=json_data['card_id']).first()
     if json_data['what'] == 'content':
         card_to_edit.content = json_data['content']
-    if json_data['what'] == 'name':
+    elif json_data['what'] == 'name':
         card_to_edit.name = json_data['content']
+    elif json_data['what'] == 'date':
+        date = json_data['content']
+        date_object = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
+        from_zone = tz.tzutc()
+        to_zone = tz.tzlocal()
+        help1 = date_object.replace(tzinfo=from_zone)
+        help = help1.astimezone(to_zone)
+        card_to_edit.term = help
+    elif json_data['what'] == 'done':
+        card_to_edit.done = json_data['content']
+
     try:
         db.session.commit()
         return jsonify({'result': 'True'})
@@ -195,7 +208,7 @@ def addLabel():
     card = Card.query.filter_by(id=json_data['cardID']).scalar()
     label = Label.query.filter_by(id=int(json_data['labelID'])).scalar()
 
-    if json_data['info'] == 'add':
+    if label not in card.labels:
         try:
             card.labels.append(label)
             db.session.commit()
@@ -203,7 +216,7 @@ def addLabel():
         except:
             print(sys.exc_info()[0])
             status = 'this card couldn\'t have been added'
-    elif json_data['info'] == 'delete':
+    else:
         try:
             card.labels.remove(label)
             db.session.commit()

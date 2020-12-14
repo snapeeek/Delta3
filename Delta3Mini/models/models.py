@@ -206,6 +206,8 @@ class Card(db.Model):
             'name': self.name,
             'content': self.content,
             'date_created': dump_datetime(self.date_created),
+            'term': self.term,
+            'done': self.done,
             'labels': [i.serialize for i in self.labels],
         }
 

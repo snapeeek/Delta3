@@ -221,7 +221,9 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     }
 
+    //whatToChange to string, aktualnie mozna dać "content", "name", "date" i "done". Tak zrobiłem, don't judge me
     $scope.editCard = function (id, newCardContent, whatToChange) {
+        console.log(newCardContent)
         BoardsService.editCard(newCardContent, id, whatToChange)
             .then(function () {
             }, function () {
@@ -230,30 +232,36 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     }
 
     $scope.changeLabelCheck = function (card_id, label_id) {
-        console.log("hello from changeLabel")
-        console.log(this.labelCheckBox)
-        if (this.labelCheckBox) {
-            console.log("hello from changeLabel true")
+        BoardsService.addOrDeleteLabel(label_id, card_id)
+            .then(function () {
+                //$route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
+
+
+        /*if (this.labelCheckBox) {
             BoardsService.addOrDeleteLabel('add', label_id, card_id)
             .then(function () {
                 //$route.reload()
-                this.labelCheckBox = true
+                //this.labelCheckBox = true
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
         }
         else
         {
-            console.log("hello from changeLabel false")
+            // console.log("hello from changeLabel false")
             BoardsService.addOrDeleteLabel('delete', label_id, card_id)
             .then(function () {
                 //$route.reload() teoretycznie nie musi go tu byc bo i tak sie odswiezy po zamknieciu okienka
-                this.labelCheckBox = false
+                //this.labelCheckBox = false
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
         }
-    }
+    }*/
 
     $scope.editLabelText = function (labelID, text)
     {
@@ -268,17 +276,27 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     $scope.checkCheck = function (labels, labelID)
     {
-        console.log("chechCheck")
         for(var label of labels)
         {
+            //console.log(labelID + " " + label.id)
             if (label.id === labelID) {
-                this.labelCheckBox = true
                 return true
             }
         }
-        this.labelCheckBox = false
         return false
     }
+
+    //        DATE PICKER
+    $scope.opened = {};
+
+	$scope.open = function($event, elementOpened) {
+		$event.preventDefault();
+		$event.stopPropagation();
+
+		$scope.opened[elementOpened] = !$scope.opened[elementOpened];
+	};
+
+	//DATE PICKER ENDS HERE
 
     //-------------------Showing and hiding modal windows in html
     $scope.showAddingCardForm = function (id) {
@@ -289,15 +307,20 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     $scope.card_id = ''
     $scope.card_name = ''
     $scope.card_content = ''
+    $scope.card_term = null
+    $scope.card_done = false
     $scope.card_labels = []
 
-    $scope.showEditCardForm = function (id, name, content, labels) {
+    $scope.showEditCardForm = function (id, name, content, labels, term, done) {
         $scope.card_id = id
         $scope.card_name = name
         $scope.card_content = content
         $scope.card_labels = labels
+        $scope.card_done = done
+        $scope.card_term = term
         document.getElementById("editCardForm").style.display = "block"
     }
+
     $scope.showListForm = function () {
         document.getElementById("addingListForm").style.display = "block"
     }
@@ -347,6 +370,10 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     }
 
+     $scope.showHiddenDateTime = function () {
+        document.getElementById("hiddenDateTime").hidden = false
+    }
+
 })
 
 myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService, AuthService, $timeout) {
@@ -372,7 +399,6 @@ myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeP
                 await AuthService.refreshToken()
                 retrive_lists()
             }
-
         })
     }
 
@@ -404,6 +430,8 @@ myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeP
     $scope.showListForm = function () {
         document.getElementById("addingListForm").style.display = "block"
     }
+
+
 
     //simple hiding methods
     $scope.hideAddingCardForm = function () {
