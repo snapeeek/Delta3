@@ -1,9 +1,8 @@
 import sys
 from datetime import datetime
-from flask import jsonify, Blueprint, request, session, abort
-import tzlocal
-from tzlocal import get_localzone
 
+from dateutil.tz import tz
+from flask import jsonify, Blueprint, request, session, abort
 
 from . import get_db
 from .jwtMethods import auth_required, auth_fresh_required, refresh_authentication
@@ -103,12 +102,12 @@ def editCard():
         card_to_edit.name = json_data['content']
     elif json_data['what'] == 'date':
         date = json_data['content']
-        print(date)
         date_object = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
-        help = get_localzone().localize(date_object)
-
-        print(date_object)
-        card_to_edit.term = date_object
+        from_zone = tz.tzutc()
+        to_zone = tz.tzlocal()
+        help1 = date_object.replace(tzinfo=from_zone)
+        help = help1.astimezone(to_zone)
+        card_to_edit.term = help
     elif json_data['what'] == 'done':
         card_to_edit.done = json_data['content']
 
