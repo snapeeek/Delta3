@@ -4,8 +4,11 @@ encoding = 'utf-8'
 
 
 def encode(id):
-    return key.encrypt(id.encode(encoding))
+    idasstr = str(id)
+    encoded = key.encrypt(idasstr.encode(encoding))
+    return encoded.decode(encoding)
 
 
 def decode(id):
-    return key.decrypt(id).decode(encoding)
+    encoded= bytes(id,encoding=encoding)
+    return key.decrypt(encoded).decode(encoding)
