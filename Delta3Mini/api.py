@@ -3,6 +3,7 @@ from datetime import datetime
 
 from dateutil.tz import tz
 from flask import jsonify, Blueprint, request, session, abort
+from flask_jwt_extended import get_jwt_identity
 
 from . import get_db
 from .jwtMethods import auth_required, auth_fresh_required, refresh_authentication
@@ -25,7 +26,7 @@ def status():
 @apibp.route('/api/list-boards')
 @auth_required
 def list_boards():
-    user = User.query.filter_by(username=session.get('username')).first()
+    user = User.query.filter_by(id=get_jwt_identity()).first()
     return jsonify(json_list=[i.serialize for i in user.boards])
 
 
@@ -35,7 +36,9 @@ def list_lists():
     if session.get('logged_in'):
         json_data = request.args.get('board_id')
         board_to_gather_lists = Board.query.filter_by(id=json_data).first()
-        return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
+        if board_to_gather_lists in  User.query.filter_by(id=get_jwt_identity()).first().boards:
+            return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
+    return abort(403)
 
 
 @apibp.route('/api/list-public-lists', methods=["GET"])
@@ -50,7 +53,10 @@ def list_public_lists():
 def getBoardInfo():
     json_data = request.args.get('board_id')
     board = Board.query.filter_by(id=json_data).first()
-    return jsonify(board=board.serialize)
+    if board in User.query.filter_by(id=get_jwt_identity()).first().boards:
+        return jsonify(board=board.serialize)
+    else:
+        abort(403)
 
 
 @apibp.route('/api/getPublicBoardInfo', methods=["GET"])
@@ -151,6 +157,10 @@ def generateList():
     json_data = request.json
     list = List(name=json_data['name'],
                 board_id=json_data['board_id'])
+    board = Board.query.filter_by(id=json_data['board_id']).first()
+    if board not in User.query.filter_by(id=get_jwt_identity()).first().boards:
+        return abort(403)
+
     try:
         db.session.add(list)
         db.session.commit()
