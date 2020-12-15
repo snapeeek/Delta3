@@ -8,6 +8,7 @@ from flask_jwt_extended import get_jwt_identity
 from . import get_db
 from .jwtMethods import auth_required, auth_fresh_required, refresh_authentication
 from Delta3Mini.models.models import Card, User, Board, List, Label
+from .super_secret import encode, decode
 
 apibp = Blueprint('api', __name__)
 db = get_db()
