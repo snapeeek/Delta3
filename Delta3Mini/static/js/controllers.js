@@ -341,15 +341,31 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     $scope.dragoverCallback = function (index, external, type, callback) {
         $scope.logListEvent('dragged over', index, external, type);
         // Invoke callback to origin for container types.
-        if (type == 'container' && !external) {
+        if (type == 'list element' && !external) {
             console.log('Container being dragged contains ' + callback() + ' items');
         }
         return index < 10; // Disallow dropping in the third row.
     };
 
     $scope.dropCallback = function (index, item, external, type) {
-        $scope.logListEvent('dropped at', index, external, type);
+        // $scope.logListEvent('dropped at', index, external, type);
+        console.log(item)
+        console.log(index)
+        console.log(external)
+        console.log(type)
         // Return false here to cancel drop. Return true if you insert the item yourself.
+         if (type == 'list') {
+             console.log('Drop on AAAAAAAAAAAAAAA' + index + ' listy ' + item.index);
+         }
+        if (type == 'list' && !external) { //jaki typ to lista?
+            console.log('Drop on AAAAAAAAAAAAAAA' + index + ' listy ' + item.index);
+            BoardsService.patchListIndex(item.id, index)
+                .then(function () {
+                    //$route.reload()
+                }, function () {
+                    $scope.errorMessage = 'Something went wrong'
+                })
+        }
         return item;
     };
 

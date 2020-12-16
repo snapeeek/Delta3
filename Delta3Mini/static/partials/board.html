@@ -8,26 +8,22 @@
     <h1 style="text-align: center" ng-if="lists.length == 0">There are no lists! Please add one!</h1>
     <div class="dropzone">
 
-        <ul dnd-list="containers"
-            dnd-allowed-types="['container']"
-            dnd-external-sources="true"
+        <ul dnd-list="lists"
+            dnd-allowed-types="['list']"
             dnd-dragover="dragoverCallback(index, external, type, callback)"
             dnd-drop="dropCallback(index, item, external, type)"
+            dnd-horizontal-list="true"
             class="containerList">
             <li ng-repeat="list in lists"
-                dnd-draggable="container"
-                dnd-type="'container'"
-                dnd-effect-allowed="copyMove"
-                dnd-moved="containers.splice($index, 1)"
-                dnd-callback="container.items.length">
+                dnd-draggable="list"
+                dnd-type="'list'"
+                dnd-callback="list.items.length">
                 <div class="container-element">
                     <h3 style="text-align: center; border: none; color: black" editable-text="list.name"
                         onbeforesave="editList(list.id, $data)">{{ list.name }}</h3>
                     <ul dnd-list="list.cards"
                         dnd-allowed-types="['item']"
-                        dnd-horizontal-list="true"
-                        dnd-external-sources="true"
-                        dnd-effect-allowed="move"
+                        dnd-moved="list.splice($index, 0)"
                         dnd-dragover="dragoverCallback(index, external, type)"
                         dnd-drop="dropCallback(index, item, external, type)"
                         dnd-inserted="logListEvent('inserted at', index, external, type)"
@@ -35,9 +31,9 @@
                         <li ng-repeat="card in list.cards"
                             dnd-draggable="item"
                             dnd-type="'item'"
-                            dnd-effect-allowed="all"
+                            dnd-effect-allowed="move"
                             dnd-dragstart="logEvent('Started to drag an item')"
-                            dnd-moved="container.items.splice($index, 1)"
+                            dnd-moved="list.cards.splice($index, 0)"
                             dnd-dragend="logEvent('Drag operation ended. Drop effect: ' + dropEffect)">
                             <div class="labels">
                                 <div class="label" ng-repeat="label in card.labels"
