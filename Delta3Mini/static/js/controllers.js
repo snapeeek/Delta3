@@ -348,6 +348,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     };
 
     $scope.dropCallback = function (index, item, external, type) {
+        console.log($scope.lists)
         // $scope.logListEvent('dropped at', index, external, type);
         console.log(item)
         console.log(index)

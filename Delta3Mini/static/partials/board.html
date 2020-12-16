@@ -18,15 +18,14 @@
                 dnd-draggable="list"
                 dnd-type="'list'"
                 dnd-callback="list.items.length"
-                dnd-dragend="logEvent('Drag operation ended. Drop effect: ' + dropEffect)">
+                dnd-drop="dropCallback(index, item, external, type)"
+                dnd-moved="lists.splice($index, 1)">
                 <div class="container-element">
                     <h3 style="text-align: center; border: none; color: black" editable-text="list.name"
                         onbeforesave="editList(list.id, $data)">{{ list.name }}</h3>
                     <ul dnd-list="list.cards"
                         dnd-allowed-types="['item']"
-                        dnd-moved="list.splice($index, 1)"
                         dnd-dragover="dragoverCallback(index, external, type)"
-                        dnd-drop="dropCallback(index, item, external, type)"
                         dnd-inserted="logListEvent('inserted at', index, external, type)"
                         class="itemlist">
                         <li ng-repeat="card in list.cards"

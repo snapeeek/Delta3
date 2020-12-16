@@ -68,7 +68,12 @@ def getPublicBoardInfo():
 def patchListIndex():
     list_id = request.json['id']
     list = List.query.filter_by(id=list_id).first()
-    list_to_be_swaped = List.query.filter_by(id=request.json['index']).first()
+    board = Board.query.filter_by(id=list.board_id).first()
+    # list_to_be_swaped = List.query.filter_by(oard_id=board.id).first()
+    for element in board.lists:
+        if element.index == request.json['index']:
+            list_to_be_swaped = element
+            break
     list_to_be_swaped.index = list.index
     list.index = request.json['index']
     try:
