@@ -1,4 +1,3 @@
-from cryptography.fernet import Fernet
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
@@ -8,7 +7,6 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 app = Flask(__name__)
 migrate = Migrate()
-key = Fernet(Fernet.generate_key())
 
 
 def create_app():

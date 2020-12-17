@@ -5,10 +5,10 @@ from dateutil.tz import tz
 from flask import jsonify, Blueprint, request, session, abort
 from flask_jwt_extended import get_jwt_identity
 
+from Delta3Mini.models.models import Card, User, Board, List, Label
 from . import get_db
 from .jwtMethods import auth_required, auth_fresh_required, refresh_authentication
-from Delta3Mini.models.models import Card, User, Board, List, Label
-from .super_secret import encode, decode
+from .super_secret import decode
 
 apibp = Blueprint('api', __name__)
 db = get_db()
