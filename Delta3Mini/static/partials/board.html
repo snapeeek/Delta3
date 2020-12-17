@@ -97,6 +97,7 @@
                     </div>
                 </div>
             </div>
+            <button class="btn-primary" ng-click="showAddingLabelForm()">New Label</button>
             <button class="close" ng-click="hideEditCardForm()">&times</button>
 
             </div>
@@ -132,6 +133,21 @@
 
 
 </div>
+<!--           ADDING LABEL                                                                                        -->
+    <div class="modal" id="addingLabelForm">
+        <form class="modal-content" ng-submit="generateLabel(card_id, boardInfo.id)">
+            <h1>New Label</h1>
+            <div class="form-group">
+                <input type="text" placeholder="Enter label name" name="text" ng-model="addingLabelForm.text">
+            </div>
+            <!--todo checkboxy na kolorki -->
+            <div class="form-group">
+                <input type="text" placeholder="Enter label color" name="color" ng-model="addingLabelForm.color">
+            </div>
+            <button type="submit" class="btn btn-success" id="closeLabelForm">Create</button>
+        </form>
+
+    </div>
 
 <!--           If the board is archived this will be displayed                                                                                        -->
 <div class="content" ng-if="boardInfo.archived">

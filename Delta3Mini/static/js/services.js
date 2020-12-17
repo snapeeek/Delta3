@@ -131,6 +131,7 @@ angular.module('app').factory('BoardsService',
                 unarchiveBoard: unarchiveBoard,
                 editList: editList,
                 editLabelText: editLabelText,
+                addLabel: addLabel,
             })
 
             function deleteBoard(id, username) {
@@ -261,7 +262,7 @@ angular.module('app').factory('BoardsService',
                     .catch(function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
                             AuthService.refreshToken().then(function () {
-                                addOrDeleteLabel( labelID, cardID)
+                                addOrDeleteLabel(labelID, cardID)
                             })
                         }
                         deffered.reject()
@@ -374,6 +375,29 @@ angular.module('app').factory('BoardsService',
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
                             AuthService.refreshToken().then(function () {
                                 editLabelText(labelID, text)
+                            })
+                        }
+                        deffered.reject()
+
+                    })
+                return deffered.promise
+            }
+
+            function addLabel(card_id, board_id, text, color) {
+                var deffered = $q.defer()
+
+                $http.post('/api/addNewLabel', {card_id: card_id, board_id: board_id, text: text, color: color})
+                    .then(function (response) {
+                        if (response.data) {
+                            deffered.resolve()
+                        } else {
+                            deffered.reject()
+                        }
+                    })
+                    .catch(function (response) {
+                        if (response.status === 401 && response.data['msg'] === "Token has expired") {
+                            AuthService.refreshToken().then(function () {
+                                addLabel(card_id, board_id, text, color)
                             })
                         }
                         deffered.reject()
