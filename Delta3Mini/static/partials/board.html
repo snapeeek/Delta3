@@ -138,12 +138,27 @@
         <form class="modal-content" ng-submit="generateLabel(card_id, boardInfo.id)">
             <h1>New Label</h1>
             <div class="form-group">
-                <input type="text" placeholder="Enter label name" name="text" ng-model="addingLabelForm.text">
+                <input type="text" placeholder="Enter label name" name="text" ng-model="addingLabelForm.text" required>
             </div>
             <!--todo checkboxy na kolorki -->
             <div class="form-group">
-                <input type="text" placeholder="Enter label color" name="color" ng-model="addingLabelForm.color">
+                <select name='color' ng-model="addingLabelForm.color" required>
+                    <option value="">--Select Color--</option>
+                    <option value='Brown' style='background-color:Brown'>Brown</option>
+                    <option value='Coral' style='background-color:Coral'>Coral</option>
+                    <option value='DarkSlateGrey' style='background-color:DarkSlateGrey'>Dark slate grey</option>
+                    <option value='Indigo' style='background-color:Indigo'>Indigo</option>
+                    <option value='Gold' style='background-color:Gold'>Gold</option>
+                    <option value='Magenta' style='background-color:Magenta'>Magenta</option>
+                    <option value='DarkCyan' style='background-color:DarkCyan'>Dark cyan</option>
+                    <option value='DeepSkyBlue' style='background-color:DeepSkyBlue'>Deep sky blue</option>
+                    <option value='Tan' style='background-color:Tan'>Tan</option>
+                    <option value='#88B04B' style='background-color:#88B04B'>Greenery</option>
+                    <option value='PeachPuff' style='background-color:PeachPuff'>Peach puff</option>
+                    <option value='#F7CAC9' style='background-color:#F7CAC9'>Rose quartz</option>
+                </select>
             </div>
+
             <button type="submit" class="btn btn-success" id="closeLabelForm">Create</button>
         </form>
 
