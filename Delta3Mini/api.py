@@ -38,7 +38,7 @@ def list_lists():
         json_data = request.args.get('board_id')
         json_data = decode(json_data)
         board_to_gather_lists = Board.query.filter_by(id=json_data).first()
-        if board_to_gather_lists in  User.query.filter_by(id=get_jwt_identity()).first().boards:
+        if board_to_gather_lists in User.query.filter_by(id=get_jwt_identity()).first().boards:
             return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
     return abort(403)
 
@@ -46,7 +46,7 @@ def list_lists():
 @apibp.route('/api/list-public-lists', methods=["GET"])
 def list_public_lists():
     json_data = request.args.get('board_id')
-    json_data=decode(json_data)
+    json_data = decode(json_data)
     board_to_gather_lists = Board.query.filter_by(id=json_data).first()
     return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
 
@@ -66,7 +66,7 @@ def getBoardInfo():
 @apibp.route('/api/getPublicBoardInfo', methods=["GET"])
 def getPublicBoardInfo():
     json_data = request.args.get('board_id')
-    json_data=decode(json_data)
+    json_data = decode(json_data)
     board = Board.query.filter_by(id=json_data).first()
     if board.public:
         return jsonify(board=board.serialize)
@@ -309,6 +309,31 @@ def editLabelText():
     label.text = json_data['text']
 
     try:
+        db.session.commit()
+        db.session.close()
+        return jsonify({'result': 'success'})
+    except:
+        return 'There was a problem deleting that task'
+
+
+@apibp.route('/api/addNewLabel', methods=["POST"])
+@auth_required
+def addNewLabel():
+    json_data = request.json
+    new_label = Label()
+    label_color = json_data['color']
+    label_text = json_data['text']
+    board_id = decode(json_data['board_id'])
+    card_id = decode(json_data['card_id'])
+    board_to_add_new_label = Board.query.filter_by(id=board_id).first()
+    card_to_add_new_label = Card.query.filter_by(id=card_id).first()
+    new_label.color = label_color
+    new_label.text = label_text
+    board_to_add_new_label.labels.append(new_label)
+    card_to_add_new_label.labels.append(new_label)
+
+    try:
+        db.session.add(new_label)
         db.session.commit()
         db.session.close()
         return jsonify({'result': 'success'})
