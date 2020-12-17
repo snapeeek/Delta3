@@ -276,7 +276,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         //console.log("hello from editLabel")
         BoardsService.editLabelText(labelID, text)
             .then(function () {
-                $route.reload()
+                //$route.reload()
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
