@@ -271,10 +271,10 @@ angular.module('app').factory('BoardsService',
                 return deffered.promise
             }
 
-            function patchListIndex(listID, index) {
+            async function patchListIndex(listID, index) {
                 var deffered = $q.defer()
 
-                $http.patch('/api/patchListIndex', {index: index, id: listID})
+                await $http.patch('/api/patchListIndex', {index: index, id: listID})
                     .then(function (response) {
                         if (response.data) {
                             deffered.resolve()
