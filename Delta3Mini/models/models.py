@@ -164,11 +164,15 @@ class Label(db.Model):
 class List(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
+    index = db.Column(db.Integer, default=0)
     name = db.Column(db.String(50))
     cards = db.relationship('Card', backref='card', lazy=True,cascade="all,delete")
 
     def __init__(self, **kwargs):
         super(List, self).__init__(**kwargs)
+
+    def __lt__(self, other):
+        return self.index < other.index
 
     @property
     def serialize(self):
@@ -176,12 +180,14 @@ class List(db.Model):
         return {
             'id': encode(self.id),
             'name': self.name,
+            'index': self.index,
             'cards': [i.serialize for i in self.cards]
         }
 
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    index = db.Column(db.Integer, default=0)
     name = db.Column(db.String(50))
     content = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
@@ -209,6 +215,7 @@ class Card(db.Model):
             'date_created': dump_datetime(self.date_created),
             'term': self.term,
             'done': self.done,
+            'index': self.index,
             'labels': [i.serialize for i in self.labels],
         }
 

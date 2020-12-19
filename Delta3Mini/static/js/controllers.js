@@ -129,8 +129,8 @@ myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, A
 
 myapp.controller("SingleBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService, AuthService, $timeout) {
 
-    function retrive_board_info() {
-        $http.get('/api/getBoardInfo', {params: {board_id: $routeParams.id}})
+    async function retrive_board_info() {
+        await $http.get('/api/getBoardInfo', {params: {board_id: $routeParams.id}})
             .then(function (response) {
                 $scope.boardInfo = response.data.board
             }).catch(function (response) {
@@ -142,14 +142,14 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     var config = {params: {board_id: $routeParams.id}}
 
-    function retrive_lists() {
-        $http.get('/api/list-lists', config).then(async function (resp) {
+    async function retrive_lists() {
+        await $http.get('/api/list-lists', config).then(async function (resp) {
             $scope.lists = resp.data.json_list;
             await retrive_board_info()
         }).catch(async function (response) {
             if (response.status === 401 && response.data['msg'] === "Token has expired") {
                 await AuthService.refreshToken()
-                retrive_lists()
+                await retrive_lists()
             }
 
         })
@@ -351,15 +351,46 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     $scope.dragoverCallback = function (index, external, type, callback) {
         $scope.logListEvent('dragged over', index, external, type);
         // Invoke callback to origin for container types.
-        if (type == 'container' && !external) {
+        if (type == 'list element' && !external) {
             console.log('Container being dragged contains ' + callback() + ' items');
         }
         return index < 10; // Disallow dropping in the third row.
     };
 
-    $scope.dropCallback = function (index, item, external, type) {
-        $scope.logListEvent('dropped at', index, external, type);
+
+
+    $scope.dropCallback = async function (list, index, item, external, type) {
+        console.log(list)
+        console.log($scope.lists)
+        // $scope.logListEvent('dropped at', index, external, type);
+        console.log(item)
+        console.log(index)
+        console.log(external)
+        console.log(type)
+        console.log(list)
+
+        var newIndex = item.index
+        // await $scope.lists.splice(newIndex, 1)
+        $scope.lists.splice(newIndex, 1)
+
         // Return false here to cancel drop. Return true if you insert the item yourself.
+         if (type == 'list') {
+             console.log('Drop on AAAAAAAAAAAAAAA' + index + ' listy ' + item.index);
+         }
+        if (type == 'list' && !external) { //jaki typ to lista?
+            console.log('Drop on AAAAAAAAAAAAAAA' + index + ' listy ' + item.index);
+            await BoardsService.patchListIndex(item.id, index)
+                .then(function () {
+                    //$route.reload()
+                }, function () {
+                    $scope.errorMessage = 'Something went wrong'
+                })
+        }
+
+
+        // await retrive_lists()
+        await retrive_lists()
+        console.log($scope.lists)
         return item;
     };
 

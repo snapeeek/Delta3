@@ -130,6 +130,7 @@ angular.module('app').factory('BoardsService',
                 editCard: editCard,
                 unarchiveBoard: unarchiveBoard,
                 editList: editList,
+                patchListIndex: patchListIndex,
                 editLabelText: editLabelText,
                 addLabel: addLabel,
             })
@@ -263,6 +264,29 @@ angular.module('app').factory('BoardsService',
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
                             AuthService.refreshToken().then(function () {
                                 addOrDeleteLabel(labelID, cardID)
+                            })
+                        }
+                        deffered.reject()
+
+                    })
+                return deffered.promise
+            }
+
+            async function patchListIndex(listID, index) {
+                var deffered = $q.defer()
+
+                await $http.patch('/api/patchListIndex', {index: index, id: listID})
+                    .then(function (response) {
+                        if (response.data) {
+                            deffered.resolve()
+                        } else {
+                            deffered.reject()
+                        }
+                    })
+                    .catch(function (response) {
+                        if (response.status === 401 && response.data['msg'] === "Token has expired") {
+                            AuthService.refreshToken().then(function () {
+                                addOrDeleteLabel( labelID, cardID)
                             })
                         }
                         deffered.reject()

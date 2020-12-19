@@ -38,6 +38,7 @@ def list_lists():
         json_data = request.args.get('board_id')
         json_data = decode(json_data)
         board_to_gather_lists = Board.query.filter_by(id=json_data).first()
+        board_to_gather_lists.lists.sort(key=lambda x: x.index, reverse=False)
         if board_to_gather_lists in User.query.filter_by(id=get_jwt_identity()).first().boards:
             return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
     return abort(403)
@@ -73,6 +74,22 @@ def getPublicBoardInfo():
     else:
         return abort(403)
 
+@apibp.route('/api/patchListIndex', methods=["PATCH"])
+def patchListIndex():
+    list_id = request.json['id']
+    list = List.query.filter_by(id=list_id).first()
+    board = Board.query.filter_by(id=list.board_id).first()
+    for element in board.lists:
+        if element.index == request.json['index']:
+            list_to_be_swaped = element
+            break
+    list_to_be_swaped.index = list.index
+    list.index = request.json['index']
+    try:
+        db.session.commit()
+        return jsonify({'result': 'True'})
+    except:
+        return 'There was a problem patching list that task'
 
 @apibp.route('/api/refresh_token', methods=['POST'])
 @auth_fresh_required
