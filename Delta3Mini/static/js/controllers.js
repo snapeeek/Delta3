@@ -7,7 +7,7 @@ myapp.controller('IndexController', function ($scope, $http, $route, $cookies, B
     $http.get('/api/list-boards').then(function (resp) {
         $scope.boards = resp.data.json_list;
 
-        $scope.boards.sort(function(a,b) {
+        $scope.boards.sort(function (a, b) {
             if (a.archived === true && b.archived === false)
                 return 1
             if (b.archived === true && a.archived === false)
@@ -210,6 +210,15 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             })
         document.getElementById("addingCardForm").style.display = "none"
     }
+    $scope.generateLabel = function (card_id, board_id) {
+        BoardsService.addLabel(card_id, board_id, this.addingLabelForm.text, this.addingLabelForm.color)
+            .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+        document.getElementById("addingLabelForm").style.display = "none"
+    }
 
     $scope.addLabel = function (cardId) {
         BoardsService.addLabelToCard(this.addLabel.id, cardId)
@@ -241,43 +250,40 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     }
 
 
-        /*if (this.labelCheckBox) {
-            BoardsService.addOrDeleteLabel('add', label_id, card_id)
-            .then(function () {
-                //$route.reload()
-                //this.labelCheckBox = true
-            }, function () {
-                $scope.errorMessage = 'Something went wrong'
-            })
-        }
-        else
-        {
-            // console.log("hello from changeLabel false")
-            BoardsService.addOrDeleteLabel('delete', label_id, card_id)
-            .then(function () {
-                //$route.reload() teoretycznie nie musi go tu byc bo i tak sie odswiezy po zamknieciu okienka
-                //this.labelCheckBox = false
-            }, function () {
-                $scope.errorMessage = 'Something went wrong'
-            })
-        }
-    }*/
-
-    $scope.editLabelText = function (labelID, text)
+    /*if (this.labelCheckBox) {
+        BoardsService.addOrDeleteLabel('add', label_id, card_id)
+        .then(function () {
+            //$route.reload()
+            //this.labelCheckBox = true
+        }, function () {
+            $scope.errorMessage = 'Something went wrong'
+        })
+    }
+    else
     {
+        // console.log("hello from changeLabel false")
+        BoardsService.addOrDeleteLabel('delete', label_id, card_id)
+        .then(function () {
+            //$route.reload() teoretycznie nie musi go tu byc bo i tak sie odswiezy po zamknieciu okienka
+            //this.labelCheckBox = false
+        }, function () {
+            $scope.errorMessage = 'Something went wrong'
+        })
+    }
+}*/
+
+    $scope.editLabelText = function (labelID, text) {
         //console.log("hello from editLabel")
         BoardsService.editLabelText(labelID, text)
             .then(function () {
-                $route.reload()
+                //$route.reload()
             }, function () {
                 $scope.errorMessage = 'Something went wrong'
             })
     }
 
-    $scope.checkCheck = function (labels, labelID)
-    {
-        for(var label of labels)
-        {
+    $scope.checkCheck = function (labels, labelID) {
+        for (var label of labels) {
             //console.log(labelID + " " + label.id)
             if (label.id === labelID) {
                 return true
@@ -289,14 +295,14 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     //        DATE PICKER
     $scope.opened = {};
 
-	$scope.open = function($event, elementOpened) {
-		$event.preventDefault();
-		$event.stopPropagation();
+    $scope.open = function ($event, elementOpened) {
+        $event.preventDefault();
+        $event.stopPropagation();
 
-		$scope.opened[elementOpened] = !$scope.opened[elementOpened];
-	};
+        $scope.opened[elementOpened] = !$scope.opened[elementOpened];
+    };
 
-	//DATE PICKER ENDS HERE
+    //DATE PICKER ENDS HERE
 
     //-------------------Showing and hiding modal windows in html
     $scope.showAddingCardForm = function (id) {
@@ -323,6 +329,10 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     $scope.showListForm = function () {
         document.getElementById("addingListForm").style.display = "block"
+    }
+
+    $scope.showAddingLabelForm = function () {
+        document.getElementById("addingLabelForm").style.display = "block"
     }
 
     //simple hiding methods
@@ -401,7 +411,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     }
 
-     $scope.showHiddenDateTime = function () {
+    $scope.showHiddenDateTime = function () {
         document.getElementById("hiddenDateTime").hidden = false
     }
 
@@ -461,7 +471,6 @@ myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeP
     $scope.showListForm = function () {
         document.getElementById("addingListForm").style.display = "block"
     }
-
 
 
     //simple hiding methods

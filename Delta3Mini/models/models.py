@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import jwt
 # from Delta3Mini import db
 from Delta3Mini import db
+from Delta3Mini.super_secret import encode
 
 SUPER_SECRET_KEY = "skurczybonk"
 
@@ -135,7 +136,7 @@ class Board(db.Model):
         """Return object data in easily serializable format"""
         json_list = [i.serialize for i in self.labels]
         return {
-            'id': self.id,
+            'id': encode(self.id),
             'name': self.name,
             'team_id': self.team_id,
             'archived': self.archived,
@@ -154,7 +155,7 @@ class Label(db.Model):
     @property
     def serialize(self):
         return {
-            'id': self.id,
+            'id': encode(self.id),
             'color': self.color,
             'text': self.text,
         }
@@ -177,7 +178,7 @@ class List(db.Model):
     def serialize(self):
         """Return object data in easily serializable format"""
         return {
-            'id': self.id,
+            'id': encode(self.id),
             'name': self.name,
             'index': self.index,
             'cards': [i.serialize for i in self.cards]
@@ -208,7 +209,7 @@ class Card(db.Model):
     def serialize(self):
         """Return object data in easily serializable format"""
         return {
-            'id': self.id,
+            'id': encode(self.id),
             'name': self.name,
             'content': self.content,
             'date_created': dump_datetime(self.date_created),
