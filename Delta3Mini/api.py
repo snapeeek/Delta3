@@ -35,8 +35,7 @@ def list_lists():
     if session.get('logged_in'):
         json_data = request.args.get('board_id')
         board_to_gather_lists = Board.query.filter_by(id=json_data).first()
-        #TODO dodac sortowanie list po indexie
-        board_to_gather_lists.lists.sort()
+        board_to_gather_lists.lists.sort(key=lambda x: x.index, reverse=False)
         return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
 
 
@@ -69,7 +68,6 @@ def patchListIndex():
     list_id = request.json['id']
     list = List.query.filter_by(id=list_id).first()
     board = Board.query.filter_by(id=list.board_id).first()
-    # list_to_be_swaped = List.query.filter_by(oard_id=board.id).first()
     for element in board.lists:
         if element.index == request.json['index']:
             list_to_be_swaped = element
@@ -81,11 +79,6 @@ def patchListIndex():
         return jsonify({'result': 'True'})
     except:
         return 'There was a problem patching list that task'
-    # board = Board.query.filter_by(id=json_data).first()
-    # if board.public:
-    #     return jsonify(board=board.serialize)
-    # else:
-    #     return abort(403)
 
 @apibp.route('/api/refresh_token', methods=['POST'])
 @auth_fresh_required
