@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import jwt
 # from Delta3Mini import db
 from Delta3Mini import db
+from Delta3Mini.super_secret import encode
 
 SUPER_SECRET_KEY = "skurczybonk"
 
@@ -135,7 +136,7 @@ class Board(db.Model):
         """Return object data in easily serializable format"""
         json_list = [i.serialize for i in self.labels]
         return {
-            'id': self.id,
+            'id': encode(self.id),
             'name': self.name,
             'team_id': self.team_id,
             'archived': self.archived,
@@ -155,7 +156,7 @@ class Label(db.Model):
     @property
     def serialize(self):
         return {
-            'id': self.id,
+            'id': encode(self.id),
             'color': self.color,
             'text': self.text,
         }
@@ -164,32 +165,40 @@ class Label(db.Model):
 class List(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
+    index = db.Column(db.Integer, default=0)
     name = db.Column(db.String(50))
     cards = db.relationship('Card', backref='card', lazy=True,cascade="all,delete")
 
     def __init__(self, **kwargs):
         super(List, self).__init__(**kwargs)
 
+    def __lt__(self, other):
+        return self.index < other.index
+
     @property
     def serialize(self):
         """Return object data in easily serializable format"""
-        json_list = [i.serialize for i in self.cards]
         return {
-            'id': self.id,
+            'id': encode(self.id),
             'name': self.name,
-            'cards': json_list
+            'index': self.index,
+            'cards': [i.serialize for i in self.cards]
         }
 
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    index = db.Column(db.Integer, default=0)
     name = db.Column(db.String(50))
     content = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    term = db.Column(db.DateTime, nullable=True)
+    done = db.Column(db.Boolean, default=False)
     list_id = db.Column(db.Integer, db.ForeignKey('list.id'), nullable=False)
     lists_of_elements = db.relationship('Listofelements', backref='card', lazy=True)
     labels = db.relationship('Label', secondary=cards_and_labels, lazy='subquery',
                              backref=db.backref('cards', lazy=True))
+
 
     def __init__(self, **kwargs):
         super(Card, self).__init__(**kwargs)
@@ -201,10 +210,13 @@ class Card(db.Model):
     def serialize(self):
         """Return object data in easily serializable format"""
         return {
-            'id': self.id,
+            'id': encode(self.id),
             'name': self.name,
             'content': self.content,
             'date_created': dump_datetime(self.date_created),
+            'term': self.term,
+            'done': self.done,
+            'index': self.index,
             'labels': [i.serialize for i in self.labels],
         }
 

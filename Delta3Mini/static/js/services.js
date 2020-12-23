@@ -126,11 +126,14 @@ angular.module('app').factory('BoardsService',
                 editBoard: editBoard,
                 addList: addList,
                 addCardToList: addCardToList,
-                addLabelToCard: addLabelToCard,
+                addOrDeleteLabel: addOrDeleteLabel,
                 editCard: editCard,
                 unarchiveBoard: unarchiveBoard,
                 editList: editList,
                 changePublicBoard:changePublicBoard,
+                patchListIndex: patchListIndex,
+                editLabelText: editLabelText,
+                addLabel: addLabel,
             })
 
             function deleteBoard(id, username) {
@@ -247,10 +250,10 @@ angular.module('app').factory('BoardsService',
                 return deffered.promise
             }
 
-            function addLabelToCard(labelID, cardID) {
+            function addOrDeleteLabel(labelID, cardID) {
                 var deffered = $q.defer()
 
-                $http.post('/api/addLabel', {cardID: cardID, labelID: labelID})
+                $http.post('/api/addOrDeleteLabel', {cardID: cardID, labelID: labelID})
                     .then(function (response) {
                         if (response.data) {
                             deffered.resolve()
@@ -261,7 +264,30 @@ angular.module('app').factory('BoardsService',
                     .catch(function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
                             AuthService.refreshToken().then(function () {
-                                addLabelToCard(labelID, cardID)
+                                addOrDeleteLabel(labelID, cardID)
+                            })
+                        }
+                        deffered.reject()
+
+                    })
+                return deffered.promise
+            }
+
+            async function patchListIndex(listID, index) {
+                var deffered = $q.defer()
+
+                await $http.patch('/api/patchListIndex', {index: index, id: listID})
+                    .then(function (response) {
+                        if (response.data) {
+                            deffered.resolve()
+                        } else {
+                            deffered.reject()
+                        }
+                    })
+                    .catch(function (response) {
+                        if (response.status === 401 && response.data['msg'] === "Token has expired") {
+                            AuthService.refreshToken().then(function () {
+                                addOrDeleteLabel( labelID, cardID)
                             })
                         }
                         deffered.reject()
@@ -307,7 +333,7 @@ angular.module('app').factory('BoardsService',
                     .catch(function (response) {
                         if (response.status === 401 && response.data['msg'] === "Token has expired") {
                             AuthService.refreshToken().then(function () {
-                                editCardContent(content, cardID)
+                                editCard(content, cardID, whatToChange)
                             })
                         }
                         deffered.reject()
@@ -359,6 +385,7 @@ angular.module('app').factory('BoardsService',
                     })
                 return deffered.promise
             }
+
             function changePublicBoard(id) {
                 var deffered = $q.defer()
 
@@ -376,6 +403,52 @@ angular.module('app').factory('BoardsService',
                             })
                         }
                         deffered.reject()
+                    })
+                return deffered.promise
+            }
+
+
+            function editLabelText(labelID, text) {
+                var deffered = $q.defer()
+                $http.post('/api/editLabelText', {label_id: labelID, text: text})
+                    .then(function (response) {
+                        if (response.data) {
+                            deffered.resolve()
+                        } else {
+                            deffered.reject()
+                        }
+                    })
+                    .catch(function (response) {
+                        if (response.status === 401 && response.data['msg'] === "Token has expired") {
+                            AuthService.refreshToken().then(function () {
+                                editLabelText(labelID, text)
+                            })
+                        }
+                        deffered.reject()
+
+                    })
+                return deffered.promise
+            }
+
+            function addLabel(card_id, board_id, text, color) {
+                var deffered = $q.defer()
+
+                $http.post('/api/addNewLabel', {card_id: card_id, board_id: board_id, text: text, color: color})
+                    .then(function (response) {
+                        if (response.data) {
+                            deffered.resolve()
+                        } else {
+                            deffered.reject()
+                        }
+                    })
+                    .catch(function (response) {
+                        if (response.status === 401 && response.data['msg'] === "Token has expired") {
+                            AuthService.refreshToken().then(function () {
+                                addLabel(card_id, board_id, text, color)
+                            })
+                        }
+                        deffered.reject()
+
                     })
                 return deffered.promise
 
