@@ -49,7 +49,10 @@ def list_public_lists():
     json_data = request.args.get('board_id')
     json_data = decode(json_data)
     board_to_gather_lists = Board.query.filter_by(id=json_data).first()
-    return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
+    if board_to_gather_lists.public:
+        return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
+    else:
+        return abort(403)
 
 
 @apibp.route('/api/getBoardInfo', methods=["GET"])
@@ -317,6 +320,20 @@ def editList():
         return 'There was a problem deleting that task'
 
 
+
+@apibp.route('/api/changePublicBoard', methods=["POST"])
+@auth_required
+def changePublicBoard():
+    json_data = request.json
+    board_id_ = decode(json_data['id'])
+    board = Board.query.filter_by(id=board_id_).first()
+    try:
+        board.public = not board.public
+        db.session.commit()
+        return jsonify({'result': 'success'})
+    except:
+        return 'There was a problem deleting that task'
+      
 @apibp.route('/api/editLabelText', methods=["POST"])
 @auth_required
 def editLabelText():
@@ -356,3 +373,4 @@ def addNewLabel():
         return jsonify({'result': 'success'})
     except:
         return 'There was a problem deleting that task'
+

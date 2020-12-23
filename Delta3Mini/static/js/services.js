@@ -130,6 +130,7 @@ angular.module('app').factory('BoardsService',
                 editCard: editCard,
                 unarchiveBoard: unarchiveBoard,
                 editList: editList,
+                changePublicBoard:changePublicBoard,
                 patchListIndex: patchListIndex,
                 editLabelText: editLabelText,
                 addLabel: addLabel,
@@ -385,6 +386,28 @@ angular.module('app').factory('BoardsService',
                 return deffered.promise
             }
 
+            function changePublicBoard(id) {
+                var deffered = $q.defer()
+
+                $http.post('/api/changePublicBoard', {id: id})
+                    .then(function (response) {
+                        if (response.data) {
+                            deffered.resolve();
+                        } else
+                            deffered.reject()
+
+                    }, function (response) {
+                        if (response.status === 401 && response.data['msg'] === "Token has expired") {
+                            AuthService.refreshToken().then(function () {
+                                changePublicBoard(id)
+                            })
+                        }
+                        deffered.reject()
+                    })
+                return deffered.promise
+            }
+
+
             function editLabelText(labelID, text) {
                 var deffered = $q.defer()
                 $http.post('/api/editLabelText', {label_id: labelID, text: text})
@@ -428,5 +451,6 @@ angular.module('app').factory('BoardsService',
 
                     })
                 return deffered.promise
+
             }
         }])

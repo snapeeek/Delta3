@@ -1,7 +1,7 @@
 <div class="content" ng-if="!boardInfo.archived">
 
     <h1>
-        {{ boardInfo.name }}
+        {{ boardInfo.name || errorMessage}}
     </h1>
 
     <h1 style="text-align: center" ng-if="lists.length == 0">There are no lists! Please add one!</h1>

@@ -140,6 +140,7 @@ class Board(db.Model):
             'name': self.name,
             'team_id': self.team_id,
             'archived': self.archived,
+            'public': self.public,
             'labels': json_list
         }
 

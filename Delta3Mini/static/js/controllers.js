@@ -175,6 +175,15 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
             })
     }
 
+    $scope.changePublicBoard = function (boardID) {
+        BoardsService.changePublicBoard(boardID)
+            .then(function () {
+                $route.reload()
+            }, function () {
+                $scope.errorMessage = 'Something went wrong'
+            })
+    }
+
     $scope.unarchiveBoard = function (boardID) {
         BoardsService.unarchiveBoard(boardID)
             .then(function () {
@@ -428,6 +437,9 @@ myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeP
             if (response.status === 401 && response.data['msg'] === "Token has expired") {
                 AuthService.refreshToken()
             }
+            else if (response.status === 403) {
+                $scope.errorMessage = "Access to this site was forbidden"
+            }
         })
     }
 
@@ -440,6 +452,10 @@ myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeP
                 await AuthService.refreshToken()
                 retrive_lists()
             }
+            else if (response.status === 403) {
+                $scope.errorMessage = "Access to this site was forbidden"
+            }
+
         })
     }
 

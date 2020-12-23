@@ -3,6 +3,8 @@
     <h1 editable-text="boardInfo.name" onbeforesave="updateBoard($data)"
         style="border: none; color:black; padding-left: 20px">
         {{ boardInfo.name }}
+        <button style="font-size: 10px" class="btn-primary" ng-if="boardInfo.public" ng-click="changePublicBoard(boardInfo.id)" >Publiczna</button>
+        <button style="font-size: 10px" class="btn-danger" ng-if="!boardInfo.public" ng-click="changePublicBoard(boardInfo.id)" >Prywatna</button>
     </h1>
 
     <h1 style="text-align: center" ng-if="lists.length == 0">There are no lists! Please add one!</h1>
