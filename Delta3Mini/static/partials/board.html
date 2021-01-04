@@ -1,10 +1,19 @@
 <div class="content" ng-if="!boardInfo.archived">
 
-    <h1 editable-text="boardInfo.name" onbeforesave="updateBoard($data)"
-        style="border: none; color:black; padding-left: 20px">
-        {{ boardInfo.name }}
-        <button style="font-size: 10px" class="btn-primary" ng-if="boardInfo.public" ng-click="changePublicBoard(boardInfo.id)" >Publiczna</button>
-        <button style="font-size: 10px" class="btn-danger" ng-if="!boardInfo.public" ng-click="changePublicBoard(boardInfo.id)" >Prywatna</button>
+    <h1>
+        <randomowyznacznik editable-text="boardInfo.name" onbeforesave="updateBoard($data)"
+                           style="border: none; color:black; padding-left: 20px">{{ boardInfo.name }}</randomowyznacznik>
+        <button style="font-size: 10px" class="btn-primary" ng-if="boardInfo.public"
+                ng-click="changePublicBoard(boardInfo.id)">Publiczna
+        </button>
+        <button style="font-size: 10px" class="btn-danger" ng-if="!boardInfo.public"
+                ng-click="changePublicBoard(boardInfo.id)">Prywatna
+        </button>
+        <span class="pull-right">
+            <button type="button" class="btn btn-default btn-lg" ng-click="openAside('right', false)">
+              Right <span class="glyphicon glyphicon-align-justify"></span>
+            </button>
+          </span>
     </h1>
 
     <h1 style="text-align: center" ng-if="lists.length == 0">There are no lists! Please add one!</h1>
@@ -39,14 +48,15 @@
                             dnd-horizontal-list="true"
                             dnd-dragstart="logEvent('Started to drag an item')"
                             dnd-moved="list.cards.splice($index, 1)"
-                            >
+                        >
                             <div class="labels">
                                 <div class="label" ng-repeat="label in card.labels"
-                                     style="background-color: {{label.color}}" ;>
-                                    <b>{{label.text}}</b>
+                                     style="background-color: {{ label.color }}" ;>
+                                    <b>{{ label.text }}</b>
                                 </div>
                             </div>
-                            <div class="editContent" ng-click="showEditCardForm(card.id, card.name, card.content, card.labels, card.term, card.done)">
+                            <div class="editContent"
+                                 ng-click="showEditCardForm(card.id, card.name, card.content, card.labels, card.term, card.done)">
                                 {{ card.name }}
                             </div>
                         </li>
@@ -65,7 +75,7 @@
         <div class="modal-content">
             <h1 style="border: none; color: black" editable-text="card_name"
                 onbeforesave="editCard(card_id, $data, 'name')"><i class="glyphicon glyphicon-tasks"
-                                                                   style="font-size: 20px;padding-right: 8px"></i>{{ card_name}}
+                                                                   style="font-size: 20px;padding-right: 8px"></i>{{ card_name }}
             </h1>
             <h2 style="border: none; color: black" editable-text="card_content"
                 onbeforesave="editCard(card_id, $data, 'content')">
@@ -73,14 +83,13 @@
                    style="padding-right: 8px; font-size: 20px"></i>{{ card_content || "No content provided!" }}</h2>
 
 
-
-            Due to date: <button style="border: none; color:black" ng-click="showHiddenDateTime()">{{(card_term | date: "dd-MM-YYYY HH:mm") || 'Please insert date'}}</button>
-
-
-            <input id="hiddenDateTime" hidden="true" type="datetime-local" ng-model="dateChanger" ng-change="editCard(card_id, dateChanger, 'date')">
+            Due to date:
+            <button style="border: none; color:black" ng-click="showHiddenDateTime()">
+                {{ (card_term | date: "dd-MM-YYYY HH:mm") || 'Please insert date'}}</button>
 
 
-
+            <input id="hiddenDateTime" hidden="true" type="datetime-local" ng-model="dateChanger"
+                   ng-change="editCard(card_id, dateChanger, 'date')">
 
 
             Done:
@@ -89,10 +98,14 @@
             <div class="form-labels">
                 <div class="labels" style="display: block">
                     <div ng-repeat="label in boardInfo.labels">
-                        <input type="checkbox" ng-checked="checkCheck(card_labels, label.id)" ng-click="changeLabelCheck(card_id, label.id)"/>
+                        <input type="checkbox" ng-checked="checkCheck(card_labels, label.id)"
+                               ng-click="changeLabelCheck(card_id, label.id)"/>
                         <div class="label"
-                             style="background-color: {{label.color}}; width: 100px; height: 30px; float: none; display: inline-block; text-align: center; padding: 7px 0">
-                            <b editable-text="label.text" e-style="height: 20px; width: 80px; margin: 0px 5px 5px 5px; buttonClass: btn-sm" onbeforesave="editLabelText(label.id, $data)" style="border: none; color: white">{{label.text || 'None'}}</b>
+                             style="background-color: {{ label.color }}; width: 100px; height: 30px; float: none; display: inline-block; text-align: center; padding: 7px 0">
+                            <b editable-text="label.text"
+                               e-style="height: 20px; width: 80px; margin: 0px 5px 5px 5px; buttonClass: btn-sm"
+                               onbeforesave="editLabelText(label.id, $data)" style="border: none; color: white">
+                                {{ label.text || 'None'}}</b>
                         </div>
 
                     </div>
@@ -101,69 +114,69 @@
             <button class="btn-primary" ng-click="showAddingLabelForm()">New Label</button>
             <button class="close" ng-click="hideEditCardForm()">&times</button>
 
-            </div>
         </div>
     </div>
+</div>
 
-    <!--           ADDING CARD                                                                                        -->
-    <div class="modal" id="addingCardForm">
-        <form class="modal-content" ng-submit="generateCard(list_id)">
-            <h1>New card</h1>
-            <div class="form-group">
-                <input type="text" placeholder="Enter card name" name="name" ng-model="addingCardForm.name">
-            </div>
-            <button type="submit" class="close" id="closeCardForm">&times</button>
-        </form>
-        +
-    </div>
+<!--           ADDING CARD                                                                                        -->
+<div class="modal" id="addingCardForm">
+    <form class="modal-content" ng-submit="generateCard(list_id)">
+        <h1>New card</h1>
+        <div class="form-group">
+            <input type="text" placeholder="Enter card name" name="name" ng-model="addingCardForm.name">
+        </div>
+        <button type="submit" class="close" id="closeCardForm">&times</button>
+    </form>
+    +
+</div>
 
-    <!--           ADDING LIST                                                                                        -->
-    <div class="form-popup" id="addingListForm">
-        <form class="form-container" ng-submit="generateList()">
-            <h1>New List</h1>
-            <label><b>Name</b></label>
-            <div class="form-group">
-                <input type="text" placeholder="Enter list name" name="name" ng-model="addingListForm.name"
-                       required>
-            </div>
-            <button type="submit" class="btn">Add</button>
-        </form>
-        <button class="btn cancel" ng-click="hideListForm()">Cancel</button>
+<!--           ADDING LIST                                                                                        -->
+<div class="form-popup" id="addingListForm">
+    <form class="form-container" ng-submit="generateList()">
+        <h1>New List</h1>
+        <label><b>Name</b></label>
+        <div class="form-group">
+            <input type="text" placeholder="Enter list name" name="name" ng-model="addingListForm.name"
+                   required>
+        </div>
+        <button type="submit" class="btn">Add</button>
+    </form>
+    <button class="btn cancel" ng-click="hideListForm()">Cancel</button>
 
-    </div>
+</div>
 
 
 </div>
 <!--           ADDING LABEL                                                                                        -->
-    <div class="modal" id="addingLabelForm">
-        <form class="modal-content" ng-submit="generateLabel(card_id, boardInfo.id)">
-            <h1>New Label</h1>
-            <div class="form-group">
-                <input type="text" placeholder="Enter label name" name="text" ng-model="addingLabelForm.text" required>
-            </div>
-            <!--todo checkboxy na kolorki -->
-            <div class="form-group">
-                <select name='color' ng-model="addingLabelForm.color" required>
-                    <option value="">--Select Color--</option>
-                    <option value='Brown' style='background-color:Brown'>Brown</option>
-                    <option value='Coral' style='background-color:Coral'>Coral</option>
-                    <option value='DarkSlateGrey' style='background-color:DarkSlateGrey'>Dark slate grey</option>
-                    <option value='Indigo' style='background-color:Indigo'>Indigo</option>
-                    <option value='Gold' style='background-color:Gold'>Gold</option>
-                    <option value='Magenta' style='background-color:Magenta'>Magenta</option>
-                    <option value='DarkCyan' style='background-color:DarkCyan'>Dark cyan</option>
-                    <option value='DeepSkyBlue' style='background-color:DeepSkyBlue'>Deep sky blue</option>
-                    <option value='Tan' style='background-color:Tan'>Tan</option>
-                    <option value='#88B04B' style='background-color:#88B04B'>Greenery</option>
-                    <option value='PeachPuff' style='background-color:PeachPuff'>Peach puff</option>
-                    <option value='#F7CAC9' style='background-color:#F7CAC9'>Rose quartz</option>
-                </select>
-            </div>
+<div class="modal" id="addingLabelForm">
+    <form class="modal-content" ng-submit="generateLabel(card_id, boardInfo.id)">
+        <h1>New Label</h1>
+        <div class="form-group">
+            <input type="text" placeholder="Enter label name" name="text" ng-model="addingLabelForm.text" required>
+        </div>
+        <!--todo checkboxy na kolorki -->
+        <div class="form-group">
+            <select name='color' ng-model="addingLabelForm.color" required>
+                <option value="">--Select Color--</option>
+                <option value='Brown' style='background-color:Brown'>Brown</option>
+                <option value='Coral' style='background-color:Coral'>Coral</option>
+                <option value='DarkSlateGrey' style='background-color:DarkSlateGrey'>Dark slate grey</option>
+                <option value='Indigo' style='background-color:Indigo'>Indigo</option>
+                <option value='Gold' style='background-color:Gold'>Gold</option>
+                <option value='Magenta' style='background-color:Magenta'>Magenta</option>
+                <option value='DarkCyan' style='background-color:DarkCyan'>Dark cyan</option>
+                <option value='DeepSkyBlue' style='background-color:DeepSkyBlue'>Deep sky blue</option>
+                <option value='Tan' style='background-color:Tan'>Tan</option>
+                <option value='#88B04B' style='background-color:#88B04B'>Greenery</option>
+                <option value='PeachPuff' style='background-color:PeachPuff'>Peach puff</option>
+                <option value='#F7CAC9' style='background-color:#F7CAC9'>Rose quartz</option>
+            </select>
+        </div>
 
-            <button type="submit" class="btn btn-success" id="closeLabelForm">Create</button>
-        </form>
+        <button type="submit" class="btn btn-success" id="closeLabelForm">Create</button>
+    </form>
 
-    </div>
+</div>
 
 <!--           If the board is archived this will be displayed                                                                                        -->
 <div class="content" ng-if="boardInfo.archived">

@@ -127,6 +127,8 @@ class Board(db.Model):
                              cascade="all,delete")
     lists = db.relationship('List', backref='board', lazy=True,
                             cascade="all,delete")
+    activities = db.relationship('Activity', backref='board', lazy=True,
+                                 cascade="all,delete")
 
     def __init__(self, **kwargs):
         super(Board, self).__init__(**kwargs)
@@ -135,13 +137,15 @@ class Board(db.Model):
     def serialize(self):
         """Return object data in easily serializable format"""
         json_list = [i.serialize for i in self.labels]
+        activities = [i.serialize for i in self.activities]
         return {
             'id': encode(self.id),
             'name': self.name,
             'team_id': self.team_id,
             'archived': self.archived,
             'public': self.public,
-            'labels': json_list
+            'labels': json_list,
+            'activities': activities
         }
 
 
@@ -167,7 +171,7 @@ class List(db.Model):
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
     index = db.Column(db.Integer, default=0)
     name = db.Column(db.String(50))
-    cards = db.relationship('Card', backref='card', lazy=True,cascade="all,delete")
+    cards = db.relationship('Card', backref='card', lazy=True, cascade="all,delete")
 
     def __init__(self, **kwargs):
         super(List, self).__init__(**kwargs)
@@ -198,7 +202,6 @@ class Card(db.Model):
     lists_of_elements = db.relationship('Listofelements', backref='card', lazy=True)
     labels = db.relationship('Label', secondary=cards_and_labels, lazy='subquery',
                              backref=db.backref('cards', lazy=True))
-
 
     def __init__(self, **kwargs):
         super(Card, self).__init__(**kwargs)
@@ -248,3 +251,23 @@ class Team(db.Model):
 
     def __init__(self, **kwargs):
         super(Team, self).__init__(**kwargs)
+
+
+class Activity(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
+    who = db.Column(db.String(50))
+    what = db.Column(db.String(150))
+    date_done = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __init__(self, **kwargs):
+        super(Activity, self).__init__(**kwargs)
+
+    @property
+    def serialize(self):
+        """Return object data in easily serializable format"""
+        return {
+            'who': self.who,
+            'what': self.what,
+            'date_done': dump_datetime(self.date_done),
+        }

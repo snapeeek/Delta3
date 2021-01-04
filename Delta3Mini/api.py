@@ -5,7 +5,7 @@ from dateutil.tz import tz
 from flask import jsonify, Blueprint, request, session, abort
 from flask_jwt_extended import get_jwt_identity
 
-from Delta3Mini.models.models import Card, User, Board, List, Label
+from Delta3Mini.models.models import Card, User, Board, List, Label, Activity
 from . import get_db
 from .jwtMethods import auth_required, auth_fresh_required, refresh_authentication
 from .super_secret import decode
@@ -230,8 +230,13 @@ def generateCard():
     card = Card(name=json_data['name'],
                 content='',
                 list_id=id_)
+    user = User.query.filter_by(id=get_jwt_identity()).first()
+    list_to_get_board = List.query.filter_by(id=id_).first()
+    whathappened = "Created card "+json_data['name']+" on "
+    activity = Activity(who=user.username, what=whathappened, board_id=list_to_get_board.board_id)
     try:
         db.session.add(card)
+        db.session.add(activity)
         db.session.commit()
         status = 'success'
     except:
@@ -374,3 +379,7 @@ def addNewLabel():
     except:
         return 'There was a problem deleting that task'
 
+# todo historia aktywnosci czyli:
+# logowanie tworzenia, usuwanie list, kart, dołączanie (czego nie ma) przeniesienie
+# utworzenei tablicy
+# kto, zrobił co  (nazwa obiektu)

@@ -127,12 +127,13 @@ myapp.controller("ngappController", function ($scope, $timeout, cfpLoadingBar, A
     }
 });
 
-myapp.controller("SingleBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService, AuthService, $timeout) {
-
+myapp.controller("SingleBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService, AuthService, $aside) {
+    var testing
     async function retrive_board_info() {
         await $http.get('/api/getBoardInfo', {params: {board_id: $routeParams.id}})
             .then(function (response) {
                 $scope.boardInfo = response.data.board
+                testing = response.data.board
             }).catch(function (response) {
             if (response.status === 401 && response.data['msg'] === "Token has expired") {
                 AuthService.refreshToken()
@@ -422,6 +423,40 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     $scope.showHiddenDateTime = function () {
         document.getElementById("hiddenDateTime").hidden = false
+    }
+
+    $scope.asideState = {
+      open: false
+    };
+
+    $scope.openAside = function(position, backdrop) {
+      $scope.asideState = {
+        open: true,
+        position: position
+      };
+
+      function postClose() {
+        $scope.asideState.open = false;
+      }
+
+      $aside.open({
+        templateUrl: 'static/partials/aside.html',
+        placement: position,
+        size: 'sm',
+        backdrop: backdrop,
+
+        controller: function($scope, $uibModalInstance) {
+            $scope.boardInfo = testing
+          $scope.ok = function(e) {
+            $uibModalInstance.close();
+            e.stopPropagation();
+          };
+          $scope.cancel = function(e) {
+            $uibModalInstance.dismiss();
+            e.stopPropagation();
+          };
+        }
+      }).result.then(postClose, postClose);
     }
 
 })
