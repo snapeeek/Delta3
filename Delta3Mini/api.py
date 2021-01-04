@@ -378,8 +378,3 @@ def addNewLabel():
         return jsonify({'result': 'success'})
     except:
         return 'There was a problem deleting that task'
-
-# todo historia aktywnosci czyli:
-# logowanie tworzenia, usuwanie list, kart, dołączanie (czego nie ma) przeniesienie
-# utworzenei tablicy
-# kto, zrobił co  (nazwa obiektu)
