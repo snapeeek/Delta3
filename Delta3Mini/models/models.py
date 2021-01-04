@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 
 import jwt
 # from Delta3Mini import db
+from dateutil.tz import tz
+
 from Delta3Mini import db
 from Delta3Mini.super_secret import encode
 
@@ -195,7 +197,7 @@ class Card(db.Model):
     index = db.Column(db.Integer, default=0)
     name = db.Column(db.String(50))
     content = db.Column(db.String(200), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    date_created = db.Column(db.DateTime, default=datetime.now())
     term = db.Column(db.DateTime, nullable=True)
     done = db.Column(db.Boolean, default=False)
     list_id = db.Column(db.Integer, db.ForeignKey('list.id'), nullable=False)
@@ -258,7 +260,7 @@ class Activity(db.Model):
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
     who = db.Column(db.String(50))
     what = db.Column(db.String(150))
-    date_done = db.Column(db.DateTime, default=datetime.utcnow)
+    date_done = db.Column(db.DateTime, default=datetime.now())
 
     def __init__(self, **kwargs):
         super(Activity, self).__init__(**kwargs)
