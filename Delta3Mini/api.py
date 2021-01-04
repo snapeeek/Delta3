@@ -253,7 +253,7 @@ def generateCard():
                 list_id=id_)
     user = User.query.filter_by(id=get_jwt_identity()).first()
     list_to_get_board = List.query.filter_by(id=id_).first()
-    whathappened = " created card "+json_data['name']+" on "
+    whathappened = " created card "+json_data['name']
     activity = Activity(who=user.username, what=whathappened, board_id=list_to_get_board.board_id)
     try:
         db.session.add(card)
@@ -363,7 +363,11 @@ def changePublicBoard():
     board = Board.query.filter_by(id=board_id_).first()
     try:
         user = User.query.filter_by(id=get_jwt_identity()).first()
-        whathappened = " changed this board to public view"
+        whathappened = " changed this board to "
+        if board.public:
+            whathappened +="private view"
+        else:
+            whathappened +="public view"
         activity = Activity(who=user.username, what=whathappened, board_id=board_id_)
         db.session.add(activity)
         board.public = not board.public
