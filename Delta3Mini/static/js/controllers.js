@@ -426,37 +426,38 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     }
 
     $scope.asideState = {
-      open: false
+        open: false
     };
 
-    $scope.openAside = function(position, backdrop) {
-      $scope.asideState = {
-        open: true,
-        position: position
-      };
+    $scope.openAside = function (position, backdrop) {
+        $scope.asideState = {
+            open: true,
+            position: position
+        };
 
-      function postClose() {
-        $scope.asideState.open = false;
-      }
-
-      $aside.open({
-        templateUrl: 'static/partials/aside.html',
-        placement: position,
-        size: 'sm',
-        backdrop: backdrop,
-
-        controller: function($scope, $uibModalInstance) {
-            $scope.boardInfo = testing
-          $scope.ok = function(e) {
-            $uibModalInstance.close();
-            e.stopPropagation();
-          };
-          $scope.cancel = function(e) {
-            $uibModalInstance.dismiss();
-            e.stopPropagation();
-          };
+        function postClose() {
+            $scope.asideState.open = false;
         }
-      }).result.then(postClose, postClose);
+
+        $aside.open({
+            templateUrl: 'static/partials/aside.html',
+            placement: position,
+            size: 'sm',
+            backdrop: backdrop,
+
+            controller: function ($scope, $uibModalInstance) {
+                testing.activities.reverse()
+                $scope.boardInfo = testing
+                $scope.ok = function (e) {
+                    $uibModalInstance.close();
+                    e.stopPropagation();
+                };
+                $scope.cancel = function (e) {
+                    $uibModalInstance.dismiss();
+                    e.stopPropagation();
+                };
+            }
+        }).result.then(postClose, postClose);
     }
 
 })
