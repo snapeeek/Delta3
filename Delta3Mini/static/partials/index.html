@@ -20,10 +20,9 @@
             <td ng-if="!board.archived">No</td>
 
             <td>
-                <a ng-click="delete(board['id'])">Delete</a>
+                <a class="btn btn-danger" ng-click="delete(board['id'])">Delete</a>
 
-                <br>
-                <a ng-if="!board.archived" ng-click="archive(board['id'])">Archive</a>
+                <a class="btn btn-warning" ng-if="!board.archived" ng-click="archive(board['id'])">Archive</a>
             </td>
         </tr>
 

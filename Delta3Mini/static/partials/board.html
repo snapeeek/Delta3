@@ -3,10 +3,10 @@
     <h1>
         <randomowyznacznik editable-text="boardInfo.name" onbeforesave="updateBoard($data)"
                            style="border: none; color:black; padding-left: 20px">{{ boardInfo.name }}</randomowyznacznik>
-        <button style="font-size: 10px" class="btn-primary" ng-if="boardInfo.public"
+        <button style="font-size: 14px" class="btn-primary" ng-if="boardInfo.public"
                 ng-click="changePublicBoard(boardInfo.id)">Public
         </button>
-        <button style="font-size: 10px" class="btn-danger" ng-if="!boardInfo.public"
+        <button style="font-size: 14px" class="btn-danger" ng-if="!boardInfo.public"
                 ng-click="changePublicBoard(boardInfo.id)">Private
         </button>
         <span class="pull-right">
@@ -185,7 +185,7 @@
 
 <!--           If the board is archived this will be displayed                                                                                        -->
 <div class="content" ng-if="boardInfo.archived">
-    <h2>This board is archived. If you want to undo this <a ng-click="unarchiveBoard(boardInfo.id)">click here</a>
+    <h2>This board is archived. If you want to undo this <a class="btn btn-info" ng-click="unarchiveBoard(boardInfo.id)">click here</a>
     </h2>
 
 
