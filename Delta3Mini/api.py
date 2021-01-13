@@ -145,7 +145,7 @@ def editCard():
         help1 = date_object.replace(tzinfo=from_zone)
         help = help1.astimezone(to_zone)
         card_to_edit.term = help
-        whathappened = " set deadline " + card_to_edit.name + " on " + help
+        whathappened = " set deadline " + card_to_edit.name + " on " + help.__str__()
         activity = Activity(who=user.username, what=whathappened, board_id=list_to_get_board.board_id)
         db.session.add(activity)
     elif json_data['what'] == 'done':
