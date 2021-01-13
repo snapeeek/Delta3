@@ -1,0 +1,14 @@
+<div class="modal-header">
+    <h3 class="modal-title">Activity history</h3>
+    <button class="btn btn-warning" ng-click="cancel($event)">Close</button>
+</div>
+<div class="modal-body" ng-repeat="activity in boardInfo.activities">
+    <b>{{ activity.who }}</b>
+    <b>{{ activity.what }}</b>
+    <br>
+    <b style="font-size: 12px">{{ activity.date_done[1] }}</b>
+    <b style="font-size: 12px">{{ activity.date_done[0] }}</b>
+</div>
+<div class="modal-footer">
+
+</div>

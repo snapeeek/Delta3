@@ -5,7 +5,7 @@ from dateutil.tz import tz
 from flask import jsonify, Blueprint, request, session, abort
 from flask_jwt_extended import get_jwt_identity
 
-from Delta3Mini.models.models import Card, User, Board, List, Label
+from Delta3Mini.models.models import Card, User, Board, List, Label, Activity
 from . import get_db
 from .jwtMethods import auth_required, auth_fresh_required, refresh_authentication
 from .super_secret import decode
@@ -130,6 +130,8 @@ def editCard():
     json_data = request.json
     id_ = decode(json_data['card_id'])
     card_to_edit = Card.query.filter_by(id=id_).first()
+    user = User.query.filter_by(id=get_jwt_identity()).first()
+    list_to_get_board = List.query.filter_by(id=card_to_edit.list_id).first()
     if json_data['what'] == 'content':
         card_to_edit.content = json_data['content']
     elif json_data['what'] == 'name':
@@ -142,7 +144,13 @@ def editCard():
         help1 = date_object.replace(tzinfo=from_zone)
         help = help1.astimezone(to_zone)
         card_to_edit.term = help
+        whathappened = " set deadline " + card_to_edit.name + " on " + help
+        activity = Activity(who=user.username, what=whathappened, board_id=list_to_get_board.board_id)
+        db.session.add(activity)
     elif json_data['what'] == 'done':
+        whathappened = " set card " + card_to_edit.name + " as done"
+        activity = Activity(who=user.username, what=whathappened, board_id=list_to_get_board.board_id)
+        db.session.add(activity)
         card_to_edit.done = json_data['content']
 
     try:
@@ -171,6 +179,11 @@ def generateBoard():
         board.labels.append(Label(color="Indigo", text=""))
         db.session.add(board)
         db.session.commit()
+        db.session.refresh(board)
+        whathappened = " created board " + json_data['name']
+        activity = Activity(who=user.username, what=whathappened, board_id=board.id)
+        db.session.add(activity)
+        db.session.commit()
         status = 'success'
     except:
         print(sys.exc_info()[0])
@@ -191,6 +204,10 @@ def generateList():
         return abort(403)
 
     try:
+        user = User.query.filter_by(id=get_jwt_identity()).first()
+        whathappened = " created list " + list.name
+        activity = Activity(who=user.username, what=whathappened, board_id=id_)
+        db.session.add(activity)
         db.session.add(list)
         db.session.commit()
         status = 'success'
@@ -213,6 +230,10 @@ def archive():
     if board_to_archive in user.boards:
         board_to_archive.archived = True
         try:
+            user = User.query.filter_by(id=get_jwt_identity()).first()
+            whathappened = " archived board " + board_to_archive.name
+            activity = Activity(who=user.username, what=whathappened, board_id=id_)
+            db.session.add(activity)
             db.session.commit()
             db.session.close()
             return jsonify({'result': 'success'})
@@ -231,8 +252,13 @@ def generateCard():
     card = Card(name=json_data['name'],
                 content='',
                 list_id=id_)
+    user = User.query.filter_by(id=get_jwt_identity()).first()
+    list_to_get_board = List.query.filter_by(id=id_).first()
+    whathappened = " created card "+json_data['name']
+    activity = Activity(who=user.username, what=whathappened, board_id=list_to_get_board.board_id)
     try:
         db.session.add(card)
+        db.session.add(activity)
         db.session.commit()
         status = 'success'
     except:
@@ -282,6 +308,10 @@ def unarchiveBoard():
     board.archived = False
 
     try:
+        user = User.query.filter_by(id=get_jwt_identity()).first()
+        whathappened = " unarchived board " + board.name
+        activity = Activity(who=user.username, what=whathappened, board_id=board_id_)
+        db.session.add(activity)
         db.session.commit()
         db.session.close()
         return jsonify({'result': 'success'})
@@ -295,9 +325,13 @@ def editBoard():
     json_data = request.json
     board_id_ = decode(json_data['board_id'])
     board = Board.query.filter_by(id=board_id_).first()
+    whathappened = " changed name of board from " + board.name +" to "+json_data['name']
     board.name = json_data['name']
 
     try:
+        user = User.query.filter_by(id=get_jwt_identity()).first()
+        activity = Activity(who=user.username, what=whathappened, board_id=board_id_)
+        db.session.add(activity)
         db.session.commit()
         db.session.close()
         return jsonify({'result': 'success'})
@@ -329,6 +363,14 @@ def changePublicBoard():
     board_id_ = decode(json_data['id'])
     board = Board.query.filter_by(id=board_id_).first()
     try:
+        user = User.query.filter_by(id=get_jwt_identity()).first()
+        whathappened = " changed this board to "
+        if board.public:
+            whathappened +="private view"
+        else:
+            whathappened +="public view"
+        activity = Activity(who=user.username, what=whathappened, board_id=board_id_)
+        db.session.add(activity)
         board.public = not board.public
         db.session.commit()
         return jsonify({'result': 'success'})
@@ -374,4 +416,3 @@ def addNewLabel():
         return jsonify({'result': 'success'})
     except:
         return 'There was a problem deleting that task'
-
