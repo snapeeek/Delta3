@@ -1,19 +1,30 @@
 <div class="content" ng-if="!boardInfo.archived">
 
     <h1>
-        {{ boardInfo.name || errorMessage}}
+        <randomowyznacznik editable-text="boardInfo.name" onbeforesave="updateBoard($data)"
+                           style="border: none; color:black; padding-left: 20px">{{ boardInfo.name }}</randomowyznacznik>
+        <button style="font-size: 10px" class="btn-primary" ng-if="boardInfo.public"
+                ng-click="changePublicBoard(boardInfo.id)">Publiczna
+        </button>
+        <button style="font-size: 10px" class="btn-danger" ng-if="!boardInfo.public"
+                ng-click="changePublicBoard(boardInfo.id)">Prywatna
+        </button>
+        <span class="pull-right">
+            <button type="button" class="btn btn-default btn-lg" ng-click="openAside('right', false)">
+              Show history <span class="glyphicon glyphicon-align-justify"></span>
+            </button>
+          </span>
     </h1>
 
     <h1 style="text-align: center" ng-if="lists.length == 0">There are no lists! Please add one!</h1>
     <div class="dropzone">
 
         <ul
-                class="containerList">
+            class="containerList">
             <li ng-repeat="list in lists">
                 <div class="container-element">
                     <h3 style="text-align: center; border: none; color: black">{{ list.name }}</h3>
-                    <ul
-                            class="itemlist">
+                    <ul class="itemlist">
                         <li ng-repeat="card in list.cards">
                             <div class="labels">
                                 <div class="label" ng-repeat="label in card.labels"
@@ -21,7 +32,8 @@
                                     <b>{{ label.text }}</b>
                                 </div>
                             </div>
-                            <div class="editContent" ng-click="showEditCardForm(card.id, card.name, card.content)">
+                            <div class="editContent"
+                                 ng-click="showEditCardForm(card.id, card.name, card.content, card.labels, card.term, card.done)">
                                 {{ card.name }}
                             </div>
                         </li>
@@ -34,15 +46,29 @@
     <!--           EDITING INSIDES OF CARD                                                                                        -->
     <div class="modal" id="editCardForm">
         <div class="modal-content">
-            <h1><i class="glyphicon glyphicon-tasks" style="font-size: 20px;padding-right: 8px"></i>{{ card_name }}</h1>
-            <h2 style="border: none; color: black">
+            <h1 style="border: none; color: black" ><i class="glyphicon glyphicon-tasks" style="font-size: 20px;padding-right: 8px"></i>{{ card_name }}
+            </h1>
+            <h2 style="border: none; color: black" >
                 <i class="glyphicon glyphicon-list-alt"
                    style="padding-right: 8px; font-size: 20px"></i>{{ card_content || "No content provided!" }}</h2>
+
+
+            Due to date:
+            <button style="border: none; color:black" >
+                {{ (card_term | date: "dd-MM-YYYY HH:mm") || 'No date was set'}}</button>
+            Done:
+            <input type="checkbox" ng-checked="card_done" onclick="return false" >
+
             <div class="form-labels">
-                <div class="labels">
-                    <div class="label" ng-repeat="label in boardInfo.labels" style="background-color: {{ label.color }}"
-                         ;>
-                        <b>{{ label.id }}</b>
+                <div class="labels" style="display: block">
+                    <div ng-repeat="label in boardInfo.labels">
+                        <input type="checkbox" ng-checked="checkCheck(card_labels, label.id)" onclick="return false"/>
+                        <div class="label"
+                             style="background-color: {{ label.color }}; width: 100px; height: 30px; float: none; display: inline-block; text-align: center; padding: 7px 0">
+                            <b  style="border: none; color: white">
+                                {{ label.text || ''}}</b>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -50,12 +76,10 @@
 
         </div>
     </div>
-
 </div>
 
 <!--           If the board is archived this will be displayed                                                                                        -->
 <div class="content" ng-if="boardInfo.archived">
-    <h2>This board is archived. If you want to undo this <a ng-click="unarchiveBoard(boardInfo.id)">click here</a></h2>
-
-
+    <h2>This board is archived.</a>
+    </h2>
 </div>
