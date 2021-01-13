@@ -66,7 +66,6 @@ def getBoardInfo():
     else:
         abort(403)
 
-
 @apibp.route('/api/getPublicBoardInfo', methods=["GET"])
 def getPublicBoardInfo():
     json_data = request.args.get('board_id')
@@ -80,6 +79,7 @@ def getPublicBoardInfo():
 @apibp.route('/api/patchListIndex', methods=["PATCH"])
 def patchListIndex():
     list_id = request.json['id']
+    list_id = decode(list_id)
     list = List.query.filter_by(id=list_id).first()
     board = Board.query.filter_by(id=list.board_id).first()
     for element in board.lists:
