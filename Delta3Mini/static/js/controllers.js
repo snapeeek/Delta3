@@ -383,9 +383,6 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
         $scope.lists.splice(newIndex, 1)
 
         // Return false here to cancel drop. Return true if you insert the item yourself.
-         if (type == 'list') {
-             console.log('Drop on AAAAAAAAAAAAAAA' + index + ' listy ' + item.index);
-         }
         if (type == 'list' && !external) { //jaki typ to lista?
             console.log('Drop on AAAAAAAAAAAAAAA' + index + ' listy ' + item.index);
             await BoardsService.patchListIndex(item.id, index)

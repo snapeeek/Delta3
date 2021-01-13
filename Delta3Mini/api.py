@@ -82,6 +82,7 @@ def patchListIndex():
     list_id = decode(list_id)
     list = List.query.filter_by(id=list_id).first()
     board = Board.query.filter_by(id=list.board_id).first()
+    list_to_be_swaped = board.lists[-1]
     for element in board.lists:
         if element.index == request.json['index']:
             list_to_be_swaped = element
