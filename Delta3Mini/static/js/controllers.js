@@ -158,12 +158,6 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     retrive_lists()
 
-    //
-    // async function retrive_board_info() {
-    //
-    // }
-
-
     //-------------------functions to change board states
     $scope.updateBoard = function (boardName) {
         if (boardName === "")
