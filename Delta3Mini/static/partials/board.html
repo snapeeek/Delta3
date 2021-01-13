@@ -4,10 +4,10 @@
         <randomowyznacznik editable-text="boardInfo.name" onbeforesave="updateBoard($data)"
                            style="border: none; color:black; padding-left: 20px">{{ boardInfo.name }}</randomowyznacznik>
         <button style="font-size: 10px" class="btn-primary" ng-if="boardInfo.public"
-                ng-click="changePublicBoard(boardInfo.id)">Publiczna
+                ng-click="changePublicBoard(boardInfo.id)">Public
         </button>
         <button style="font-size: 10px" class="btn-danger" ng-if="!boardInfo.public"
-                ng-click="changePublicBoard(boardInfo.id)">Prywatna
+                ng-click="changePublicBoard(boardInfo.id)">Private
         </button>
         <span class="pull-right">
             <button type="button" class="btn btn-default btn-lg" ng-click="openAside('right', false)">
@@ -74,15 +74,20 @@
     <div class="modal" id="editCardForm">
         <div class="modal-content">
             <h1 style="border: none; color: black" editable-text="card_name"
-                onbeforesave="editCard(card_id, $data, 'name')"><i class="glyphicon glyphicon-tasks"
-                                                                   style="font-size: 20px;padding-right: 8px"></i>{{ card_name }}
+                onbeforesave="editCard(card_id, $data, 'name')">
+                <i class="glyphicon glyphicon-tasks" style="font-size: 20px;padding-right: 8px"></i>
+                {{ card_name }}
             </h1>
-            <h2 style="border: none; color: black" editable-text="card_content"
-                onbeforesave="editCard(card_id, $data, 'content')">
-                <i class="glyphicon glyphicon-list-alt"
-                   style="padding-right: 8px; font-size: 20px"></i>{{ card_content || "No content provided!" }}</h2>
 
-
+            <h2>
+                <i class="glyphicon glyphicon-list-alt" style="padding-right: 8px; font-size: 20px"></i>
+                Details
+            </h2>
+            <div style="border: none; color: black; background: #eaeaea; padding-bottom: 10px; padding-top: 10px; padding-left: 8px; border-radius: 5px" editable-text="card_content"
+                 onbeforesave="editCard(card_id, $data, 'content')">
+                {{ card_content || "Add more details here..." }}
+            </div>
+            <br>
             Due to date:
             <button style="border: none; color:black" ng-click="showHiddenDateTime()">
                 {{ (card_term | date: "dd-MM-YYYY HH:mm") || 'Please insert date'}}</button>

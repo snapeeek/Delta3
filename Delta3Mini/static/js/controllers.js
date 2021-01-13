@@ -417,6 +417,7 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService, AuthService, $aside) {
     var config = {params: {board_id: $routeParams.id}}
     var testing
+    $scope.errorMessage = "All good"
     async function retrive_board_info() {
         await $http.get('/api/getPublicBoardInfo', {params: {board_id: $routeParams.id}})
             .then(function (response) {
@@ -425,6 +426,9 @@ myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeP
             }).catch(function (response) {
             if (response.status === 401 && response.data['msg'] === "Token has expired") {
                 AuthService.refreshToken()
+            }
+            else if (response.status === 403) {
+                $scope.errorMessage = "Access to this board was forbidden"
             }
         })
     }
@@ -440,7 +444,9 @@ myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeP
                 await AuthService.refreshToken()
                 await retrive_lists()
             }
-
+            else if (response.status === 403) {
+                $scope.errorMessage = "Access to this board was forbidden"
+            }
         })
     }
 
