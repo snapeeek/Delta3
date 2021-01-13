@@ -52,7 +52,7 @@ myapp.run(function ($rootScope, $location, $route, AuthService, editableOptions)
             AuthService.getUserStatus()
                 .then(function () {
                     if (next.access.restricted && !AuthService.isLoggedIn()) {
-                        console.log(AuthService.isLoggedIn())
+                        // console.log(AuthService.isLoggedIn())
                         $location.path('/login')
                         $route.reload()
                     }

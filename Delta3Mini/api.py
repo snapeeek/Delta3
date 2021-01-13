@@ -49,6 +49,7 @@ def list_public_lists():
     json_data = request.args.get('board_id')
     json_data = decode(json_data)
     board_to_gather_lists = Board.query.filter_by(id=json_data).first()
+    board_to_gather_lists.lists.sort(key=lambda x: x.index, reverse=False)
     if board_to_gather_lists.public:
         return jsonify(json_list=[i.serialize for i in board_to_gather_lists.lists])
     else:

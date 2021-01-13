@@ -158,12 +158,6 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     retrive_lists()
 
-    //
-    // async function retrive_board_info() {
-    //
-    // }
-
-
     //-------------------functions to change board states
     $scope.updateBoard = function (boardName) {
         if (boardName === "")
@@ -242,7 +236,6 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     //whatToChange to string, aktualnie mozna dać "content", "name", "date" i "done". Tak zrobiłem, don't judge me
     $scope.editCard = function (id, newCardContent, whatToChange) {
-        console.log(newCardContent)
         BoardsService.editCard(newCardContent, id, whatToChange)
             .then(function () {
             }, function () {
@@ -260,30 +253,8 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     }
 
 
-    /*if (this.labelCheckBox) {
-        BoardsService.addOrDeleteLabel('add', label_id, card_id)
-        .then(function () {
-            //$route.reload()
-            //this.labelCheckBox = true
-        }, function () {
-            $scope.errorMessage = 'Something went wrong'
-        })
-    }
-    else
-    {
-        // console.log("hello from changeLabel false")
-        BoardsService.addOrDeleteLabel('delete', label_id, card_id)
-        .then(function () {
-            //$route.reload() teoretycznie nie musi go tu byc bo i tak sie odswiezy po zamknieciu okienka
-            //this.labelCheckBox = false
-        }, function () {
-            $scope.errorMessage = 'Something went wrong'
-        })
-    }
-}*/
 
     $scope.editLabelText = function (labelID, text) {
-        //console.log("hello from editLabel")
         BoardsService.editLabelText(labelID, text)
             .then(function () {
                 //$route.reload()
@@ -294,7 +265,6 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
     $scope.checkCheck = function (labels, labelID) {
         for (var label of labels) {
-            //console.log(labelID + " " + label.id)
             if (label.id === labelID) {
                 return true
             }
@@ -370,34 +340,20 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
 
     $scope.dropCallback = async function (list, index, item, external, type) {
-        console.log(list)
-        console.log($scope.lists)
-        // $scope.logListEvent('dropped at', index, external, type);
-        console.log(item)
-        console.log(index)
-        console.log(external)
-        console.log(type)
-        console.log(list)
-
         var newIndex = item.index
-        // await $scope.lists.splice(newIndex, 1)
         $scope.lists.splice(newIndex, 1)
 
         // Return false here to cancel drop. Return true if you insert the item yourself.
         if (type == 'list' && !external) { //jaki typ to lista?
-            console.log('Drop on AAAAAAAAAAAAAAA' + index + ' listy ' + item.index);
             await BoardsService.patchListIndex(item.id, index)
                 .then(function () {
-                    //$route.reload()
                 }, function () {
                     $scope.errorMessage = 'Something went wrong'
                 })
         }
 
 
-        // await retrive_lists()
         await retrive_lists()
-        console.log($scope.lists)
         return item;
     };
 
@@ -408,7 +364,6 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
     $scope.logListEvent = function (action, index, external, type) {
         var message = external ? 'External ' : '';
         message += type + ' element was ' + action + ' position ' + index;
-        console.log(message);
     };
 
     $window.onclick = function (event) {
@@ -459,40 +414,70 @@ myapp.controller("SingleBoardController", function ($scope, $http, $routeParams,
 
 })
 
-myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService, AuthService, $timeout) {
+myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeParams, $route, $window, BoardsService, AuthService, $aside) {
     var config = {params: {board_id: $routeParams.id}}
-
-    function retrive_board_info() {
-        $http.get('/api/getPublicBoardInfo', {params: {board_id: $routeParams.id}})
+    var testing
+    async function retrive_board_info() {
+        await $http.get('/api/getPublicBoardInfo', {params: {board_id: $routeParams.id}})
             .then(function (response) {
                 $scope.boardInfo = response.data.board
+                testing = response.data.board
             }).catch(function (response) {
             if (response.status === 401 && response.data['msg'] === "Token has expired") {
                 AuthService.refreshToken()
             }
-            else if (response.status === 403) {
-                $scope.errorMessage = "Access to this site was forbidden"
-            }
         })
     }
 
-    function retrive_lists() {
-        $http.get('/api/list-public-lists', config).then(async function (resp) {
+    var config = {params: {board_id: $routeParams.id}}
+
+    async function retrive_lists() {
+        await $http.get('/api/list-public-lists', config).then(async function (resp) {
             $scope.lists = resp.data.json_list;
             await retrive_board_info()
         }).catch(async function (response) {
             if (response.status === 401 && response.data['msg'] === "Token has expired") {
                 await AuthService.refreshToken()
-                retrive_lists()
-            }
-            else if (response.status === 403) {
-                $scope.errorMessage = "Access to this site was forbidden"
+                await retrive_lists()
             }
 
         })
     }
 
     retrive_lists()
+
+    $scope.checkCheck = function (labels, labelID) {
+        for (var label of labels) {
+            if (label.id === labelID) {
+                return true
+            }
+        }
+        return false
+    }
+    //-------------------Showing and hiding modal windows in html
+    // initializing some variables in scope so that it works properly
+    $scope.card_id = ''
+    $scope.card_name = ''
+    $scope.card_content = ''
+    $scope.card_term = null
+    $scope.card_done = false
+    $scope.card_labels = []
+
+    $scope.showEditCardForm = function (id, name, content, labels, term, done) {
+        $scope.card_id = id
+        $scope.card_name = name
+        $scope.card_content = content
+        $scope.card_labels = labels
+        $scope.card_done = done
+        $scope.card_term = term
+        document.getElementById("editCardForm").style.display = "block"
+    }
+
+    //simple hiding methods
+    $scope.hideEditCardForm = function () {
+        document.getElementById("editCardForm").style.display = "none"
+        $route.reload()
+    }
 
     $window.onclick = function (event) {
         if (event.target === document.getElementById("addingCardForm")) {
@@ -501,36 +486,39 @@ myapp.controller("SinglePublicBoardController", function ($scope, $http, $routeP
 
     }
 
-    //-------------------Showing and hiding modal windows in html
-    $scope.showAddingCardForm = function (id) {
-        $scope.list_id = id
-        document.getElementById("addingCardForm").style.display = "block"
-    }
-    // initializing some variables in scope so that it works properly
-    $scope.card_id = ''
-    $scope.card_name = ''
-    $scope.card_content = ''
+    $scope.asideState = {
+        open: false
+    };
 
-    $scope.showEditCardForm = function (id, name, content) {
-        $scope.card_id = id
-        $scope.card_name = name
-        $scope.card_content = content
-        document.getElementById("editCardForm").style.display = "block"
-    }
-    $scope.showListForm = function () {
-        document.getElementById("addingListForm").style.display = "block"
+    $scope.openAside = function (position, backdrop) {
+        $scope.asideState = {
+            open: true,
+            position: position
+        };
+
+        function postClose() {
+            $scope.asideState.open = false;
+        }
+
+        $aside.open({
+            templateUrl: 'static/partials/aside.html',
+            placement: position,
+            size: 'sm',
+            backdrop: backdrop,
+
+            controller: function ($scope, $uibModalInstance) {
+                testing.activities.reverse()
+                $scope.boardInfo = testing
+                $scope.ok = function (e) {
+                    $uibModalInstance.close();
+                    e.stopPropagation();
+                };
+                $scope.cancel = function (e) {
+                    $uibModalInstance.dismiss();
+                    e.stopPropagation();
+                };
+            }
+        }).result.then(postClose, postClose);
     }
 
-
-    //simple hiding methods
-    $scope.hideAddingCardForm = function () {
-        document.getElementById("addingCardForm").style.display = "none"
-    }
-    $scope.hideEditCardForm = function () {
-        document.getElementById("editCardForm").style.display = "none"
-        $route.reload()
-    }
-    $scope.hideListForm = function () {
-        document.getElementById("addingListForm").style.display = "none"
-    }
 })
